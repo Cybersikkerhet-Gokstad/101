@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modul 0 - Start her | Cybersecurity 101</title>
+<style>
+  html,body{margin:0;padding:0;background:#F4F6F8;}
+  body{padding:18px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;}
+  @media (max-width:520px){body{padding:8px;}}
+</style>
+</head>
+<body>
+<div class="sk101">
+
+<style>
+/* ============================================================
+   Cybersecurity 101 - Modul 0 : Start her
+   Selvstendig HTML + CSS. Ingen JavaScript, ingen eksterne filer.
+   Alt er navnesatt under .sk101 slik at Moodle-temaet ikke kolliderer.
+   ============================================================ */
+
+.sk101{
+  --navy:#0E2233; --navy2:#16324B; --slate:#1D4E6B;
+  --amber:#F5A623; --ember:#C9503C; --mint:#3EA88B;
+  --ink:#16324B; --muted:#5D7183; --mutedl:#9BB2C4;
+  --mist:#EDF2F6; --card:#F7FAFC; --line:#DCE6ED;
+  --serif:Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --r:14px;
+  font-family:var(--sans);
+  color:var(--ink);
+  max-width:1080px;
+  margin:0 auto;
+  -webkit-font-smoothing:antialiased;
+}
+.sk101 *,.sk101 *::before,.sk101 *::after{box-sizing:border-box;}
+.sk101 p,.sk101 h1,.sk101 h2,.sk101 h3,.sk101 h4,.sk101 ul,.sk101 li{margin:0;padding:0;}
+.sk101 ul{list-style:none;}
+.sk101 a{color:var(--slate);}
+
+/* radioene som driver alt - skjult, men fokuserbar med tastatur */
+.sk101 .sk-nav{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+
+/* ---------- rammen ---------- */
+.sk101 .sk-shell{
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 10px 34px rgba(14,34,51,.10);
+}
+
+/* ---------- topplinje: framdrift + prikker ---------- */
+.sk101 .sk-top{
+  background:var(--navy);
+  padding:14px 20px 12px;
+}
+.sk101 .sk-track{height:4px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden;}
+.sk101 .sk-fill{height:100%;background:var(--amber);width:8.3%;transition:width .45s cubic-bezier(.4,0,.2,1);}
+.sk101 .sk-dots{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;align-items:center;}
+.sk101 .sk-dot{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--mutedl);
+  background:rgba(255,255,255,.07);
+  cursor:pointer;user-select:none;
+  transition:background .2s,color .2s,transform .2s;
+}
+.sk101 .sk-dot:hover{background:rgba(255,255,255,.18);color:#fff;transform:translateY(-1px);}
+.sk101 .sk-label{margin-left:auto;font-size:11px;letter-spacing:.14em;color:var(--mutedl);font-weight:700;text-transform:uppercase;}
+
+/* ---------- scenen ---------- */
+.sk101 .sk-stage{position:relative;background:#fff;}
+.sk101 .sk-slide{display:none;flex-direction:column;min-height:560px;padding:34px 40px 22px;}
+.sk101 .sk-slide.dark{background:var(--navy);color:#fff;}
+.sk101 .sk-body{flex:1;}
+
+/* vis riktig slide + sett framdrift + marker prikk */
+.sk101 #sk1:checked ~ .sk-shell .sk-slide.s1,
+.sk101 #sk2:checked ~ .sk-shell .sk-slide.s2,
+.sk101 #sk3:checked ~ .sk-shell .sk-slide.s3,
+.sk101 #sk4:checked ~ .sk-shell .sk-slide.s4,
+.sk101 #sk5:checked ~ .sk-shell .sk-slide.s5,
+.sk101 #sk6:checked ~ .sk-shell .sk-slide.s6,
+.sk101 #sk7:checked ~ .sk-shell .sk-slide.s7,
+.sk101 #sk8:checked ~ .sk-shell .sk-slide.s8,
+.sk101 #sk9:checked ~ .sk-shell .sk-slide.s9,
+.sk101 #sk10:checked ~ .sk-shell .sk-slide.s10,
+.sk101 #sk11:checked ~ .sk-shell .sk-slide.s11,
+.sk101 #sk12:checked ~ .sk-shell .sk-slide.s12{display:flex;}
+
+.sk101 #sk1:checked  ~ .sk-shell .sk-fill{width:8.3%;}
+.sk101 #sk2:checked  ~ .sk-shell .sk-fill{width:16.6%;}
+.sk101 #sk3:checked  ~ .sk-shell .sk-fill{width:25%;}
+.sk101 #sk4:checked  ~ .sk-shell .sk-fill{width:33.3%;}
+.sk101 #sk5:checked  ~ .sk-shell .sk-fill{width:41.6%;}
+.sk101 #sk6:checked  ~ .sk-shell .sk-fill{width:50%;}
+.sk101 #sk7:checked  ~ .sk-shell .sk-fill{width:58.3%;}
+.sk101 #sk8:checked  ~ .sk-shell .sk-fill{width:66.6%;}
+.sk101 #sk9:checked  ~ .sk-shell .sk-fill{width:75%;}
+.sk101 #sk10:checked ~ .sk-shell .sk-fill{width:83.3%;}
+.sk101 #sk11:checked ~ .sk-shell .sk-fill{width:91.6%;}
+.sk101 #sk12:checked ~ .sk-shell .sk-fill{width:100%;}
+
+.sk101 #sk1:checked  ~ .sk-shell .sk-dot.d1,
+.sk101 #sk2:checked  ~ .sk-shell .sk-dot.d2,
+.sk101 #sk3:checked  ~ .sk-shell .sk-dot.d3,
+.sk101 #sk4:checked  ~ .sk-shell .sk-dot.d4,
+.sk101 #sk5:checked  ~ .sk-shell .sk-dot.d5,
+.sk101 #sk6:checked  ~ .sk-shell .sk-dot.d6,
+.sk101 #sk7:checked  ~ .sk-shell .sk-dot.d7,
+.sk101 #sk8:checked  ~ .sk-shell .sk-dot.d8,
+.sk101 #sk9:checked  ~ .sk-shell .sk-dot.d9,
+.sk101 #sk10:checked ~ .sk-shell .sk-dot.d10,
+.sk101 #sk11:checked ~ .sk-shell .sk-dot.d11,
+.sk101 #sk12:checked ~ .sk-shell .sk-dot.d12{background:var(--amber);color:var(--navy);}
+
+/* tastaturfokus skal synes */
+.sk101 .sk-nav:focus-visible ~ .sk-shell .sk-top{box-shadow:inset 0 0 0 2px var(--amber);}
+
+/* ---------- typografi ---------- */
+.sk101 .eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+.sk101 h2.t{font-family:var(--serif);font-size:clamp(24px,3.1vw,36px);line-height:1.15;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.sk101 .dark h2.t{color:#fff;}
+.sk101 .lede{font-size:15px;color:var(--muted);line-height:1.55;max-width:74ch;}
+.sk101 .dark .lede{color:var(--mutedl);}
+.sk101 .src{font-size:11px;font-style:italic;color:var(--muted);margin-top:14px;}
+.sk101 .dark .src{color:var(--mutedl);}
+
+/* ---------- animasjoner (spilles av på nytt hver gang sliden vises) ---------- */
+@keyframes skRise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+@keyframes skFade{from{opacity:0;}to{opacity:1;}}
+@keyframes skPop{from{opacity:0;transform:scale(.82);}to{opacity:1;transform:scale(1);}}
+@keyframes skGrow{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+@keyframes skDraw{from{stroke-dashoffset:760;}to{stroke-dashoffset:0;}}
+@keyframes skWide{from{width:0;}}
+
+.sk101 .a{animation:skRise .55s cubic-bezier(.2,.7,.3,1) both;}
+.sk101 .a1{animation-delay:.05s}.sk101 .a2{animation-delay:.13s}
+.sk101 .a3{animation-delay:.21s}.sk101 .a4{animation-delay:.29s}
+.sk101 .a5{animation-delay:.37s}.sk101 .a6{animation-delay:.45s}
+.sk101 .a7{animation-delay:.53s}.sk101 .a8{animation-delay:.61s}
+
+@media (prefers-reduced-motion:reduce){
+  .sk101 *{animation:none!important;transition:none!important;}
+}
+
+/* ---------- bunnavigasjon ---------- */
+.sk101 .sk-foot{display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line);}
+.sk101 .dark .sk-foot{border-top-color:rgba(255,255,255,.14);}
+.sk101 .btn{
+  font-family:var(--sans);font-size:13.5px;font-weight:700;
+  padding:10px 18px;border-radius:99px;cursor:pointer;user-select:none;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:transform .16s,background .16s,box-shadow .16s;
+}
+.sk101 .btn:hover{transform:translateY(-2px);}
+.sk101 .btn-p{background:var(--amber);color:var(--navy);box-shadow:0 4px 14px rgba(245,166,35,.34);}
+.sk101 .btn-p:hover{box-shadow:0 7px 20px rgba(245,166,35,.46);}
+.sk101 .btn-s{background:var(--mist);color:var(--ink);}
+.sk101 .dark .btn-s{background:rgba(255,255,255,.10);color:#fff;}
+.sk101 .spacer{margin-left:auto;}
+.sk101 .step{font-size:12px;color:var(--muted);}
+.sk101 .dark .step{color:var(--mutedl);}
+
+/* ---------- kort ---------- */
+.sk101 .grid{display:grid;gap:14px;}
+.sk101 .g2{grid-template-columns:repeat(2,1fr);}
+.sk101 .g3{grid-template-columns:repeat(3,1fr);}
+.sk101 .g4{grid-template-columns:repeat(4,1fr);}
+.sk101 .card{background:var(--card);border-radius:var(--r);padding:20px 18px;transition:transform .2s,box-shadow .2s;}
+.sk101 .card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(14,34,51,.10);}
+.sk101 .dark .card{background:var(--navy2);}
+.sk101 .card h3{font-family:var(--serif);font-size:18px;line-height:1.25;margin-bottom:7px;}
+.sk101 .dark .card h3{color:#fff;}
+.sk101 .card p{font-size:13.5px;color:var(--muted);line-height:1.5;}
+.sk101 .dark .card p{color:var(--mutedl);}
+.sk101 .badge{
+  width:40px;height:40px;border-radius:50%;background:var(--amber);color:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:700;font-size:17px;margin-bottom:12px;
+}
+.sk101 .kicker{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--amber);margin-bottom:5px;}
+
+/* store tall */
+.sk101 .stat{font-family:var(--serif);font-size:clamp(30px,4vw,42px);font-weight:700;line-height:1;color:var(--ink);}
+.sk101 .dark .stat{color:var(--amber);}
+.sk101 .stat-l{font-size:13px;color:var(--muted);line-height:1.45;margin-top:9px;}
+.sk101 .dark .stat-l{color:var(--mutedl);}
+
+/* ---------- HERO ---------- */
+.sk101 .hero{display:grid;grid-template-columns:1.35fr .65fr;gap:20px;align-items:center;}
+.sk101 .hero h1{font-family:var(--serif);font-size:clamp(38px,6vw,62px);line-height:1;color:#fff;font-weight:700;}
+.sk101 .hero .sub{font-family:var(--serif);font-size:clamp(24px,3.4vw,38px);color:var(--mutedl);margin-top:2px;}
+.sk101 .rule{width:76px;height:3px;background:var(--amber);margin:20px 0 16px;}
+.sk101 .rings{position:relative;aspect-ratio:1;max-width:230px;margin-left:auto;}
+.sk101 .rings i{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  border:1px solid rgba(29,78,107,.85);border-radius:50%;
+  animation:skPop .8s both;
+}
+.sk101 .rings i:nth-child(1){width:100%;height:100%;animation-delay:.30s;}
+.sk101 .rings i:nth-child(2){width:72%;height:72%;animation-delay:.22s;}
+.sk101 .rings i:nth-child(3){width:46%;height:46%;animation-delay:.14s;}
+.sk101 .rings b{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:24%;height:24%;background:var(--amber);border-radius:50%;
+  animation:skPop .6s .06s both;
+}
+
+/* ---------- stolpediagram (ren CSS) ---------- */
+.sk101 .chart{display:flex;gap:26px;align-items:flex-end;height:210px;padding:0 4px;border-bottom:2px solid var(--line);}
+.sk101 .grp{flex:1;display:flex;gap:9px;align-items:flex-end;height:100%;}
+.sk101 .bar{flex:1;border-radius:6px 6px 0 0;position:relative;transform-origin:bottom;animation:skGrow .8s cubic-bezier(.2,.8,.3,1) both;}
+.sk101 .bar.old{background:#9BB2C4;}
+.sk101 .bar.now{background:var(--slate);}
+.sk101 .bar span{
+  position:absolute;top:-23px;left:0;right:0;text-align:center;
+  font-size:12.5px;font-weight:700;color:var(--ink);
+  animation:skFade .4s .55s both;
+}
+.sk101 .xlab{display:flex;gap:26px;margin-top:9px;}
+.sk101 .xlab div{flex:1;text-align:center;font-size:12px;color:var(--muted);line-height:1.35;}
+.sk101 .legend{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-bottom:12px;}
+.sk101 .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px;}
+
+/* ---------- SIKRE-hjulet ---------- */
+.sk101 .wheelwrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;}
+.sk101 .wheel{position:relative;aspect-ratio:1;max-width:340px;margin:0 auto;width:100%;}
+.sk101 .wheel .ring{
+  position:absolute;inset:11%;border:2px solid rgba(255,255,255,.20);border-radius:50%;
+  animation:skPop .7s both;
+}
+.sk101 .node{
+  position:absolute;width:25%;aspect-ratio:1;border-radius:50%;
+  transform:translate(-50%,-50%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:clamp(17px,2.6vw,24px);font-weight:700;
+  background:rgba(255,255,255,.12);color:#fff;
+  cursor:pointer;user-select:none;
+  transition:background .22s,color .22s,transform .22s,box-shadow .22s;
+  animation:skPop .5s both;
+}
+.sk101 .node:hover{background:rgba(255,255,255,.26);transform:translate(-50%,-50%) scale(1.07);}
+.sk101 .n1{top:11%;   left:50%;   animation-delay:.06s}
+.sk101 .n2{top:38%;   left:87.1%; animation-delay:.14s}
+.sk101 .n3{top:81.6%; left:72.9%; animation-delay:.22s}
+.sk101 .n4{top:81.6%; left:27.1%; animation-delay:.30s}
+.sk101 .n5{top:38%;   left:12.9%; animation-delay:.38s}
+.sk101 .hub{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;font-family:var(--serif);letter-spacing:.16em;
+  font-size:15px;font-weight:700;color:#fff;
+}
+.sk101 .hub em{display:block;font-size:10.5px;letter-spacing:0;color:var(--amber);font-style:italic;margin-top:3px;}
+.sk101 .panel{display:none;animation:skRise .4s both;}
+.sk101 .panel h3{font-family:var(--serif);font-size:22px;color:#fff;margin-bottom:5px;}
+.sk101 .panel .mod{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--amber);margin-bottom:9px;}
+.sk101 .panel p{font-size:14px;color:var(--mutedl);line-height:1.6;}
+.sk101 .hint{font-size:12.5px;color:var(--mutedl);font-style:italic;}
+
+.sk101 #w1:checked ~ .wheelwrap .p1,
+.sk101 #w2:checked ~ .wheelwrap .p2,
+.sk101 #w3:checked ~ .wheelwrap .p3,
+.sk101 #w4:checked ~ .wheelwrap .p4,
+.sk101 #w5:checked ~ .wheelwrap .p5{display:block;}
+.sk101 #w0:checked ~ .wheelwrap .p0{display:block;}
+.sk101 #w1:checked ~ .wheelwrap .n1,
+.sk101 #w2:checked ~ .wheelwrap .n2,
+.sk101 #w3:checked ~ .wheelwrap .n3,
+.sk101 #w4:checked ~ .wheelwrap .n4,
+.sk101 #w5:checked ~ .wheelwrap .n5{background:var(--amber);color:var(--navy);box-shadow:0 0 0 7px rgba(245,166,35,.20);}
+
+/* ---------- snu-kort ---------- */
+.sk101 .flip{perspective:1000px;cursor:pointer;display:block;}
+.sk101 .flip input{position:absolute;opacity:0;width:1px;height:1px;}
+.sk101 .flip .inner{position:relative;transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;min-height:172px;}
+.sk101 .flip input:checked + .inner{transform:rotateY(180deg);}
+.sk101 .face{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:var(--r);padding:18px;display:flex;flex-direction:column;justify-content:center;
+}
+.sk101 .face.front{background:var(--navy2);}
+.sk101 .face.back{background:var(--slate);transform:rotateY(180deg);}
+.sk101 .face h3{font-family:var(--serif);font-size:17px;color:#fff;margin-bottom:6px;}
+.sk101 .face p{font-size:13px;color:var(--mutedl);line-height:1.5;}
+.sk101 .face .tap{font-size:10.5px;letter-spacing:.1em;color:var(--amber);font-weight:700;margin-top:11px;}
+.sk101 .strike{text-decoration:line-through;color:var(--mutedl);}
+
+/* ---------- avdekk-boks ---------- */
+.sk101 .reveal input{position:absolute;opacity:0;width:1px;height:1px;}
+.sk101 .reveal .rbox{max-height:0;overflow:hidden;transition:max-height .5s ease;}
+.sk101 .reveal input:checked ~ .rbox{max-height:420px;}
+.sk101 .reveal input:checked ~ label .btn-p{background:var(--mist);color:var(--muted);box-shadow:none;}
+.sk101 .reveal input:checked ~ label{opacity:.45;}
+
+/* ---------- førtest / poengvelger ---------- */
+.sk101 .steps{counter-reset:st;display:grid;gap:11px;}
+.sk101 .stp{display:flex;gap:13px;align-items:flex-start;}
+.sk101 .stp i{
+  flex:none;width:27px;height:27px;border-radius:50%;background:var(--amber);color:var(--navy);
+  font-style:normal;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;
+}
+.sk101 .stp p{font-size:14px;line-height:1.5;color:var(--muted);}
+.sk101 .stp b{color:var(--ink);}
+
+.sk101 .picker{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 16px;}
+.sk101 .chip{
+  flex:1;min-width:150px;text-align:center;padding:14px 12px;border-radius:12px;
+  background:var(--mist);cursor:pointer;user-select:none;
+  border:2px solid transparent;transition:all .22s;
+}
+.sk101 .chip:hover{transform:translateY(-2px);background:#E2EAF1;}
+.sk101 .chip .num{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);}
+.sk101 .chip .nm{font-size:12px;color:var(--muted);margin-top:3px;font-weight:700;}
+
+.sk101 .gauge{height:12px;border-radius:99px;background:var(--mist);overflow:hidden;margin-bottom:18px;}
+.sk101 .gfill{height:100%;width:0;border-radius:99px;transition:width .7s cubic-bezier(.2,.8,.3,1),background .4s;}
+.sk101 .res{display:none;animation:skRise .45s both;}
+.sk101 .res .rc{border-radius:var(--r);padding:20px 22px;background:var(--card);}
+.sk101 .res h3{font-family:var(--serif);font-size:23px;margin-bottom:4px;}
+.sk101 .res .lab{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+.sk101 .res p{font-size:14.5px;line-height:1.62;color:var(--muted);}
+.sk101 .res .nx{margin-top:13px;padding-top:13px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink);}
+.sk101 .res .nx b{color:var(--ink);}
+
+.sk101 #q1:checked ~ .gauge .gfill{width:33%;background:var(--ember);}
+.sk101 #q2:checked ~ .gauge .gfill{width:66%;background:var(--amber);}
+.sk101 #q3:checked ~ .gauge .gfill{width:100%;background:var(--mint);}
+.sk101 #q1:checked ~ .r1,
+.sk101 #q2:checked ~ .r2,
+.sk101 #q3:checked ~ .r3{display:block;}
+.sk101 #q1:checked ~ .picker .c1{border-color:var(--ember);background:#fff;}
+.sk101 #q2:checked ~ .picker .c2{border-color:var(--amber);background:#fff;}
+.sk101 #q3:checked ~ .picker .c3{border-color:var(--mint);background:#fff;}
+.sk101 #q1:checked ~ .picker .c1 .num{color:var(--ember);}
+.sk101 #q2:checked ~ .picker .c2 .num{color:var(--amber);}
+.sk101 #q3:checked ~ .picker .c3 .num{color:var(--mint);}
+.sk101 .pickerwrap > input{position:absolute;opacity:0;width:1px;height:1px;}
+
+/* ---------- rammeverkstabell ---------- */
+.sk101 .fw{border-radius:var(--r);padding:18px;background:var(--card);}
+.sk101 .fw.hi{background:var(--navy);}
+.sk101 .fw h3{font-family:var(--serif);font-size:21px;margin-bottom:2px;}
+.sk101 .fw.hi h3{color:var(--amber);}
+.sk101 .fw .sub2{font-size:11.5px;color:var(--muted);margin-bottom:12px;}
+.sk101 .fw.hi .sub2{color:var(--mutedl);}
+.sk101 .fw li{font-size:13.5px;padding:6px 0;color:var(--ink);}
+.sk101 .fw.hi li{color:#fff;}
+.sk101 .fw .new{color:var(--amber);font-weight:700;}
+
+.sk101 .note{background:var(--mist);border-radius:var(--r);padding:15px 18px;font-size:13.5px;line-height:1.55;color:var(--muted);}
+.sk101 .dark .note{background:var(--navy2);color:#C9D8E4;}
+.sk101 .note b{color:var(--ink);}
+.sk101 .dark .note b{color:#fff;}
+
+/* ---------- responsivt ---------- */
+@media (max-width:820px){
+  .sk101 .g4{grid-template-columns:repeat(2,1fr);}
+  .sk101 .g3{grid-template-columns:1fr;}
+  .sk101 .hero,.sk101 .wheelwrap{grid-template-columns:1fr;}
+  .sk101 .rings{display:none;}
+  .sk101 .sk-slide{padding:24px 20px 18px;min-height:0;}
+  .sk101 .chart{height:170px;gap:14px;}
+  .sk101 .xlab{gap:14px;}
+}
+@media (max-width:520px){
+  .sk101 .g4,.sk101 .g2{grid-template-columns:1fr;}
+  .sk101 .btn{padding:9px 14px;font-size:12.5px;}
+  .sk101 .sk-dot{width:22px;height:22px;font-size:10px;}
+}
+</style>
+
+<!-- ========== navigasjons-radioer (styrer alt) ========== -->
+<input class="sk-nav" type="radio" name="sknav" id="sk1" checked>
+<input class="sk-nav" type="radio" name="sknav" id="sk2">
+<input class="sk-nav" type="radio" name="sknav" id="sk3">
+<input class="sk-nav" type="radio" name="sknav" id="sk4">
+<input class="sk-nav" type="radio" name="sknav" id="sk5">
+<input class="sk-nav" type="radio" name="sknav" id="sk6">
+<input class="sk-nav" type="radio" name="sknav" id="sk7">
+<input class="sk-nav" type="radio" name="sknav" id="sk8">
+<input class="sk-nav" type="radio" name="sknav" id="sk9">
+<input class="sk-nav" type="radio" name="sknav" id="sk10">
+<input class="sk-nav" type="radio" name="sknav" id="sk11">
+<input class="sk-nav" type="radio" name="sknav" id="sk12">
+
+<div class="sk-shell">
+
+  <div class="sk-top">
+    <div class="sk-track"><div class="sk-fill"></div></div>
+    <div class="sk-dots">
+      <label class="sk-dot d1"  for="sk1"  title="Start">1</label>
+      <label class="sk-dot d2"  for="sk2"  title="Oversikt">2</label>
+      <label class="sk-dot d3"  for="sk3"  title="Du er et mål">3</label>
+      <label class="sk-dot d4"  for="sk4"  title="Norge nå">4</label>
+      <label class="sk-dot d5"  for="sk5"  title="Vaner">5</label>
+      <label class="sk-dot d6"  for="sk6"  title="KI">6</label>
+      <label class="sk-dot d7"  for="sk7"  title="Den gode nyheten">7</label>
+      <label class="sk-dot d8"  for="sk8"  title="Små grep">8</label>
+      <label class="sk-dot d9"  for="sk9"  title="SIKRE-hjulet">9</label>
+      <label class="sk-dot d10" for="sk10" title="Forankring">10</label>
+      <label class="sk-dot d11" for="sk11" title="Førtest">11</label>
+      <label class="sk-dot d12" for="sk12" title="Videre">12</label>
+      <span class="sk-label">Modul 0 · Start her</span>
+    </div>
+  </div>
+
+  <div class="sk-stage">
+
+  <!-- ============ 1 ============ -->
+  <section class="sk-slide s1 dark">
+    <div class="sk-body hero">
+      <div>
+        <div class="eyebrow a a1">Cybersecurity 101 · SIKRE digital praksis</div>
+        <h1 class="a a2">Modul 0</h1>
+        <div class="sub a a3">Start her</div>
+        <div class="rule a a4"></div>
+        <p class="lede a a5">Hvorfor digital sikkerhet angår deg – og hvordan SIKRE-modellen
+        gir deg en rekkefølge å gjøre ting i, i stedet for hundre løsrevne tips.</p>
+        <p class="src a a6">Mazaher Kianpour · Gokstad Akademiet · beregnet tid: ca. 20 minutter</p>
+      </div>
+      <div class="rings"><i></i><i></i><i></i><b></b></div>
+    </div>
+    <div class="sk-foot">
+      <span class="step">1 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk2">Start modulen →</label>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="sk-slide s2">
+    <div class="sk-body">
+      <div class="eyebrow a a1">Modul 0</div>
+      <h2 class="t a a1">Dette gjør vi nå</h2>
+      <p class="lede a a2" style="margin-bottom:20px;">Fire korte deler. Den siste er en test du tar i kursdokumentet –
+      resultatet tolker vi sammen her på slutten.</p>
+      <div class="grid g4">
+        <div class="card a a3"><div class="badge">0.1</div><h3>Velkommen</h3><p>Hvorfor akkurat nå? Tallene fra Norge, og hva KI har endret.</p></div>
+        <div class="card a a4"><div class="badge">0.2</div><h3>Hva du skal lære</h3><p>Læringsutbyttet, trinn for trinn gjennom de fem modulene.</p></div>
+        <div class="card a a5"><div class="badge">0.3</div><h3>SIKRE-modellen</h3><p>Fem trinn, forankret i NSM og NIST. Kursets røde tråd.</p></div>
+        <div class="card a a6"><div class="badge">0.4</div><h3>Førtest</h3><p>Hvor står du i dag? Din personlige målestokk før vi begynner.</p></div>
+      </div>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk1">← Tilbake</label>
+      <span class="step">2 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk3">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="sk-slide s3 dark">
+    <div class="sk-body" style="display:grid;grid-template-columns:1.5fr 1fr;gap:26px;align-items:center;">
+      <div>
+        <div class="eyebrow a a1">0.1 Velkommen</div>
+        <h2 class="t a a2" style="font-size:clamp(28px,4.4vw,46px);">«Du er et mål.»</h2>
+        <p class="a a3" style="font-family:var(--serif);font-size:clamp(18px,2.4vw,26px);color:var(--amber);margin:8px 0 18px;">Ikke fordi noen er ute etter akkurat deg.</p>
+        <p class="lede a a4">Digitale angrep er i stor grad automatiserte og rammer bredt.
+        Tidligere trodde mange at «det er bare store bedrifter og rike folk som blir svindlet».
+        Slik er det ikke lenger.</p>
+      </div>
+      <div class="card a a5" style="text-align:left;">
+        <div class="stat">1 av 10</div>
+        <p class="stat-l">nordmenn – over 400 000 personer – er blitt svindlet for penger på nett de siste to årene.</p>
+        <p class="src" style="margin-top:16px;">NorSIS i NSM, <em>Nordmenn og digital sikkerhetskultur 2025</em></p>
+      </div>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk2">← Tilbake</label>
+      <span class="step">3 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk4">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="sk-slide s4">
+    <div class="sk-body">
+      <div class="eyebrow a a1">0.1 Velkommen</div>
+      <h2 class="t a a1">Norge, akkurat nå</h2>
+      <div class="grid g4" style="margin:18px 0 16px;">
+        <div class="card a a2"><div class="stat">400 000+</div><p class="stat-l">nordmenn svindlet for penger på nett siste to år</p></div>
+        <div class="card a a3"><div class="stat">1 av 5</div><p class="stat-l">har opplevd å bli svindlet (Nkom, nov. 2025)</p></div>
+        <div class="card a a4"><div class="stat">3,3 mrd</div><p class="stat-l">kroner i svindelforsøk mot DNB alene i 2025</p></div>
+        <div class="card a a5"><div class="stat">+30 %</div><p class="stat-l">økning i svindelforsøk hos DNB fra året før</p></div>
+      </div>
+      <div class="note a a6"><b>Men merk: tiltakene virker.</b> Finanstilsynet registrerte nedgang i samlet
+      svindelbeløp i 2025, og DNB melder om 39 % nedgang i telefonsvindel etter at operatørene stengte for
+      forfalskede norske numre. Svindelen forsvinner ikke – den flytter seg.</div>
+      <p class="src">Kilder: NorSIS i NSM (2025) · Nkom (nov. 2025) · DNB, «Finansiell trygghet» (2026) · Finanstilsynet (2026)</p>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk3">← Tilbake</label>
+      <span class="step">4 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk5">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="sk-slide s5">
+    <div class="sk-body">
+      <div class="eyebrow a a1">0.1 Velkommen</div>
+      <h2 class="t a a1">Vi blir flinkere – men vi tar også flere sjanser</h2>
+      <div style="display:grid;grid-template-columns:1.45fr 1fr;gap:26px;margin-top:18px;align-items:start;">
+        <div class="a a2">
+          <div class="legend"><span><i style="background:#9BB2C4"></i>Tidligere</span><span><i style="background:#1D4E6B"></i>2025</span></div>
+          <div class="chart">
+            <div class="grp">
+              <div class="bar old" style="height:71%;animation-delay:.20s"><span>50 %</span></div>
+              <div class="bar now" style="height:84%;animation-delay:.28s"><span>59 %</span></div>
+            </div>
+            <div class="grp">
+              <div class="bar old" style="height:65%;animation-delay:.36s"><span>46 %</span></div>
+              <div class="bar now" style="height:74%;animation-delay:.44s"><span>52 %</span></div>
+            </div>
+            <div class="grp">
+              <div class="bar old" style="height:23%;animation-delay:.52s"><span>16 %</span></div>
+              <div class="bar now" style="height:37%;animation-delay:.60s"><span>26 %</span></div>
+            </div>
+          </div>
+          <div class="xlab">
+            <div>Bruker<br>totrinnspålogging</div>
+            <div>Tar jevnlig<br>sikkerhetskopi</div>
+            <div>Tar bevisste<br>sjanser på nett</div>
+          </div>
+        </div>
+        <div class="card a a4" style="background:var(--navy);">
+          <h3 style="color:#fff;font-size:21px;">Kunnskap alene er ikke nok</h3>
+          <div class="rule" style="margin:12px 0;"></div>
+          <p style="color:var(--mutedl);">Andelen som bevisst tar sjanser på nett har nesten doblet seg på fem år,
+          fra 16 til 26 prosent – samtidig som de gode vanene brer om seg.</p>
+          <p style="color:var(--mutedl);margin-top:11px;">Overmot er en egen sårbarhet. Derfor handler dette kurset
+          like mye om vaner som om verktøy.</p>
+        </div>
+      </div>
+      <p class="src">NorSIS i NSM (2025). Sammenlikningsår: totrinns 2023→2025 · sikkerhetskopi 2024→2025 · risikovilje 2020→2025.</p>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk4">← Tilbake</label>
+      <span class="step">5 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk6">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="sk-slide s6 dark">
+    <div class="sk-body">
+      <div class="eyebrow a a1">0.1 Velkommen</div>
+      <h2 class="t a a1">Kunstig intelligens har endret spillet</h2>
+      <p class="lede a a2" style="margin-bottom:16px;">Kortene under viser rådene som gjaldt i går. Snu dem og se hva som erstattet dem. <span style="color:var(--amber)">Klikk på et kort.</span></p>
+      <div class="grid g3">
+        <label class="flip a a3">
+          <input type="checkbox">
+          <div class="inner">
+            <div class="face front"><h3 class="strike">«Se etter dårlig norsk»</h3><p>Det klassiske faresignalet.</p><div class="tap">SNU KORTET →</div></div>
+            <div class="face back"><h3>Kvalitet</h3><p>KI skriver feilfritt – på ethvert språk, inkludert norsk og dialekt.</p></div>
+          </div>
+        </label>
+        <label class="flip a a4">
+          <input type="checkbox">
+          <div class="inner">
+            <div class="face front"><h3 class="strike">«Se etter rar formatering»</h3><p>Slurvete oppsett avslørte svindel.</p><div class="tap">SNU KORTET →</div></div>
+            <div class="face back"><h3>Volum</h3><p>Tusenvis av unike, gjennomarbeidede meldinger i timen – hver enkelt ser ekte ut.</p></div>
+          </div>
+        </label>
+        <label class="flip a a5">
+          <input type="checkbox">
+          <div class="inner">
+            <div class="face front"><h3 class="strike">«Se etter merkelige bilder»</h3><p>Falske logoer og rare bilder.</p><div class="tap">SNU KORTET →</div></div>
+            <div class="face back"><h3>Personalisering</h3><p>Åtet skreddersys med navn, arbeidsplass og tonefall – og kan komme som stemme eller video.</p></div>
+          </div>
+        </label>
+      </div>
+      <div class="grid g2 a a6" style="margin-top:16px;">
+        <div class="note"><b>80 %</b> av phishing-e-postene ENISA kartla mellom september 2024 og februar 2025 brukte KI.</div>
+        <div class="note"><b>24 millioner kroner:</b> deepfake-forsøket mot DNBs toppledelse i januar 2025. En årvåken ansatt stoppet det.</div>
+      </div>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk5">← Tilbake</label>
+      <span class="step">6 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk7">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="sk-slide s7 dark">
+    <div class="sk-body reveal" style="display:flex;flex-direction:column;justify-content:center;">
+      <input type="checkbox" id="rev1">
+      <div class="eyebrow a a1">Den gode nyheten</div>
+      <div class="a a2" style="font-family:var(--serif);font-size:clamp(64px,13vw,132px);font-weight:700;color:var(--amber);line-height:.95;">62<span style="font-size:.58em;margin-left:.06em;">%</span></div>
+      <p class="a a3" style="font-size:clamp(15px,2vw,19px);color:#fff;margin:10px 0 6px;max-width:52ch;">
+        av alle bekreftede sikkerhetsbrudd involverer et menneskelig element.</p>
+      <p class="src a a4" style="margin-bottom:18px;">Verizon, <em>Data Breach Investigations Report 2026</em></p>
+      <label for="rev1" class="a a5" style="display:inline-block;"><span class="btn btn-p">Hvorfor er dette en god nyhet? ↓</span></label>
+      <div class="rbox">
+        <div class="note" style="margin-top:16px;max-width:72ch;">
+          <b>Fordi det motsatte ville vært verre.</b> De fleste angrep lykkes ikke på grunn av avansert hacking.
+          De lykkes fordi et menneske blir lurt til å klikke, oppgi et passord eller godkjenne noe.
+          Det betyr at det du gjør, faktisk betyr noe. Du er ikke et hjelpeløst offer for teknologien –
+          du er en viktig forsvarslinje. Og forsvar kan læres.
+        </div>
+      </div>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk6">← Tilbake</label>
+      <span class="step">7 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk8">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section class="sk-slide s8">
+    <div class="sk-body">
+      <div class="eyebrow a a1">0.1 Velkommen</div>
+      <h2 class="t a a1">Små grep gir stor effekt</h2>
+      <p class="lede a a2" style="margin-bottom:18px;">Alle tre gjøres i modul 3 – og de tar til sammen under en time.</p>
+      <div class="grid g3">
+        <div class="card a a3">
+          <div class="badge">1</div>
+          <h3>Phishing-resistent tofaktor</h3>
+          <p>Stopper over 99 % av angrep mot kontoer – selv når angriperen allerede har brukernavnet og passordet ditt.</p>
+          <p class="src">Microsoft, Digital Defense Report 2025</p>
+        </div>
+        <div class="card a a4">
+          <div class="badge">2</div>
+          <h3>Jevnlig sikkerhetskopi</h3>
+          <p>Gjør et løsepengeangrep om fra en katastrofe til et håndterbart problem.</p>
+          <p class="src">3-2-1-regelen, modul 3</p>
+        </div>
+        <div class="card a a5">
+          <div class="badge">3</div>
+          <h3>Tre sekunders pause</h3>
+          <p>Å stoppe opp før du klikker på en lenke kan spare deg for tusenvis av kroner.</p>
+          <p class="src">Koster null kroner og null minutter</p>
+        </div>
+      </div>
+      <div class="note a a6" style="margin-top:16px;"><b>Merk forbeholdet.</b> Microsofts 99 %-tall gjelder
+      <em>phishing-resistent</em> tofaktor – passnøkler og fysiske sikkerhetsnøkler. Kode på SMS er langt bedre enn
+      ingenting, men ikke like sterkt. Vi går gjennom hele stigen i modul 3.</div>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk7">← Tilbake</label>
+      <span class="step">8 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk9">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 9 : SIKRE-hjulet ============ -->
+  <section class="sk-slide s9 dark">
+    <div class="sk-body">
+      <div class="eyebrow a a1">0.3 SIKRE-modellen</div>
+      <h2 class="t a a1">Fem trinn. Én sirkel.</h2>
+      <p class="lede a a2" style="margin-bottom:8px;">Klikk på en bokstav i hjulet for å se hva den betyr.</p>
+
+      <input class="sk-nav" type="radio" name="wheel" id="w0" checked>
+      <input class="sk-nav" type="radio" name="wheel" id="w1">
+      <input class="sk-nav" type="radio" name="wheel" id="w2">
+      <input class="sk-nav" type="radio" name="wheel" id="w3">
+      <input class="sk-nav" type="radio" name="wheel" id="w4">
+      <input class="sk-nav" type="radio" name="wheel" id="w5">
+
+      <div class="wheelwrap">
+        <div class="wheel">
+          <div class="ring"></div>
+          <label class="node n1" for="w1">S</label>
+          <label class="node n2" for="w2">I</label>
+          <label class="node n3" for="w3">K</label>
+          <label class="node n4" for="w4">R</label>
+          <label class="node n5" for="w5">E</label>
+          <div class="hub">SIKRE<em>E fører tilbake til S</em></div>
+        </div>
+        <div>
+          <div class="panel p0"><p class="hint">← Velg en bokstav i hjulet.</p>
+            <p class="lede" style="margin-top:12px;">Rekkefølgen er ikke tilfeldig: du kan ikke beskytte noe
+            du ikke vet at du har. Og modellen er en sirkel, ikke en liste – for hver runde blir du litt tryggere.</p></div>
+          <div class="panel p1"><div class="mod">Modul 1</div><h3>Se hva som skal beskyttes</h3>
+            <p>Skaff deg oversikt over dine digitale verdier: kontoer, bilder, dokumenter, penger, identitet og omdømme.
+            Du lærer hvorfor selv «vanlige» data er verdifulle for kriminelle.</p></div>
+          <div class="panel p2"><div class="mod">Modul 2</div><h3>Identifiser trusler og risiko</h3>
+            <p>Forstå hva som kan gå galt, og hvor sannsynlig det er. Phishing, smishing, vishing, quishing,
+            deepfake-svindel, investeringssvindel, «Hei mamma» og direktørsvindel.</p></div>
+          <div class="panel p3"><div class="mod">Modul 3</div><h3>Kontroller tilgang og handlinger</h3>
+            <p>Kursets største og mest praktiske del. Passordbehandler, tofaktor og passnøkler, oppdaterte enheter,
+            trygg deling i skyen, klok KI-bruk og beskyttelse av BankID.</p></div>
+          <div class="panel p4"><div class="mod">Modul 4</div><h3>Reager når noe skjer</h3>
+            <p>Vit hva du gjør hvis noe likevel går galt: sperre kort og BankID, bytte passord, kontakte bank og politi,
+            og varsle riktig folk på jobb. Rask og rolig handling redder ofte situasjonen.</p></div>
+          <div class="panel p5"><div class="mod">Modul 5</div><h3>Evaluer og forbedre</h3>
+            <p>Gjør sikkerhet til en vane som stadig blir bedre. Sikkerhetskopier etter 3-2-1-regelen, halvårssjekk,
+            og din egen «Min SIKRE-plan» på én side.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk8">← Tilbake</label>
+      <span class="step">9 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk10">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section class="sk-slide s10">
+    <div class="sk-body">
+      <div class="eyebrow a a1">0.3 SIKRE-modellen</div>
+      <h2 class="t a a1">SIKRE er ikke funnet opp for anledningen</h2>
+      <p class="lede a a2" style="margin-bottom:18px;">Modellen følger samme logikk som fagmiljøene bruker for å
+      beskytte sykehus, banker og kraftverk – bare oversatt til hverdagsspråk.</p>
+      <div class="grid g3">
+        <div class="fw a a3">
+          <h3>NSM</h3><div class="sub2">Grunnprinsipper for IKT-sikkerhet</div>
+          <ul><li>Identifisere og kartlegge</li><li>Beskytte og opprettholde</li><li>Oppdage</li><li>Håndtere og gjenopprette</li></ul>
+        </div>
+        <div class="fw a a4">
+          <h3>NIST</h3><div class="sub2">Cybersecurity Framework 2.0</div>
+          <ul><li>Identify</li><li>Protect</li><li>Detect</li><li>Respond · Recover</li><li><span class="new">Govern</span> (ny i 2024)</li></ul>
+        </div>
+        <div class="fw hi a a5">
+          <h3>SIKRE</h3><div class="sub2">Denne boken</div>
+          <ul><li>S – Se</li><li>I – Identifiser</li><li>K – Kontroller</li><li>R – Reager</li><li>E – Evaluer</li></ul>
+        </div>
+      </div>
+      <p class="src a a6">Kolonnene er ikke en punkt-for-punkt oversettelse, men samme grunnlogikk: kjenn verdiene,
+      beskytt dem, oppdag og håndter avvik – og styr arbeidet over tid. Govern kom til i CSF 2.0 (februar 2024)
+      og gjør nettopp det E-en i SIKRE gjør for deg som privatperson.</p>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk9">← Tilbake</label>
+      <span class="step">10 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk11">Til førtesten →</label>
+    </div>
+  </section>
+
+  <!-- ============ 11 : FØRTEST + RESULTAT ============ -->
+  <section class="sk-slide s11">
+    <div class="sk-body">
+      <div class="eyebrow a a1">0.4 Førtest</div>
+      <h2 class="t a a1">Hvor sikker er din digitale hverdag?</h2>
+
+      <div class="grid g2" style="margin-top:18px;align-items:start;">
+        <div class="card a a2" style="background:var(--navy);">
+          <div class="kicker">Steg 1 · gjør dette først</div>
+          <h3 style="color:#fff;font-size:20px;margin-bottom:12px;">Ta testen i kursdokumentet</h3>
+          <div class="steps">
+            <div class="stp"><i>1</i><p style="color:var(--mutedl);">Åpne <b style="color:#fff;">kursdokumentet</b> og gå til <b style="color:#fff;">kapittel 0.4</b>.</p></div>
+            <div class="stp"><i>2</i><p style="color:var(--mutedl);">Svar på de <b style="color:#fff;">18 utsagnene</b>: 2 poeng = ja, 1 = delvis, 0 = nei eller vet ikke.</p></div>
+            <div class="stp"><i>3</i><p style="color:var(--mutedl);">Legg sammen. <b style="color:#fff;">Maks er 36 poeng.</b> Noter summen og dagens dato.</p></div>
+            <div class="stp"><i>4</i><p style="color:var(--mutedl);">Kom tilbake hit og velg poengsummen din i steg 2.</p></div>
+          </div>
+          <p class="src" style="color:var(--mutedl);">Det finnes ingen «feil» svar, og ingen skal se resultatet ditt.
+          Du tar den samme testen på nytt når kurset er ferdig.</p>
+        </div>
+
+        <div class="pickerwrap a a3" style="position:relative;">
+          <div class="kicker" style="color:var(--muted);">Steg 2 · hva betyr resultatet?</div>
+          <h3 style="font-family:var(--serif);font-size:20px;margin-bottom:12px;">Velg poengsummen din</h3>
+
+          <input type="radio" name="score" id="q1">
+          <input type="radio" name="score" id="q2">
+          <input type="radio" name="score" id="q3">
+
+          <div class="picker">
+            <label class="chip c1" for="q1"><div class="num">0–12</div><div class="nm">poeng</div></label>
+            <label class="chip c2" for="q2"><div class="num">13–24</div><div class="nm">poeng</div></label>
+            <label class="chip c3" for="q3"><div class="num">25–36</div><div class="nm">poeng</div></label>
+          </div>
+
+          <div class="gauge"><div class="gfill"></div></div>
+
+          <div class="res r1"><div class="rc">
+            <div class="lab" style="color:var(--ember);">Sårbar</div>
+            <h3>Du er på riktig sted for å begynne</h3>
+            <p>Du har sannsynligvis noen «åpne dører» – gjenbrukte passord, eller tofaktor som ikke er skrudd på.
+            Nettopp disse er raske å fikse. Dette er ikke naivitet; du har bare ikke fått verktøyene ennå.</p>
+            <div class="nx"><b>Din vei videre:</b> du kommer til å merke størst forskjell av alle i modul 3.
+            Bruk ekstra tid der, og gjør øvelsene mens du leser – ikke etterpå.</div>
+          </div></div>
+
+          <div class="res r2"><div class="rc">
+            <div class="lab" style="color:var(--amber);">På vei</div>
+            <h3>Godt fundament og sunn skepsis</h3>
+            <p>Du gjør allerede mye riktig. Nå handler det om å tette hullene og gjøre de gode vanene systematiske
+            i stedet for tilfeldige – kanskje en passordbehandler, jevnlige sikkerhetskopier, eller en klar plan
+            for hva du gjør hvis noe skjer.</p>
+            <div class="nx"><b>Din vei videre:</b> se særlig etter spørsmålene du svarte «1» på. Det er der de
+            halvferdige vanene ligger, og de er lettest å løfte helt opp.</div>
+          </div></div>
+
+          <div class="res r3"><div class="rc">
+            <div class="lab" style="color:var(--mint);">Godt rustet</div>
+            <h3>Du ligger foran mange</h3>
+            <p>Bruk kurset til å finpusse, oppdatere deg på KI-drevet svindel og deepfake – og til å bli en ressurs
+            for andre. Vær samtidig oppmerksom på fallgruven: overmot gjør oss mindre årvåkne, og andelen som
+            bevisst tar sjanser på nett har nesten doblet seg på fem år.</p>
+            <div class="nx"><b>Din vei videre:</b> hopp ikke over modul 4. Å kunne mye om forebygging er ikke det
+            samme som å vite hva du gjør i de første ti minuttene når noe faktisk skjer.</div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk10">← Tilbake</label>
+      <span class="step">11 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-p" for="sk12">Videre →</label>
+    </div>
+  </section>
+
+  <!-- ============ 12 ============ -->
+  <section class="sk-slide s12 dark">
+    <div class="sk-body hero">
+      <div>
+        <div class="eyebrow a a1">Det er dette kurset handler om</div>
+        <h2 class="t a a2" style="font-size:clamp(26px,4.2vw,42px);line-height:1.18;">Ikke å gjøre deg redd,<br>men å gjøre deg trygg.</h2>
+        <div class="rule a a3"></div>
+        <p class="lede a a4">Ikke å gjøre deg til cybersikkerhetsekspert, men å gi deg kunnskapen du trenger for å bli
+        en klok og årvåken digital borger. Vi bygger stein på stein, med enkle forklaringer, konkrete øvelser og
+        en rød tråd du kommer til å huske: SIKRE-modellen.</p>
+        <p class="a a5" style="font-family:var(--serif);font-size:22px;color:var(--amber);font-weight:700;margin-top:18px;">Velkommen. La oss begynne.</p>
+        <p class="src a a6">Neste: Modul 1 · S – Se hva som skal beskyttes</p>
+      </div>
+      <div class="rings"><i></i><i></i><i></i><b></b></div>
+    </div>
+    <div class="sk-foot">
+      <label class="btn btn-s" for="sk11">← Tilbake</label>
+      <span class="step">12 av 12</span>
+      <span class="spacer"></span>
+      <label class="btn btn-s" for="sk1">↺ Start på nytt</label>
+    </div>
+  </section>
+
+  </div>
+</div>
+</div>
+
+</body>
+</html>
