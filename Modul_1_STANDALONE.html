@@ -53,6 +53,8 @@ html,body{margin:0;padding:0;background:#F4F6F8;}
 .m1-pct{font-weight:800;font-size:14px;min-width:44px;text-align:right;font-variant-numeric:tabular-nums;}
 .m1-pill{display:flex;align-items:center;gap:6px;background:var(--amberS);color:var(--amberD);font-weight:800;font-size:13.5px;padding:7px 12px;border-radius:99px;white-space:nowrap;font-variant-numeric:tabular-nums;}
 .m1-pill.bump{animation:m1Pop .5s;}
+.m1-home{width:40px;height:40px;border-radius:12px;background:var(--mist);color:var(--ink);display:grid;place-items:center;font-size:19px;flex:none;transition:background .15s;}
+.m1-home:hover{background:var(--amberS);color:var(--amberD);}
 .m1-menu{display:none;border:0;background:var(--mist);width:40px;height:40px;border-radius:12px;font-size:20px;cursor:pointer;place-items:center;}
 
 /* ---------- oppsett ---------- */
@@ -512,7 +514,7 @@ html,body{margin:0;padding:0;background:#F4F6F8;}
 }
 @media (max-width:560px){
   .m1-top-in{padding:10px 16px;gap:10px;}
-  .m1-brand>div,.m1-pill span{display:none;}
+  .m1-brand>div,.m1-pill span,.m1-logo{display:none;}
   .m1-layout{padding:0;}
   .m1-main{border-radius:0;box-shadow:none;}
   .m1-foot{border-radius:0;}
@@ -553,6 +555,7 @@ html,body{margin:0;padding:0;background:#F4F6F8;}
   <header class="m1-top">
     <div class="m1-top-in">
       <button class="m1-menu" id="m1-menu" aria-label="Vis innholdsfortegnelse" aria-expanded="false"></button>
+      <a class="m1-home" id="m1-home" href="index.html" aria-label="Til kursoversikten" title="Kursoversikt"></a>
       <div class="m1-brand">
         <div class="m1-logo" aria-hidden="true"></div>
         <div><small>Cybersecurity 101 · Modul 1</small><b>S – Se hva som skal beskyttes</b></div>
@@ -1635,7 +1638,7 @@ function confetti(){
 }
 
 /* Start */
-$('.m1-logo').innerHTML=ic('shield');
+$('.m1-logo').innerHTML=ic('shield');$('#m1-home').innerHTML=ic('home');
 renderPts();
 if(!canGo(S.cur))S.cur=firstOpen();
 go(S.cur);

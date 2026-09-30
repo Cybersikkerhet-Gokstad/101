@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cybersecurity 101 – Din SIKRE-reise</title>
+<style>
+/* ============================================================
+   Cybersecurity 101 – Kursoversikt / landingsside
+   SIKRE-modellen er selve navigasjonen. Leser fremdrift fra
+   modulene (localStorage) og viser studentens progresjon.
+   Alt er navnesatt under .hub.
+   ============================================================ */
+html,body{margin:0;padding:0;background:#F4F6F8;}
+.hub{
+  --navy:#0E2233; --navy2:#16324B; --slate:#1D4E6B;
+  --amber:#F5A623; --amberD:#9A5F00; --amberS:#FFF5E3;
+  --ember:#C9503C; --emberS:#FBECE8; --mint:#2F9A7D; --mintS:#E3F4EE;
+  --sky:#2F74B5; --skyS:#E7F0FA; --violet:#6E54B8; --violetS:#EFEAFA;
+  --ink:#16324B; --muted:#5D7183; --mutedl:#9BB2C4;
+  --bg:#F4F6F8; --mist:#EDF2F6; --card:#F7FAFC; --line:#DCE6ED;
+  --serif:Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --shadow:0 1px 2px rgba(14,34,51,.05),0 12px 34px rgba(14,34,51,.08);
+  font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;
+}
+.hub *,.hub *::before,.hub *::after{box-sizing:border-box;}
+.hub h1,.hub h2,.hub h3,.hub h4,.hub p,.hub ul,.hub ol,.hub li{margin:0;padding:0;}
+.hub ul,.hub ol{list-style:none;}
+.hub button{font-family:inherit;color:inherit;}
+.hub a{color:inherit;text-decoration:none;}
+.hub svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;}
+.hub :focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:8px;}
+.hub .wrap{max-width:1240px;margin:0 auto;padding:0 24px;}
+
+/* ---------- topp ---------- */
+.hub-top{position:sticky;top:0;z-index:30;background:rgba(244,246,248,.82);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid rgba(220,230,237,.7);}
+.hub-top .wrap{display:flex;align-items:center;gap:22px;height:66px;}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;}
+.brand .lg{width:38px;height:38px;border-radius:11px;background:var(--navy);color:var(--amber);display:grid;place-items:center;font-size:21px;box-shadow:0 4px 12px rgba(14,34,51,.25);}
+.brand b{font-family:var(--serif);font-size:18px;}
+.brand small{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.hub-nav{display:flex;gap:4px;margin-left:auto;}
+.hub-nav a{font-size:14px;font-weight:600;color:var(--muted);padding:8px 12px;border-radius:99px;transition:background .15s,color .15s;}
+.hub-nav a:hover{background:#fff;color:var(--ink);}
+.me{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:5px 12px 5px 5px;font-size:13.5px;font-weight:700;cursor:pointer;}
+.me .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FFD7A0,var(--amber));display:grid;place-items:center;font-family:var(--serif);font-weight:700;color:var(--navy);}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:44px 0 30px;overflow:hidden;}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(600px 420px at 78% 42%,rgba(245,166,35,.16),transparent 70%),
+  radial-gradient(520px 380px at 12% 10%,rgba(47,116,181,.08),transparent 70%);
+  pointer-events:none;}
+.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(22,50,75,.10) 1px,transparent 1.2px);background-size:22px 22px;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 85%);mask-image:linear-gradient(to bottom,#000,transparent 85%);pointer-events:none;}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:40px;align-items:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--amberD);}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(245,166,35,.2);animation:hPulseDot 2s infinite;}
+.hero h1{font-family:var(--serif);font-size:clamp(34px,4.6vw,56px);line-height:1.05;margin:12px 0 14px;letter-spacing:-.015em;}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,rgba(245,166,35,.38) 62%);}
+.hero .lede{font-size:17.5px;color:var(--muted);max-width:52ch;line-height:1.6;}
+.overall{margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px 20px;box-shadow:var(--shadow);display:flex;gap:18px;align-items:center;}
+.ring{flex:none;}
+.ring circle{fill:none;stroke-width:9;}
+.ring .tr{stroke:var(--mist);}
+.ring .val{stroke:url(#hubGrad);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray 1.4s cubic-bezier(.3,.8,.3,1);}
+.ring text{font-family:var(--serif);font-weight:700;font-size:21px;fill:var(--ink);text-anchor:middle;dominant-baseline:central;}
+.overall #ovTitle{font-size:15.5px;display:block;}
+.overall p{font-size:13.5px;color:var(--muted);margin-top:2px;}
+.segbar{display:flex;gap:3px;margin-top:10px;}
+.segbar i{flex:1;height:7px;border-radius:9px;background:var(--mist);position:relative;overflow:hidden;}
+.segbar i span{position:absolute;inset:0 auto 0 0;border-radius:9px;transition:width 1.2s cubic-bezier(.3,.8,.3,1);width:0;}
+
+/* ---------- modulkort (dynamisk) ---------- */
+.mcard{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:hRise .45s both;}
+.mcard::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--mc,var(--amber));}
+.mc-h{display:flex;align-items:center;gap:14px;}
+.mc-l{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-family:var(--serif);font-size:28px;font-weight:700;color:#fff;flex:none;background:var(--mc);box-shadow:0 8px 18px rgba(14,34,51,.15);}
+.mc-h small{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.mc-h h3{font-family:var(--serif);font-size:21px;line-height:1.2;}
+.status{margin-left:auto;font-size:12px;font-weight:800;padding:5px 10px;border-radius:99px;white-space:nowrap;display:inline-flex;gap:5px;align-items:center;}
+.st-done{background:var(--mintS);color:#1D6B55;} .st-go{background:var(--amberS);color:var(--amberD);} .st-new{background:var(--mist);color:var(--slate);} .st-lock{background:var(--mist);color:var(--muted);}
+.mcard .out{font-size:14.5px;color:var(--muted);margin-top:12px;line-height:1.55;}
+.chap{margin-top:12px;display:grid;gap:4px;}
+.chap li{display:flex;gap:10px;align-items:center;font-size:13.5px;padding:5px 0;}
+.chap .ck{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:11px;flex:none;color:#fff;}
+.chap li.ok .ck{background:var(--mint);border-color:var(--mint);}
+.chap li.part .ck{border-color:var(--amber);background:conic-gradient(var(--amber) var(--p),#fff 0);}
+.chap li.ok{color:var(--ink);} .chap li{color:var(--muted);}
+.mc-f{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap;}
+.mc-bar{flex:1;min-width:120px;height:8px;background:var(--mist);border-radius:9px;overflow:hidden;}
+.mc-bar i{display:block;height:100%;border-radius:9px;background:var(--mc);transition:width 1s;}
+.mc-f .pc{font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;}
+
+.btn{font-size:14.5px;font-weight:700;padding:11px 20px;border-radius:99px;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .16s,box-shadow .16s,background .16s;white-space:nowrap;}
+.btn:hover{transform:translateY(-2px);}
+.btn-p{background:var(--amber);color:var(--navy);box-shadow:0 4px 14px rgba(245,166,35,.38);}
+.btn-p:hover{box-shadow:0 8px 22px rgba(245,166,35,.48);}
+.btn-d{background:var(--navy);color:#fff;box-shadow:0 4px 14px rgba(14,34,51,.25);}
+.btn-s{background:var(--mist);color:var(--ink);}
+.btn-sm{font-size:13px;padding:8px 14px;}
+.btn[aria-disabled=true]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* ---------- SIKRE-hjulet ---------- */
+.wheelbox{position:relative;}
+.wheel{width:100%;max-width:560px;display:block;margin:auto;overflow:visible;}
+.wheel .orbit{fill:none;stroke:#C9D6E0;stroke-width:1.5;stroke-dasharray:3 7;animation:hSpin 80s linear infinite;transform-origin:260px 260px;}
+.wheel .seg{cursor:pointer;transform-origin:260px 260px;transition:transform .35s cubic-bezier(.3,1.4,.5,1),filter .3s;outline:none;}
+.wheel .seg:hover,.wheel .seg:focus-visible{transform:scale(1.035);}
+.wheel .seg.sel{transform:scale(1.05);filter:drop-shadow(0 12px 22px rgba(14,34,51,.20));}
+.wheel .seg .base{stroke:#fff;stroke-width:4;transition:fill .4s;}
+.wheel .seg .rim{fill:var(--mist);}
+.wheel .seg .rimv{transition:d .8s;}
+.wheel .seg .L{font-family:var(--serif);font-weight:700;font-size:44px;text-anchor:middle;dominant-baseline:central;pointer-events:none;}
+.wheel .seg .nm{font-size:14px;font-weight:700;text-anchor:middle;pointer-events:none;letter-spacing:.02em;}
+.wheel .seg .pc{font-size:13.5px;font-weight:800;text-anchor:middle;pointer-events:none;font-variant-numeric:tabular-nums;}
+.wheel .seg .lk{pointer-events:none;}
+.wheel .seg.cur .halo{animation:hHalo 2.2s ease-out infinite;transform-origin:260px 260px;}
+.wheel .hubc{cursor:pointer;transition:transform .3s;transform-origin:260px 260px;}
+.wheel .hubc:hover,.wheel .hubc.sel{transform:scale(1.04);}
+.wheel .arrow{fill:var(--mutedl);}
+.wheel .enter{animation:hSegIn .8s cubic-bezier(.3,1.3,.5,1) both;transform-origin:260px 260px;}
+.wheel-cap{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:12.5px;color:var(--muted);}
+.wheel-cap span{display:inline-flex;align-items:center;gap:6px;}
+.wheel-cap i{width:12px;height:12px;border-radius:4px;display:inline-block;}
+.hint{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);font-size:12.5px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:6px 12px;border-radius:99px;display:flex;gap:6px;align-items:center;white-space:nowrap;animation:hFloat 3s ease-in-out infinite;}
+
+/* ---------- seksjoner ---------- */
+.sec{padding:56px 0 8px;}
+.sec-h{display:flex;align-items:flex-end;gap:16px;margin-bottom:22px;flex-wrap:wrap;}
+.sec-h h2{font-family:var(--serif);font-size:clamp(26px,3vw,34px);line-height:1.15;}
+.sec-h p{color:var(--muted);font-size:15.5px;max-width:62ch;margin-top:6px;}
+.sec-h .r{margin-left:auto;}
+.panel{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:24px;}
+.grid{display:grid;gap:16px;}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr));}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr));}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr));}
+
+/* fortsett */
+.cont{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;}
+.resume{background:var(--navy);color:#fff;border-radius:22px;padding:26px;position:relative;overflow:hidden;box-shadow:0 18px 40px rgba(14,34,51,.25);}
+.resume::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;border:40px solid rgba(245,166,35,.10);}
+.resume small{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);}
+.resume h3{font-family:var(--serif);font-size:26px;line-height:1.2;margin:8px 0 6px;position:relative;z-index:1;}
+.resume p{color:#C9D8E3;font-size:14.5px;position:relative;z-index:1;}
+.steps{display:flex;gap:4px;margin:18px 0;position:relative;z-index:1;}
+.steps i{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.12);transition:background .3s;}
+.steps i.d{background:var(--amber);} .steps i.c{background:#fff;animation:hBlink 1.6s infinite;}
+.resume .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:relative;z-index:1;}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--shadow);}
+.kpi .ki{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;margin-bottom:6px;}
+.kpi b{font-family:var(--serif);font-size:32px;line-height:1;font-variant-numeric:tabular-nums;}
+.kpi small{font-size:12.5px;color:var(--muted);}
+
+/* læringssti */
+.path{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;}
+.path::before{content:"";position:absolute;left:4%;right:4%;top:34px;height:3px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px);z-index:0;}
+.pnode{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;cursor:pointer;border:0;background:none;padding:0;}
+.pnode .pc{width:68px;height:68px;border-radius:50%;background:#fff;border:3px solid var(--line);display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:28px;color:var(--mutedl);position:relative;transition:transform .2s;}
+.pnode:hover .pc{transform:translateY(-4px);}
+.pnode .pc svg.pr{position:absolute;inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);transform:rotate(-90deg);}
+.pnode .pc svg.pr circle{fill:none;stroke-width:4;stroke-linecap:round;transition:stroke-dasharray 1.2s;}
+.pnode.done .pc{background:var(--pcol);border-color:var(--pcol);color:#fff;}
+.pnode.go .pc{border-color:var(--pcol);color:var(--pcol);box-shadow:0 0 0 6px color-mix(in srgb,var(--pcol) 18%,transparent);}
+.pnode .badge{position:absolute;right:-4px;bottom:-4px;width:24px;height:24px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;font-size:12px;color:var(--muted);}
+.pnode.done .badge{background:var(--mint);border-color:#fff;color:#fff;}
+.pnode b{font-size:13.5px;line-height:1.3;}
+.pnode small{font-size:12px;color:var(--muted);}
+
+/* førtest */
+.pt{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start;}
+.pt-list{display:grid;gap:8px;}
+.pt-grp{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 2px;display:flex;gap:8px;align-items:center;}
+.pt-grp:first-child{margin-top:0;}
+.pt-q{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:#fff;transition:border-color .2s,background .2s;}
+.pt-q.ans{border-color:#CFE7DE;background:#FBFEFD;}
+.pt-q .n{width:28px;height:28px;border-radius:8px;background:var(--mist);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--slate);}
+.pt-q p{font-size:14px;line-height:1.45;}
+.seg3{display:flex;background:var(--mist);border-radius:10px;padding:3px;gap:2px;}
+.seg3 button{border:0;background:none;padding:6px 10px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--muted);min-width:44px;transition:background .15s,color .15s;}
+.seg3 button:hover{color:var(--ink);}
+.seg3 button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 2px 6px rgba(14,34,51,.12);}
+.seg3 button[aria-pressed=true][data-v="2"]{background:var(--mint);color:#fff;}
+.seg3 button[aria-pressed=true][data-v="1"]{background:var(--amber);color:var(--navy);}
+.seg3 button[aria-pressed=true][data-v="0"]{background:var(--slate);color:#fff;}
+.pt-side{position:sticky;top:86px;display:grid;gap:14px;}
+.gauge{text-align:center;}
+.gauge svg{width:100%;max-width:280px;display:block;margin:0 auto;}
+.gauge .gt{fill:none;stroke:var(--mist);stroke-width:18;stroke-linecap:round;}
+.gauge .gv{fill:none;stroke-width:18;stroke-linecap:round;transition:stroke-dasharray .8s cubic-bezier(.3,.8,.3,1),stroke .4s;}
+.gauge .gn{font-family:var(--serif);font-size:44px;font-weight:700;fill:var(--ink);text-anchor:middle;}
+.gauge .gs{font-size:13px;fill:var(--muted);text-anchor:middle;}
+.band{border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.55;margin-top:10px;text-align:left;}
+.band b{display:block;font-family:var(--serif);font-size:18px;margin-bottom:3px;}
+.b0{background:var(--emberS);} .b1{background:var(--amberS);} .b2{background:var(--mintS);}
+.chart h4{font-family:var(--serif);font-size:17px;margin-bottom:4px;}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin:6px 0 12px;flex-wrap:wrap;}
+.legend span{display:inline-flex;gap:6px;align-items:center;}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+.bars{display:grid;gap:12px;}
+.brow{display:grid;grid-template-columns:128px minmax(0,1fr);gap:10px;align-items:center;font-size:12.5px;}
+.brow>span{color:var(--ink);font-weight:600;line-height:1.3;}
+.btrack{display:grid;gap:2px;}
+.bline{display:flex;align-items:center;gap:8px;position:relative;}
+.bfill{height:12px;border-radius:0 4px 4px 0;transition:width 1s cubic-bezier(.3,.8,.3,1);min-width:2px;}
+.bline em{font-style:normal;font-size:11.5px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums;}
+.bline .tip{position:absolute;left:0;bottom:calc(100% + 6px);background:var(--navy);color:#fff;font-size:12px;padding:6px 9px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:3;}
+.bline:hover .tip{opacity:1;}
+.hist{display:grid;gap:6px;margin-top:10px;}
+.hist div{display:flex;justify-content:space-between;font-size:13px;padding:8px 10px;border-radius:10px;background:var(--card);}
+
+/* merker */
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
+.bdg{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 14px;text-align:center;position:relative;transition:transform .2s,box-shadow .2s;}
+.bdg:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+.bdg .md{width:64px;height:64px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;font-size:28px;position:relative;background:var(--mist);color:var(--mutedl);}
+.bdg.on .md{background:radial-gradient(circle at 35% 30%,#FFD98F,var(--amber));color:var(--navy);box-shadow:0 0 0 6px rgba(245,166,35,.16),0 10px 22px rgba(245,166,35,.35);}
+.bdg.on .md::after{content:"";position:absolute;inset:0;border-radius:50%;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.7) 50%,transparent 70%);background-size:250% 100%;animation:hSheen 3.5s infinite;}
+.bdg b{font-size:13.5px;display:block;line-height:1.3;}
+.bdg small{font-size:11.5px;color:var(--muted);display:block;margin-top:4px;line-height:1.4;}
+.bdg:not(.on){opacity:.7;}
+.bdg:not(.on) b{color:var(--muted);}
+
+/* plan */
+.plan{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;}
+.pch{border-radius:18px;padding:18px;border:1px solid var(--line);background:#fff;position:relative;min-height:170px;display:flex;flex-direction:column;}
+.pch .pl{font-family:var(--serif);font-weight:700;font-size:15px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;margin-bottom:10px;}
+.pch b{font-size:14px;line-height:1.3;}
+.pch p{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.45;flex:1;}
+.pch .ps{font-size:12px;font-weight:800;margin-top:10px;display:flex;gap:5px;align-items:center;}
+.pch.lock{background:var(--card);}
+.pch.lock .pl{background:var(--mutedl)!important;}
+
+/* forankring */
+.fw{width:100%;border-collapse:separate;border-spacing:0 8px;}
+.fw th{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 14px 4px;font-weight:800;}
+.fw td{background:#fff;padding:14px;font-size:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.fw td:first-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px;}
+.fw td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0;}
+.fw .lt{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;color:#fff;font-family:var(--serif);font-weight:700;margin-right:10px;vertical-align:middle;}
+.fw tr{animation:hRise .5s both;}
+
+/* tips */
+.tip-card{display:flex;gap:18px;align-items:center;background:linear-gradient(120deg,#fff 0,#FFF7E8 100%);border:1px solid #F3D9A8;border-radius:22px;padding:22px 24px;}
+.tip-card .ti{width:56px;height:56px;border-radius:16px;background:var(--amber);color:var(--navy);display:grid;place-items:center;font-size:26px;flex:none;animation:hWiggle 4s ease-in-out infinite;}
+.tip-card small{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--amberD);}
+.tip-card p{font-family:var(--serif);font-size:19px;line-height:1.4;margin-top:4px;}
+.tip-card .btn{margin-left:auto;}
+
+/* bunn */
+.foot{margin-top:60px;padding:30px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;}
+.foot .wrap{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+.linkbtn{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;padding:6px 8px;border-radius:8px;}
+.linkbtn:hover{background:#fff;color:var(--ember);}
+
+/* navn-dialog */
+.dlg{position:fixed;inset:0;background:rgba(14,34,51,.45);display:none;place-items:center;z-index:60;padding:16px;}
+.dlg.on{display:grid;animation:hFade .2s;}
+.dlg-in{background:#fff;border-radius:22px;padding:26px;max-width:420px;width:100%;box-shadow:0 30px 60px rgba(14,34,51,.3);animation:hRise .3s both;}
+.dlg-in h3{font-family:var(--serif);font-size:22px;}
+.dlg-in input{width:100%;font:inherit;font-size:16px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin:14px 0;}
+.dlg-in input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 4px rgba(245,166,35,.18);}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--navy);color:#fff;padding:12px 18px;border-radius:14px;font-size:14px;font-weight:700;display:flex;gap:10px;align-items:center;box-shadow:0 14px 34px rgba(14,34,51,.3);opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:70;}
+.toast.on{opacity:1;transform:translate(-50%,0);}
+.toast .i{color:var(--amber);}
+
+.rv{animation:hRise .7s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--d,0)*90ms);}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s cubic-bezier(.2,.7,.3,1);}
+.reveal.in{opacity:1;transform:none;}
+
+@keyframes hRise{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+@keyframes hFade{from{opacity:0;}to{opacity:1;}}
+@keyframes hSpin{to{transform:rotate(360deg);}}
+@keyframes hHalo{0%{opacity:.7;transform:scale(1);}100%{opacity:0;transform:scale(1.12);}}
+@keyframes hSegIn{from{opacity:0;transform:scale(.6) rotate(-30deg);}to{opacity:1;transform:none;}}
+@keyframes hFloat{0%,100%{transform:translate(-50%,0);}50%{transform:translate(-50%,-5px);}}
+@keyframes hPulseDot{50%{box-shadow:0 0 0 8px rgba(245,166,35,0);}}
+@keyframes hBlink{50%{opacity:.4;}}
+@keyframes hSheen{0%{background-position:150% 0;}60%,100%{background-position:-100% 0;}}
+@keyframes hWiggle{0%,90%,100%{transform:rotate(0);}93%{transform:rotate(-10deg);}96%{transform:rotate(8deg);}}
+@media (prefers-reduced-motion:reduce){.hub *,.hub *::before,.hub *::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;}.reveal{opacity:1;transform:none;}}
+
+@media (max-width:1000px){
+  .hero .wrap{grid-template-columns:1fr;gap:10px;}
+  .wheelbox{order:-1;max-width:520px;margin:0 auto;width:100%;}
+  .cont,.pt{grid-template-columns:1fr;}
+  .pt-side{position:static;}
+  .g4{grid-template-columns:repeat(2,1fr);}
+  .plan{grid-template-columns:repeat(2,1fr);}
+  .path{grid-template-columns:repeat(3,1fr);row-gap:26px;}
+  .path::before{display:none;}
+  .hub-nav{display:none;}
+  .me{margin-left:auto;}
+}
+@media (max-width:560px){
+  .hub .wrap{padding:0 16px;}
+  .hero{padding-top:18px;}
+  .g4,.g3,.g2,.plan{grid-template-columns:1fr 1fr;}
+  .plan{grid-template-columns:1fr;}
+  .path{grid-template-columns:repeat(2,1fr);}
+  .pt-q{grid-template-columns:24px minmax(0,1fr);}
+  .pt-q .seg3{grid-column:1/-1;}
+  .seg3 button{flex:1;}
+  .brow{grid-template-columns:1fr;gap:4px;}
+  .tip-card{flex-direction:column;align-items:flex-start;}
+  .tip-card .btn{margin-left:0;}
+  .fw th:nth-child(3),.fw td:nth-child(3){display:none;}
+  .brand small{display:none;}
+  .me span.nm{display:none;}
+  .panel{padding:18px;}
+  .hint{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="hub" id="hub">
+
+<header class="hub-top"><div class="wrap">
+  <a class="brand" href="#"><span class="lg" data-ic="shield"></span><span><small>Kursoversikt</small><b>Cybersecurity 101</b></span></a>
+  <nav class="hub-nav" aria-label="Seksjoner">
+    <a href="#modellen">Modellen</a><a href="#sti">Læringssti</a><a href="#fortest">Førtest</a><a href="#merker">Merker</a><a href="#plan">Min SIKRE-plan</a>
+  </nav>
+  <button class="me" id="me" aria-label="Endre navn"><span class="av" id="av">?</span><span class="nm" id="menm">Legg til navn</span></button>
+</div></header>
+
+<!-- ============ HERO: SIKRE-modellen er navigasjonen ============ -->
+<section class="hero" id="modellen"><div class="wrap">
+  <div>
+    <div class="eyebrow rv"><span class="dot"></span> <span id="greet">Velkommen</span></div>
+    <h1 class="rv" style="--d:1">Fem trinn. <em>Én sirkel.</em><br>Din vei til en tryggere digital hverdag.</h1>
+    <p class="lede rv" style="--d:2">Kurset følger SIKRE-modellen – samme logikk som profesjonelle sikkerhetsmiljøer bruker, oversatt til hverdagsspråk. Trykk på et trinn i sirkelen for å se innhold og din fremdrift.</p>
+    <div class="overall rv" style="--d:3">
+      <svg class="ring" width="96" height="96" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="hubGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F5A623"/><stop offset="1" stop-color="#C9503C"/></linearGradient></defs><circle class="tr" cx="50" cy="50" r="42"/><circle class="val" id="ovRing" cx="50" cy="50" r="42" style="stroke-dasharray:0 264"/><text x="50" y="50" id="ovPct">0 %</text></svg>
+      <div style="flex:1;min-width:0"><b id="ovTitle">Kursfremdrift</b><p id="ovSub">Du har ikke startet ennå.</p><div class="segbar" id="segbar" aria-hidden="true"></div></div>
+    </div>
+    <div id="mcard"></div>
+  </div>
+  <div class="wheelbox rv" style="--d:1">
+    <svg class="wheel" id="wheel" viewBox="0 0 520 520" role="group" aria-label="SIKRE-modellen – velg et trinn"></svg>
+    <div class="wheel-cap" id="wcap"></div>
+  </div>
+</div></section>
+
+<!-- ============ FORTSETT ============ -->
+<section class="sec reveal" id="fortsett"><div class="wrap">
+  <div class="sec-h"><div><h2>Fortsett der du slapp</h2><p>Fremdriften hentes automatisk fra modulene du har jobbet med i denne nettleseren.</p></div></div>
+  <div class="cont">
+    <div class="resume" id="resume"></div>
+    <div class="grid g2" id="kpis"></div>
+  </div>
+</div></section>
+
+<!-- ============ TIPS ============ -->
+<section class="sec reveal" style="padding-top:28px"><div class="wrap">
+  <div class="tip-card"><div class="ti" data-ic="bulb"></div><div><small id="tipLbl">Dagens huskeregel</small><p id="tipTx"></p></div><button class="btn btn-s btn-sm" id="tipNx"><span data-ic="refresh"></span> Nytt tips</button></div>
+</div></section>
+
+<!-- ============ LÆRINGSSTI ============ -->
+<section class="sec reveal" id="sti"><div class="wrap">
+  <div class="sec-h"><div><h2>Læringsstien</h2><p>Les modul for modul, i rekkefølge. Hver modul bygger på den forrige og følger ett trinn i SIKRE-modellen.</p></div></div>
+  <div class="panel"><div class="path" id="path"></div></div>
+</div></section>
+
+<!-- ============ FØRTEST ============ -->
+<section class="sec reveal" id="fortest"><div class="wrap">
+  <div class="sec-h"><div><h2>Hvor sikker er din digitale hverdag?</h2><p>Førtesten fra kapittel 0.4. Det finnes ingen «feil» svar, og ingen andre ser resultatet. Ta den nå – og ta den på nytt når kurset er ferdig, så ser du svart på hvitt hvor langt du har kommet.</p></div></div>
+  <div class="pt">
+    <div class="panel"><div class="pt-list" id="ptList"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;align-items:center"><button class="btn btn-d" id="ptSave"><span data-ic="check"></span> Lagre resultatet</button><button class="btn btn-s btn-sm" id="ptClear">Nullstill svar</button><span id="ptLeft" style="font-size:13px;color:var(--muted)"></span></div>
+    </div>
+    <div class="pt-side">
+      <div class="panel gauge"><svg viewBox="0 0 240 150" aria-hidden="true"><path class="gt" d="M30 130 A90 90 0 0 1 210 130"/><path class="gv" id="gv" d="M30 130 A90 90 0 0 1 210 130" style="stroke-dasharray:0 283"/><text class="gn" x="120" y="118" id="gn">0</text><text class="gs" x="120" y="140">av 36 poeng</text></svg><div id="band"></div></div>
+      <div class="panel chart" id="chart"></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ MERKER ============ -->
+<section class="sec reveal" id="merker"><div class="wrap">
+  <div class="sec-h"><div><h2>Merker</h2><p>Små milepæler underveis. Merkene låses opp automatisk når du fullfører aktiviteter i modulene.</p></div><div class="r" id="bdgCount" style="font-weight:800;color:var(--amberD)"></div></div>
+  <div class="badges" id="badges"></div>
+</div></section>
+
+<!-- ============ MIN SIKRE-PLAN ============ -->
+<section class="sec reveal" id="plan"><div class="wrap">
+  <div class="sec-h"><div><h2>Min SIKRE-plan</h2><p>Sluttprosjektet du bygger gjennom hele kurset. Hver modul legger til ett kapittel – i modul 5 settes alt sammen til en kort, personlig plan.</p></div></div>
+  <div class="plan" id="planGrid"></div>
+</div></section>
+
+<!-- ============ FORANKRING ============ -->
+<section class="sec reveal" id="forankring"><div class="wrap">
+  <div class="sec-h"><div><h2>SIKRE står ikke alene</h2><p>Modellen hviler på anerkjente rammeverk: NSMs grunnprinsipper for IKT-sikkerhet og NIST Cybersecurity Framework 2.0.</p></div></div>
+  <div style="overflow-x:auto"><table class="fw" id="fw"><thead><tr><th>SIKRE</th><th>NSMs grunnprinsipper</th><th>NIST CSF 2.0</th></tr></thead><tbody></tbody></table></div>
+  <p style="font-size:12.5px;color:var(--muted);margin-top:8px">NIST CSF 2.0 (februar 2024) la til <b>Govern</b> som en sjette funksjon som binder sammen de øvrige – det samme som E-en i SIKRE gjør for deg som privatperson.</p>
+</div></section>
+
+<footer class="foot"><div class="wrap">
+  <span>Cybersecurity 101 · Fremdrift og svar lagres bare i denne nettleseren på denne enheten.</span>
+  <button class="linkbtn" id="hubReset" style="margin-left:auto"><span data-ic="refresh"></span> Nullstill kursoversikten</button>
+</div></footer>
+
+<div class="dlg" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgT"><div class="dlg-in">
+  <h3 id="dlgT">Hva skal vi kalle deg?</h3><p style="color:var(--muted);font-size:14px;margin-top:4px">Brukes bare til å hilse på deg her. Lagres lokalt.</p>
+  <input type="text" id="dlgIn" maxlength="30" placeholder="Fornavn eller kallenavn">
+  <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-s btn-sm" id="dlgX">Avbryt</button><button class="btn btn-p btn-sm" id="dlgOk">Lagre</button></div>
+</div></div>
+<div class="toast" id="toast" role="status"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var ICONS={
+  shield:'<path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/>',
+  check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',lock:'<rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>',
+  right:'<path d="M5 12h14M13 6l6 6-6 6"/>',play:'<path d="M7 4v16l13-8z"/>',star:'<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/>',
+  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+  trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4.5a3 3 0 0 0 3.5 4M16 6h3.5a3 3 0 0 1-3.5 4M12 13v4M8.5 21h7"/>',
+  key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16 7l3 3M14 9l2 2"/>',gem:'<path d="M6 3h12l3 6-9 12L3 9z"/><path d="M3 9h18M12 21 8 9l4-6 4 6z"/>',
+  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+  pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M19 19v2H6"/>',
+  layers:'<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',crown:'<path d="m3 8 4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+  card:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6.5 15h4"/>',sparkle:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>',hand:'<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11M11 10V4.5a1.5 1.5 0 0 1 3 0V11M14 10.5V6a1.5 1.5 0 0 1 3 0v7.5a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.9-2.6L3 14.4a1.6 1.6 0 0 1 2.5-2L8 15"/>'
+};
+function ic(n){return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
+function h(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function fillIcons(r){$$('[data-ic]',r).forEach(function(e){e.innerHTML=ic(e.dataset.ic)+e.innerHTML;e.removeAttribute('data-ic');});}
+
+/* ---------- lagring ---------- */
+var HKEY='sk101-hub-v1',M1KEY='sk101-modul1-v1';
+function load(k,def){try{var r=localStorage.getItem(k);return r?JSON.parse(r):def;}catch(e){return def;}}
+function hubFresh(){return {name:'',m0read:false,tests:[],draft:{},tip:0,sel:null};}
+var H=Object.assign(hubFresh(),load(HKEY,{}));
+function save(){try{localStorage.setItem(HKEY,JSON.stringify(H));}catch(e){}}
+var M1={};
+function readM1(){M1=load(M1KEY,{})||{};M1.done=M1.done||{};}
+
+/* ---------- Modul 1: stegliste (samme id-er som i modulen) ---------- */
+var M1STEPS=[
+ ['intro','Velkommen til modul 1','Start'],['l111','Hva betyr det å være digitalt sikker?','1.1'],['refl1','Refleksjon: det verste som kunne skje','1.1'],['l112','Verdier først, ikke verktøy','1.1'],['l113','Saras dag: seks feller','1.1'],
+ ['l12','Seks kategorier av verdier','1.2'],['bankid','BankID-regelen: svindel eller trygt?','1.2'],['refl2','Refleksjon: ditt svake punkt','1.2'],['l127','Den sjuende, usynlige verdien','1.2'],['sort7','Øvelse: sorter verdiene','1.2'],
+ ['l13','KIT-trekanten','1.3'],['kitgame','Øvelse: K, I eller T?','1.3'],['l134','Dine kronjuveler','1.3'],
+ ['vk1','Steg 1: Lag verdikartet','1.4'],['vk2','Steg 2: Velg dine tre viktigste','1.4'],['vk3','Steg 3: Forklar hva som kan skje','1.4'],['arkiv','Ta vare på verdikartet','1.4'],
+ ['l15','Oppsummering av modul 1','1.5'],['quiz','Sluttest','1.5'],['ferdig','Modul 1 fullført','1.5']
+];
+
+/* ---------- Kursets moduler (fra bokens innholdsfortegnelse) ---------- */
+var MODS=[
+ {k:'0',L:'0',name:'Start her',short:'Start her',color:'#16324B',href:'Modul_0_STANDALONE.html',min:'20–30 min',
+  out:'Hvorfor digital sikkerhet er viktig akkurat nå, hva du skal lære, SIKRE-modellen forklart kort – og førtesten som viser hvor du står i dag.',
+  ch:[['0.1','Velkommen til kurset'],['0.2','Hva du skal lære'],['0.3','SIKRE-modellen forklart kort'],['0.4','Førtest: Hvor sikker er din digitale hverdag?']]},
+ {k:'S',L:'S',name:'Se hva som skal beskyttes',short:'Se',color:'#E0961A',href:'Modul_1_STANDALONE.html',min:'75–90 min',
+  out:'Kartlegg dine digitale verdier – kontoer, bilder, dokumenter, penger, identitet og omdømme – og lær hvorfor selv «vanlige» data er verdifulle for kriminelle.',
+  ch:[['1.1','Hva er cybersikkerhet i praksis?'],['1.2','Dine digitale verdier'],['1.3','Hva må beskyttes?'],['1.4','Praktisk oppgave: Ditt digitale verdikart'],['1.5','Oppsummering av modul 1']]},
+ {k:'I',L:'I',name:'Identifiser trusler og risiko',short:'Identifiser',color:'#C9503C',min:'',
+  out:'Kjenn igjen phishing (også den KI-genererte), smishing, vishing, quishing, deepfake-svindel, investeringssvindel, «Hei mamma»-meldinger, falske nettbutikker og direktørsvindel.',
+  ch:[['2.1','Hvordan risiko oppstår'],['2.2','Vanlige angrep mot brukere'],['2.3','Vanlige tekniske trusler'],['2.4','Nye trusler i 2026'],['2.5','Praktisk oppgave: Analyser en mistenkelig e-post'],['2.6','Oppsummering av modul 2']]},
+ {k:'K',L:'K',name:'Kontroller tilgang og handlinger',short:'Kontroller',color:'#2F74B5',min:'',
+  out:'Kursets største og mest praktiske del: passordbehandler, tofaktor og passnøkler, MFA-utmattelse, oppdaterte og låste enheter, trygg deling i skyen, offentlig Wi-Fi, KI-verktøy og BankID.',
+  ch:[['3.1','Sikre kontoer'],['3.2','Sikre enheter'],['3.3','Sikre data'],['3.4','Sikre sky og deling'],['3.5','Sikre nettbruk'],['3.6','Sikker bruk av KI-verktøy'],['3.7','Praktisk oppgave: Din sikkerhetsbaseline'],['3.8','Oppsummering av modul 3']]},
+ {k:'R',L:'R',name:'Reager når noe skjer',short:'Reager',color:'#2F9A7D',min:'',
+  out:'Kjenn igjen tegn på at noe er galt, og vit hva du gjør i de første kritiske minuttene: sperre kort og BankID, bytte passord, kontakte bank og politi, og varsle riktig folk på jobb.',
+  ch:[['4.1','Gjenkjenn en mulig hendelse'],['4.2','Riktig første respons'],['4.3','Hvis du har klikket på eller delt noe'],['4.4','Hvis kontoen din kan være kompromittert'],['4.5','Hvis en enhet kan være kompromittert'],['4.6','Praktisk oppgave: Fra hendelse til rapport'],['4.7','Oppsummering av modul 4']]},
+ {k:'E',L:'E',name:'Evaluer og forbedre',short:'Evaluer',color:'#6E54B8',min:'',
+  out:'Bygg robuste vaner som varer, ta jevnlige sikkerhetskopier etter 3-2-1-regelen, og sett sammen din egen «Min SIKRE-plan».',
+  ch:[['5.1','Gjør sikkerhet til en vane'],['5.2','Sjekk kontoer og tilgang (15 min)'],['5.3','Sjekk data og deling (15 min)'],['5.4','Sjekk enheter og backup (15 min)'],['5.5','Lær av hendelser'],['5.6','Sluttprosjekt: Min SIKRE-plan'],['5.7','Oppsummering av modul 5']]}
+];
+
+/* ---------- Fremdrift per modul ---------- */
+function m1Done(){return M1STEPS.filter(function(s){return M1.done[s[0]];}).length;}
+function progress(k){
+  if(k==='0'){return ((H.m0read?1:0)+(H.tests.length?1:0))/2;}
+  if(k==='S'){return m1Done()/M1STEPS.length;}
+  return 0;
+}
+function chapterState(k,code){
+  if(k==='0'){if(code==='0.4')return H.tests.length?1:0;return H.m0read?1:0;}
+  if(k==='S'){var st=M1STEPS.filter(function(s){return s[2]===code||(code==='1.1'&&s[2]==='Start');});var d=st.filter(function(s){return M1.done[s[0]];}).length;return st.length?d/st.length:0;}
+  return 0;
+}
+function available(k){return k==='0'||k==='S';}
+function statusOf(k){var p=progress(k);if(!available(k))return ['lock','Kommer snart','lock'];if(p>=1)return ['done','Fullført','check'];if(p>0)return ['go','Pågår','clock'];return ['new','Ikke startet','play'];}
+function currentMod(){
+  /* den modulen studenten faktisk jobber i: siste påbegynte, ellers første uferdige */
+  for(var j=MODS.length-1;j>=0;j--){var p=progress(MODS[j].k);if(available(MODS[j].k)&&p>0&&p<1&&(MODS[j].k!=='0'||progress('S')===0))return MODS[j].k;}
+  for(var i=0;i<MODS.length;i++){if(available(MODS[i].k)&&progress(MODS[i].k)<1)return MODS[i].k;}return 'S';}
+function mod(k){for(var i=0;i<MODS.length;i++)if(MODS[i].k===k)return MODS[i];}
+function overall(){return MODS.reduce(function(a,m){return a+progress(m.k);},0)/MODS.length;}
+
+/* =========================================================
+   SIKRE-HJULET
+   ========================================================= */
+var C=260,R1=118,R2=216;
+function pt(r,a){var t=(a-90)*Math.PI/180;return [C+r*Math.cos(t),C+r*Math.sin(t)];}
+function sector(r1,r2,a1,a2){var p1=pt(r2,a1),p2=pt(r2,a2),p3=pt(r1,a2),p4=pt(r1,a1),lg=(a2-a1)>180?1:0;
+  return 'M'+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+' A'+r2+' '+r2+' 0 '+lg+' 1 '+p2[0].toFixed(2)+' '+p2[1].toFixed(2)+' L'+p3[0].toFixed(2)+' '+p3[1].toFixed(2)+' A'+r1+' '+r1+' 0 '+lg+' 0 '+p4[0].toFixed(2)+' '+p4[1].toFixed(2)+'Z';}
+function tint(hex,a){var n=parseInt(hex.slice(1),16);return 'rgba('+(n>>16)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+function drawWheel(first){
+  var cur=currentMod(),out='';
+  out+='<defs><radialGradient id="hubG" cx=".35" cy=".3"><stop offset="0" stop-color="#244A6B"/><stop offset="1" stop-color="#0E2233"/></radialGradient>'+
+       '<filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0E2233" flood-opacity=".18"/></filter></defs>';
+  out+='<circle class="orbit" cx="260" cy="260" r="246"/>';
+  out+='<circle r="5" fill="#F5A623"><animateMotion dur="14s" repeatCount="indefinite" path="M260 14 A246 246 0 1 1 259.9 14"/></circle>';
+  MODS.slice(1).forEach(function(m,i){
+    var a0=i*72-36+2,a1=i*72+36-2,mid=i*72,p=progress(m.k),st=statusOf(m.k),av=available(m.k),sel=H.sel===m.k;
+    var fill=st[0]==='done'?m.color:(av?tint(m.color,p>0?.16:.08):'#fff');
+    var txt=st[0]==='done'?'#fff':(av?m.color:'#9BB2C4');
+    var lp=pt(172,mid);
+    out+='<g class="seg'+(sel?' sel':'')+(m.k===cur?' cur':'')+(first?' enter':'')+'" data-k="'+m.k+'" tabindex="0" role="button" aria-label="'+m.L+' – '+m.name+', '+st[1]+(av?', '+Math.round(p*100)+' prosent':'')+'" style="animation-delay:'+(i*110)+'ms">';
+    if(m.k===cur)out+='<path class="halo" d="'+sector(R1,R2,a0,a1)+'" fill="none" stroke="'+m.color+'" stroke-width="3"/>';
+    out+='<path class="base" d="'+sector(R1,R2,a0,a1)+'" fill="'+fill+'" '+(av?'':'stroke-dasharray="4 5" style="stroke:#DCE6ED;stroke-width:2"')+'/>';
+    /* fremdriftskant */
+    out+='<path class="rim" d="'+sector(R2+6,R2+14,a0,a1)+'"/>';
+    if(p>0)out+='<path d="'+sector(R2+6,R2+14,a0,a0+(a1-a0)*p)+'" fill="'+m.color+'"/>';
+    out+='<text class="L" x="'+lp[0]+'" y="'+(lp[1]-12)+'" fill="'+txt+'">'+m.L+'</text>';
+    out+='<text class="nm" x="'+lp[0]+'" y="'+(lp[1]+24)+'" fill="'+(st[0]==='done'?'#fff':'#16324B')+'">'+m.short+'</text>';
+    out+='<text class="pc" x="'+lp[0]+'" y="'+(lp[1]+43)+'" fill="'+(st[0]==='done'?'#fff':(av?'#5D7183':'#9BB2C4'))+'">'+(av?Math.round(p*100)+' %':'Kommer')+'</text>';
+    out+='</g>';
+    /* pil i mellomrommet (sirkelen) */
+    var ap=pt((R1+R2)/2,i*72+36),ang=i*72+36;
+    out+='<path class="arrow" transform="translate('+ap[0].toFixed(1)+' '+ap[1].toFixed(1)+') rotate('+ang+')" d="M-4 -6 L4 0 L-4 6 Z"/>';
+  });
+  var m0=MODS[0],p0=progress('0'),circ=2*Math.PI*104;
+  out+='<g class="hubc'+(H.sel==='0'?' sel':'')+'" data-k="0" tabindex="0" role="button" aria-label="Modul 0 – Start her, '+Math.round(p0*100)+' prosent" filter="url(#soft)">'+
+    '<circle cx="260" cy="260" r="104" fill="url(#hubG)"/>'+
+    '<circle cx="260" cy="260" r="104" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="6"/>'+
+    (p0>0?'<circle cx="260" cy="260" r="104" fill="none" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+(circ*p0)+' '+circ+'" transform="rotate(-90 260 260)"/>':'')+
+    '<text x="260" y="226" text-anchor="middle" style="font-size:10.5px;letter-spacing:.2em;font-weight:800;fill:#F5A623">MODUL 0 · START HER</text>'+
+    '<text x="260" y="268" text-anchor="middle" style="font-family:Georgia,serif;font-weight:700;font-size:40px;fill:#fff">SIKRE</text>'+
+    '<text x="260" y="296" text-anchor="middle" style="font-size:12.5px;fill:#9BB2C4">'+Math.round(overall()*100)+' % av kurset</text>'+
+    '</g>';
+  var w=$('#wheel');w.innerHTML=out;
+  $$('.seg,.hubc',w).forEach(function(g){
+    g.addEventListener('click',function(){select(g.dataset.k);});
+    g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();select(g.dataset.k);}});
+  });
+  $('#wcap').innerHTML='<span><i style="background:var(--mint)"></i>'+ic('check')+' fullført</span><span><i style="background:rgba(224,150,26,.25);border:1px solid #E0961A"></i>pågår</span><span><i style="background:#fff;border:1px dashed #C9D6E0"></i>kommer snart</span><span>'+ic('refresh')+' sirkelen starter på nytt – sikkerhet blir aldri «ferdig»</span>';
+}
+function select(k){H.sel=k;save();drawWheel(false);drawCard();}
+
+/* ---------- modulkort ---------- */
+function drawCard(){
+  var k=H.sel||currentMod(),m=mod(k),p=progress(k),st=statusOf(k),av=available(k);
+  var cta='';
+  if(k==='S'){var s=resumeStep();cta='<a class="btn btn-p" href="'+m.href+'">'+ic(p>=1?'eye':p>0?'right':'play')+' '+(p>=1?'Se modulen igjen':p>0?'Fortsett modulen':'Start modul 1')+'</a>';}
+  else if(k==='0'){cta='<a class="btn btn-p" href="'+m.href+'">'+ic('play')+' Åpne modul 0</a><button class="btn btn-s btn-sm" id="m0t">'+ic(H.m0read?'check':'book')+' '+(H.m0read?'Markert som lest':'Marker som lest')+'</button><a class="btn btn-s btn-sm" href="#fortest">'+ic('target')+' Førtesten</a>';}
+  else cta='<span class="btn btn-s" aria-disabled="true">'+ic('lock')+' Kommer snart</span>';
+  $('#mcard').innerHTML='<div class="mcard" style="--mc:'+m.color+'"><div class="mc-h"><div class="mc-l">'+m.L+'</div><div><small>Modul '+MODS.indexOf(m)+(m.min?' · '+m.min:'')+'</small><h3>'+m.name+'</h3></div><span class="status st-'+st[0]+'">'+ic(st[2])+' '+st[1]+'</span></div>'+
+    '<p class="out">'+m.out+'</p>'+
+    '<ul class="chap">'+m.ch.map(function(c){var s=chapterState(k,c[0]);return '<li class="'+(s>=1?'ok':s>0?'part':'')+'" style="--p:'+(s*100)+'%"><span class="ck">'+(s>=1?ic('check'):'')+'</span><b style="font-weight:700;min-width:30px">'+c[0]+'</b>'+c[1]+'</li>';}).join('')+'</ul>'+
+    (av?'<div class="mc-f"><div class="mc-bar"><i style="width:'+(p*100)+'%"></i></div><span class="pc">'+Math.round(p*100)+' %</span></div>':'')+
+    '<div class="mc-f">'+cta+'</div></div>';
+  var t=$('#m0t');if(t)t.addEventListener('click',function(){H.m0read=!H.m0read;save();renderAll();toast(H.m0read?'Modul 0 er markert som lest':'Markering fjernet','check');});
+}
+
+/* ---------- oversikt ---------- */
+function drawOverall(){
+  var o=overall(),pct=Math.round(o*100);
+  $('#ovRing').style.strokeDasharray=(o*263.9)+' 263.9';$('#ovRing').style.opacity=o>0?1:0;$('#ovPct').textContent=pct+' %';
+  var started=o>0;
+  $('#ovTitle').textContent=pct>=100?'Hele kurset er fullført!':'Kursfremdrift';
+  var cur=mod(currentMod());
+  $('#ovSub').innerHTML=started?'Du er på trinn <b>'+cur.L+' – '+cur.name+'</b>. '+MODS.filter(function(m){return progress(m.k)>=1;}).length+' av '+MODS.length+' moduler fullført.':'Du har ikke startet ennå. Begynn med Modul 0 og førtesten.';
+  $('#segbar').innerHTML=MODS.map(function(m){return '<i title="'+h(m.name)+'"><span style="background:'+m.color+';width:'+(progress(m.k)*100)+'%"></span></i>';}).join('');
+  var n=H.name?h(H.name):'';
+  var hr=new Date().getHours(),g=hr<5?'God natt':hr<10?'God morgen':hr<17?'God dag':'God kveld';
+  $('#greet').innerHTML=g+(n?', '+n:'')+(started?' – velkommen tilbake':'');
+  $('#av').textContent=n?n.charAt(0).toUpperCase():'?';$('#menm').textContent=n||'Legg til navn';
+}
+
+/* ---------- fortsett + nøkkeltall ---------- */
+function resumeStep(){for(var i=0;i<M1STEPS.length;i++)if(!M1.done[M1STEPS[i][0]])return i;return -1;}
+function drawResume(){
+  var i=resumeStep(),d=m1Done(),n=M1STEPS.length,el=$('#resume');
+  var pills='<div class="steps">'+M1STEPS.map(function(s,k){return '<i class="'+(M1.done[s[0]]?'d':k===i?'c':'')+'" title="'+h(s[1])+'"></i>';}).join('')+'</div>';
+  if(!H.tests.length&&d===0){
+    el.innerHTML='<small>Kom i gang</small><h3>Start med førtesten</h3><p>Den tar bare noen minutter og viser hvor du står i dag – slik at du kan se hvor langt du har kommet når kurset er ferdig.</p><div class="steps">'+M1STEPS.map(function(){return '<i></i>';}).join('')+'</div><div class="row"><a class="btn btn-p" href="#fortest">'+ic('target')+' Ta førtesten</a><a class="btn btn-s btn-sm" href="Modul_0_STANDALONE.html" style="background:rgba(255,255,255,.1);color:#fff">Les modul 0</a></div>';
+  }else if(i<0){
+    el.innerHTML='<small>Modul 1 · Fullført</small><h3>Du ser nå hva som skal beskyttes</h3><p>Alle '+n+' steg er fullført. Neste trinn i sirkelen er <b style="color:#fff">I – Identifiser trusler og risiko</b>, der du legger truslene oppå verdikartet ditt.</p>'+pills+'<div class="row"><a class="btn btn-p" href="Modul_1_STANDALONE.html">'+ic('eye')+' Se modul 1 igjen</a><span style="font-size:13px;color:#9BB2C4">Modul 2 kommer snart</span></div>';
+  }else{
+    el.innerHTML='<small>Modul 1 · Steg '+(i+1)+' av '+n+'</small><h3>'+h(M1STEPS[i][1])+'</h3><p>'+(d?'Du har fullført '+d+' av '+n+' steg. Fortsett der du slapp – svarene dine er lagret.':'Modul 1: Se hva som skal beskyttes. Første steg i SIKRE-sirkelen.')+'</p>'+pills+'<div class="row"><a class="btn btn-p" href="Modul_1_STANDALONE.html">'+ic(d?'right':'play')+' '+(d?'Fortsett':'Start modul 1')+'</a><span style="font-size:13px;color:#9BB2C4">'+Math.round(d/n*100)+' % av modulen</span></div>';
+  }
+  var items=0;if(M1.map)for(var c in M1.map)items+=(M1.map[c]||[]).length;
+  var K=[
+    ['star','#FFF5E3','#9A5F00',M1.pts||0,'poeng samlet'],
+    ['layers','#E7F0FA','#2F74B5',d+'/'+n,'steg fullført i modul 1'],
+    ['map','#E3F4EE','#1D6B55',items,'verdier i verdikartet'],
+    ['trophy','#EFEAFA','#6E54B8',M1.quizBest!=null?M1.quizBest+'/10':'–','beste sluttest']
+  ];
+  $('#kpis').innerHTML=K.map(function(x){return '<div class="kpi"><span class="ki" style="background:'+x[1]+';color:'+x[2]+'">'+ic(x[0])+'</span><b>'+x[3]+'</b><small>'+x[4]+'</small></div>';}).join('');
+}
+
+/* ---------- læringssti ---------- */
+function drawPath(){
+  $('#path').innerHTML=MODS.map(function(m,i){var p=progress(m.k),st=statusOf(m.k),c=2*Math.PI*38;
+    return '<button class="pnode '+st[0]+'" style="--pcol:'+m.color+'" data-k="'+m.k+'"><span class="pc">'+m.L+
+      (p>0&&p<1?'<svg class="pr" viewBox="0 0 82 82"><circle cx="41" cy="41" r="38" stroke="'+m.color+'" stroke-dasharray="'+(c*p)+' '+c+'"/></svg>':'')+
+      '<span class="badge">'+ic(st[2])+'</span></span><b>Modul '+i+'<br>'+m.name+'</b><small>'+(available(m.k)?Math.round(p*100)+' % · '+m.ch.length+' kapitler':'Kommer snart')+'</small></button>';}).join('');
+  $$('.pnode').forEach(function(b){b.addEventListener('click',function(){select(b.dataset.k);$('#modellen').scrollIntoView({behavior:'smooth'});});});
+}
+
+/* =========================================================
+   FØRTEST (kapittel 0.4)
+   ========================================================= */
+var PT=[
+ 'Jeg bruker forskjellige passord på forskjellige tjenester (ikke samme passord flere steder).',
+ 'Jeg bruker en passordbehandler til å lage og lagre passordene mine.',
+ 'Jeg har aktivert tofaktorpålogging (totrinnsbekreftelse) på viktige kontoer, som e-post og bank.',
+ 'Jeg vet hva en passnøkkel (passkey) er, og bruker det der jeg kan.',
+ 'Jeg installerer oppdateringer på telefon og PC raskt etter at de kommer.',
+ 'Telefonen og PC-en min låses automatisk med kode, fingeravtrykk eller ansiktsgjenkjenning.',
+ 'Jeg tar jevnlig sikkerhetskopi av bilder og viktige dokumenter.',
+ 'Jeg vet hvordan jeg ville gjenopprettet filene mine hvis telefonen ble stjålet eller ødelagt.',
+ 'Jeg kan kjenne igjen en phishing-e-post eller svindel-SMS, også når språket virker profesjonelt.',
+ 'Jeg vet at kriminelle kan forfalske stemmer og videoer (deepfake), og verifiserer uventede pengeforespørsler.',
+ 'Jeg gir aldri fra meg BankID-koder, passord eller engangskoder til noen som kontakter meg.',
+ 'Jeg stopper opp før jeg klikker på uventede lenker eller skanner QR-koder.',
+ 'Jeg er forsiktig med hva jeg gjør på offentlig Wi-Fi.',
+ 'Jeg tenker over hva jeg deler på sosiale medier, fordi informasjon kan brukes mot meg.',
+ 'Jeg vet hvilke opplysninger jeg aldri bør lime inn i KI-verktøy som ChatGPT.',
+ 'Jeg vet hvordan jeg deler filer trygt i skytjenester uten å gi tilgang til feil personer.',
+ 'Jeg vet hva jeg skal gjøre de første minuttene hvis jeg oppdager at jeg er blitt svindlet.',
+ 'Jeg vet hvem jeg skal varsle på jobb eller studiested hvis jeg klikker på noe mistenkelig.'
+];
+var AREAS=[['Kontoer og passord',0,4,'key'],['Enheter og sikkerhetskopi',4,8,'layers'],['Gjenkjenne svindel',8,12,'eye'],['Nett, deling og KI',12,16,'map'],['Reagere når noe skjer',16,18,'flag']];
+var BANDS=[
+ [0,12,'b0','Sårbar – men du er på riktig sted','Akkurat nå har du sannsynligvis noen «åpne dører» som kriminelle ser etter. Den gode nyheten: nettopp disse grepene er raske å fikse. Du er ikke naiv – du har bare ikke fått verktøyene ennå.'],
+ [13,24,'b1','På vei – du har et godt fundament','Du gjør allerede flere ting riktig og har sunn skepsis. Nå handler det om å tette hullene og gjøre de gode vanene mer systematiske.'],
+ [25,36,'b2','Godt rustet – et sterkt utgangspunkt','Bruk kurset til å finpusse, oppdatere deg på KI-drevet svindel og deepfake, og bli en ressurs for andre. Men vær på vakt: overmot kan gjøre oss mindre oppmerksomme.']
+];
+function ptScore(a){var s=0;for(var i=0;i<18;i++)s+=(a[i]|0);return s;}
+function band(s){for(var i=0;i<BANDS.length;i++)if(s>=BANDS[i][0]&&s<=BANDS[i][1])return BANDS[i];return BANDS[0];}
+function drawPT(){
+  var out='';
+  AREAS.forEach(function(ar){
+    out+='<div class="pt-grp">'+ic(ar[3])+' '+ar[0]+'</div>';
+    for(var i=ar[1];i<ar[2];i++){var v=H.draft[i];
+      out+='<div class="pt-q'+(v!=null?' ans':'')+'" data-i="'+i+'"><span class="n">'+(i+1)+'</span><p>'+PT[i]+'</p><div class="seg3" role="group" aria-label="Poeng for utsagn '+(i+1)+'">'+
+        [[2,'Ja'],[1,'Delvis'],[0,'Nei']].map(function(o){return '<button data-v="'+o[0]+'" aria-pressed="'+(v===o[0])+'" title="'+o[0]+' poeng">'+o[1]+'</button>';}).join('')+'</div></div>';}
+  });
+  $('#ptList').innerHTML=out;
+  $$('.pt-q').forEach(function(q){$$('button',q).forEach(function(b){b.addEventListener('click',function(){
+    H.draft[q.dataset.i]=+b.dataset.v;save();
+    $$('button',q).forEach(function(x){x.setAttribute('aria-pressed',x===b);});q.classList.add('ans');drawGauge();
+  });});});
+  drawGauge();drawChart();
+}
+function answered(){var n=0;for(var i=0;i<18;i++)if(H.draft[i]!=null)n++;return n;}
+function drawGauge(){
+  var s=ptScore(H.draft),n=answered(),L=282.7,b=band(s);
+  var col=s<=12?'#C9503C':s<=24?'#E0961A':'#2F9A7D';
+  var g=$('#gv');g.style.strokeDasharray=(s/36*L)+' '+L;g.style.stroke=col;$('#gn').textContent=s;
+  $('#band').innerHTML=n?'<div class="band '+b[2]+'"><b>'+b[3]+'</b>'+b[4]+'</div>':'<p style="font-size:13.5px;color:var(--muted);margin-top:6px">Svar på utsagnene: <b>Ja</b> = 2 poeng, <b>Delvis</b> = 1, <b>Nei / vet ikke</b> = 0.</p>';
+  $('#ptLeft').textContent=n<18?(18-n)+' utsagn gjenstår':'Alle 18 besvart';
+  $('#ptSave').setAttribute('aria-disabled',n<18);
+}
+function areaPct(a,ar){var s=0,max=(ar[2]-ar[1])*2;for(var i=ar[1];i<ar[2];i++)s+=(a[i]|0);return Math.round(s/max*100);}
+function drawChart(){
+  var el=$('#chart'),T=H.tests;
+  if(!T.length){el.innerHTML='<h4>Din sikkerhetsprofil</h4><p style="font-size:13.5px;color:var(--muted)">Lagre førtesten for å se profilen din fordelt på fem områder. Ta testen på nytt senere, så ser du utviklingen side om side.</p>';return;}
+  var first=T[0],last=T[T.length-1],two=T.length>1;
+  el.innerHTML='<h4>Din sikkerhetsprofil</h4><p style="font-size:12.5px;color:var(--muted)">Andel av maks poeng per område</p>'+
+    (two?'<div class="legend"><span><i style="background:#2F74B5"></i>Første test ('+first.date+')</span><span><i style="background:#E0961A"></i>Siste test ('+last.date+')</span></div>':'<div class="legend"><span><i style="background:#2F74B5"></i>Førtest ('+first.date+')</span></div>')+
+    '<div class="bars">'+AREAS.map(function(ar){var a=areaPct(first.a,ar),b=areaPct(last.a,ar);
+      return '<div class="brow"><span>'+ar[0]+'</span><div class="btrack">'+
+        '<div class="bline"><div class="bfill" style="width:0;background:#2F74B5" data-w="'+a+'"></div><em>'+a+' %</em><span class="tip">'+ar[0]+': '+a+' %'+(two?' (første)':'')+'</span></div>'+
+        (two?'<div class="bline"><div class="bfill" style="width:0;background:#E0961A" data-w="'+b+'"></div><em>'+b+' %'+(b>a?' ▲':'')+'</em><span class="tip">'+ar[0]+': '+b+' % (siste)</span></div>':'')+
+      '</div></div>';}).join('')+'</div>'+
+    '<div class="hist">'+T.slice(-4).reverse().map(function(t,k){return '<div><span>'+(T.length-k===1?'Førtest':'Test '+(T.length-k))+' · '+t.date+'</span><b>'+t.s+' / 36</b></div>';}).join('')+'</div>'+
+    (two?'<p style="font-size:13px;margin-top:10px;color:var(--ink)">'+(last.s>=first.s?'Du har gått <b>'+(last.s-first.s)+' poeng</b> opp siden første test.':'Resultatet er lavere enn første gang – det kan bety at du har blitt mer realistisk i vurderingen.')+'</p>':'');
+  setTimeout(function(){$$('.bfill',el).forEach(function(b){b.style.width='calc('+b.dataset.w+'% * .82)';});},80);
+}
+$('#ptSave').addEventListener('click',function(){
+  if(answered()<18){toast('Svar på alle 18 utsagn først','target');return;}
+  var a=[];for(var i=0;i<18;i++)a.push(H.draft[i]|0);
+  H.tests.push({date:new Date().toLocaleDateString('nb-NO',{day:'numeric',month:'short',year:'numeric'}),a:a,s:ptScore(a)});save();
+  toast(H.tests.length===1?'Førtesten er lagret – ta den på nytt til slutt!':'Nytt resultat lagret','check');renderAll();
+});
+$('#ptClear').addEventListener('click',function(){H.draft={};save();drawPT();});
+
+/* =========================================================
+   MERKER
+   ========================================================= */
+function drawBadges(){
+  var D=M1.done||{},items=0;if(M1.map)for(var c in M1.map)items+=(M1.map[c]||[]).length;
+  var B=[
+    ['flag','Første steg','Tok førtesten',H.tests.length>0],
+    ['book','Klar for start','Leste modul 0',H.m0read],
+    ['play','I gang','Startet modul 1',!!D.intro],
+    ['clock','Sara-detektiv','Avslørte alle seks fellene',!!D.l113],
+    ['shield','BankID-vakt','Fullførte BankID-regelen',!!D.bankid],
+    ['target','KIT-mester','Fullførte K, I eller T?',!!D.kitgame],
+    ['map','Kartlegger','Laget verdikartet',!!D.vk1],
+    ['sparkle','Grundig','20+ verdier i verdikartet',items>=20],
+    ['crown','Kronjuvel-jeger','Valgte sine tre viktigste',!!D.vk2],
+    ['pen','Risikovurdert','Fylte ut KIT-tabellen',!!D.vk3],
+    ['trophy','Bestått','Besto sluttesten i modul 1',!!D.quiz],
+    ['star','Perfekt','10 av 10 på sluttesten',M1.quizBest===10],
+    ['gem','Trinn S fullført','Fullførte hele modul 1',!!D.ferdig],
+    ['refresh','Målt fremgang','Tok testen på nytt',H.tests.length>1]
+  ];
+  var on=B.filter(function(b){return b[3];}).length;
+  $('#bdgCount').innerHTML=ic('star')+' '+on+' av '+B.length+' låst opp';
+  $('#badges').innerHTML=B.map(function(b){return '<div class="bdg'+(b[3]?' on':'')+'"><div class="md">'+ic(b[3]?b[0]:'lock')+'</div><b>'+b[1]+'</b><small>'+b[2]+'</small></div>';}).join('');
+}
+
+/* =========================================================
+   MIN SIKRE-PLAN
+   ========================================================= */
+function drawPlan(){
+  var D=M1.done||{};
+  var P=[
+    ['S','Mitt digitale verdikart','Verdikart, tre kronjuveler og KIT-tabell.',D.vk3?'done':D.vk1?'go':'new','Modul_1_STANDALONE.html'],
+    ['I','Mine største trusler','Truslene lagt oppå verdikartet.','lock'],
+    ['K','Min sikkerhetsbaseline','Tiltakene for de mest kritiske verdiene.','lock'],
+    ['R','Min hendelsesplan','Hva du gjør de første minuttene.','lock'],
+    ['E','Mine vaner og rutiner','Faste sjekker og 3-2-1-backup.','lock']
+  ];
+  $('#planGrid').innerHTML=P.map(function(p,i){var m=mod(p[0]),s=p[3];
+    var lbl=s==='done'?['#1D6B55','check','Ferdig']:s==='go'?['#9A5F00','clock','Påbegynt']:s==='new'?['#1D4E6B','play','Ikke startet']:['#9BB2C4','lock','Låses opp i modul '+(i+1)];
+    return '<div class="pch'+(s==='lock'?' lock':'')+'"><span class="pl" style="background:'+m.color+'">'+p[0]+'</span><b>Kapittel '+(i+1)+': '+p[1]+'</b><p>'+p[2]+'</p><span class="ps" style="color:'+lbl[0]+'">'+ic(lbl[1])+' '+lbl[2]+'</span>'+(p[4]&&s!=='lock'?'<a class="btn btn-s btn-sm" style="margin-top:10px;align-self:flex-start" href="'+p[4]+'">'+(s==='done'?'Åpne':'Fortsett')+' '+ic('right')+'</a>':'')+'</div>';}).join('');
+}
+
+/* ---------- forankring ---------- */
+function drawFW(){
+  var R=[['S','Identifisere og kartlegge','Identify'],['I','Identifisere og kartlegge (risiko)','Identify (risikovurdering)'],['K','Beskytte og opprettholde','Protect'],['R','Oppdage · Håndtere og gjenopprette','Detect · Respond · Recover'],['E','Styring og oppfølging over tid','Govern']];
+  $('#fw tbody').innerHTML=R.map(function(r,i){var m=mod(r[0]);return '<tr style="animation-delay:'+(i*80)+'ms"><td><span class="lt" style="background:'+m.color+'">'+r[0]+'</span><b>'+m.name+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>';}).join('');
+}
+
+/* ---------- huskeregler ---------- */
+var TIPS=[
+ 'Ingen seriøs aktør vil noen gang be deg om BankID-koder, passord eller engangskoder. Den som ber om det, er en svindler. Alltid.',
+ 'E-postkontoen er «nøkkelen til kongeriket» – den som kontrollerer den, kan nullstille nesten alle andre passord.',
+ 'Kjenn dine verdier. Reduser sårbarheter. Bygg reserveløsninger. Rekkefølgen er ikke tilfeldig.',
+ 'Stopp opp i tre sekunder før du klikker på en lenke. Det kan spare deg for tusenvis av kroner.',
+ 'Du har noe å miste, selv om du ikke har noe å skjule.',
+ 'Feilfritt språk er ikke lenger et tegn på ekthet – KI skriver perfekt norsk.',
+ 'Phishing-resistent tofaktor, som passnøkler, stopper over 99 prosent av angrep mot kontoer.',
+ 'Får du godkjenningsvarsler du ikke har bedt om? Avvis, og bytt passord – noen kjenner det.',
+ 'Alt du limer inn i et KI-verktøy, forlater din kontroll.',
+ 'Jevnlig sikkerhetskopi gjør et løsepengeangrep om fra en katastrofe til et håndterbart problem.'
+];
+function drawTip(){$('#tipTx').textContent=TIPS[H.tip%TIPS.length];}
+$('#tipNx').addEventListener('click',function(){H.tip=(H.tip+1)%TIPS.length;save();var p=$('#tipTx');p.style.opacity=0;setTimeout(function(){drawTip();p.style.transition='opacity .3s';p.style.opacity=1;},150);});
+
+/* ---------- navn ---------- */
+var dlg=$('#dlg'),dIn=$('#dlgIn');
+function openDlg(){dIn.value=H.name||'';dlg.classList.add('on');setTimeout(function(){dIn.focus();},50);}
+function closeDlg(){dlg.classList.remove('on');}
+$('#me').addEventListener('click',openDlg);$('#dlgX').addEventListener('click',closeDlg);
+$('#dlgOk').addEventListener('click',function(){H.name=dIn.value.trim().slice(0,30);save();closeDlg();drawOverall();toast(H.name?'Hei, '+H.name+'!':'Navnet er fjernet','check');});
+dIn.addEventListener('keydown',function(e){if(e.key==='Enter')$('#dlgOk').click();if(e.key==='Escape')closeDlg();});
+dlg.addEventListener('click',function(e){if(e.target===dlg)closeDlg();});
+
+$('#hubReset').addEventListener('click',function(){if(confirm('Nullstille navn, førtestresultater og markeringer på kursoversikten? (Fremdriften inne i modul 1 berøres ikke – den nullstilles fra selve modulen.)')){H=hubFresh();save();renderAll();toast('Kursoversikten er nullstilt','refresh');}});
+
+var tT;function toast(m,i){var t=$('#toast');t.innerHTML=ic(i||'check')+' '+h(m);t.classList.add('on');clearTimeout(tT);tT=setTimeout(function(){t.classList.remove('on');},2600);}
+
+/* ---------- avdekking ved rulling ---------- */
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.08});$$('.reveal').forEach(function(s){io.observe(s);});}
+else $$('.reveal').forEach(function(s){s.classList.add('in');});
+
+/* ---------- alt sammen ---------- */
+function renderAll(first){readM1();drawWheel(first);drawCard();drawOverall();drawResume();drawPath();drawPT();drawBadges();drawPlan();}
+fillIcons(document);
+drawFW();drawTip();renderAll(true);
+/* oppdater når studenten kommer tilbake fra en modul i en annen fane */
+window.addEventListener('storage',function(e){if(e.key===M1KEY||e.key===HKEY){H=Object.assign(hubFresh(),load(HKEY,{}));renderAll();}});
+document.addEventListener('visibilitychange',function(){if(!document.hidden)renderAll();});
+})();
+</script>
+</body>
+</html>
