@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modul 1 – Se hva som skal beskyttes | Cybersecurity 101</title>
+<style>
+/* ============================================================
+   Cybersecurity 101 - Modul 1 : S – Se hva som skal beskyttes
+   Selvstendig HTML + CSS + JavaScript. Ingen eksterne filer.
+   Alt er navnesatt under .m1 slik at Moodle-temaet ikke kolliderer.
+   Fremdrift lagres lokalt i nettleseren (localStorage).
+   ============================================================ */
+html,body{margin:0;padding:0;background:#F4F6F8;}
+
+.m1{
+  --navy:#0E2233; --navy2:#16324B; --slate:#1D4E6B;
+  --amber:#F5A623; --amberD:#9A5F00; --amberS:#FFF5E3;
+  --ember:#C9503C; --emberS:#FBECE8;
+  --mint:#2F9A7D; --mintS:#E3F4EE;
+  --sky:#2F74B5; --skyS:#E7F0FA;
+  --violet:#6E54B8; --violetS:#EFEAFA;
+  --ink:#16324B; --muted:#5D7183; --mutedl:#9BB2C4;
+  --bg:#F4F6F8; --mist:#EDF2F6; --card:#F7FAFC; --line:#DCE6ED; --white:#fff;
+  --serif:Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --r:16px;
+  --shadow:0 1px 2px rgba(14,34,51,.05),0 10px 30px rgba(14,34,51,.08);
+  font-family:var(--sans);color:var(--ink);background:var(--bg);
+  -webkit-font-smoothing:antialiased;min-height:100vh;line-height:1.5;
+}
+.m1 *,.m1 *::before,.m1 *::after{box-sizing:border-box;}
+.m1 h1,.m1 h2,.m1 h3,.m1 h4,.m1 p,.m1 ul,.m1 ol,.m1 li,.m1 figure{margin:0;padding:0;}
+.m1 ul,.m1 ol{list-style:none;}
+.m1 button{font-family:inherit;color:inherit;}
+.m1 a{color:var(--sky);}
+.m1 svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;}
+.m1 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.m1 :focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:8px;}
+.m1 h1[tabindex="-1"]:focus,.m1 .m1-stage:focus{outline:none;}
+
+/* ---------- topplinje ---------- */
+.m1-top{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line);}
+.m1-top-in{max-width:1280px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+.m1-brand{display:flex;align-items:center;gap:12px;min-width:0;}
+.m1-logo{width:40px;height:40px;border-radius:12px;background:var(--navy);color:var(--amber);display:grid;place-items:center;font-size:22px;flex:none;box-shadow:0 4px 12px rgba(14,34,51,.25);}
+.m1-brand small{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.m1-brand b{display:block;font-family:var(--serif);font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.m1-prog{flex:1;display:flex;align-items:center;gap:12px;min-width:120px;}
+.m1-bar{flex:1;height:8px;background:var(--mist);border-radius:99px;overflow:hidden;position:relative;}
+.m1-bar i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--amber),#FFC45C);border-radius:99px;transition:width .7s cubic-bezier(.3,.8,.3,1);}
+.m1-bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:m1Shine 2.4s infinite;}
+.m1-pct{font-weight:800;font-size:14px;min-width:44px;text-align:right;font-variant-numeric:tabular-nums;}
+.m1-pill{display:flex;align-items:center;gap:6px;background:var(--amberS);color:var(--amberD);font-weight:800;font-size:13.5px;padding:7px 12px;border-radius:99px;white-space:nowrap;font-variant-numeric:tabular-nums;}
+.m1-pill.bump{animation:m1Pop .5s;}
+.m1-menu{display:none;border:0;background:var(--mist);width:40px;height:40px;border-radius:12px;font-size:20px;cursor:pointer;place-items:center;}
+
+/* ---------- oppsett ---------- */
+.m1-layout{max-width:1280px;margin:0 auto;padding:24px;display:grid;grid-template-columns:290px minmax(0,1fr);gap:24px;align-items:start;}
+.m1-side{position:sticky;top:88px;background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);padding:18px 14px;max-height:calc(100vh - 110px);overflow:auto;}
+.m1-side h4{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:14px 8px 6px;}
+.m1-side h4:first-child{margin-top:0;}
+.m1-nav button{width:100%;display:flex;align-items:center;gap:10px;border:0;background:none;padding:8px 8px;border-radius:10px;text-align:left;font-size:13.5px;cursor:pointer;color:var(--ink);transition:background .15s;}
+.m1-nav button:hover:not(:disabled){background:var(--mist);}
+.m1-nav button:disabled{cursor:not-allowed;color:var(--mutedl);}
+.m1-nav button.cur{background:var(--amberS);font-weight:700;}
+.m1-nav .st{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;flex:none;border:2px solid var(--line);background:#fff;color:var(--mutedl);}
+.m1-nav .done .st{background:var(--mint);border-color:var(--mint);color:#fff;}
+.m1-nav .cur .st{border-color:var(--amber);color:var(--amberD);box-shadow:0 0 0 4px rgba(245,166,35,.2);}
+.m1-side-foot{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);display:grid;gap:8px;}
+.m1-side-foot p{font-size:12px;color:var(--muted);padding:0 8px;}
+.m1-link{border:0;background:none;color:var(--muted);font-size:12.5px;display:flex;gap:6px;align-items:center;cursor:pointer;padding:6px 8px;border-radius:8px;}
+.m1-link:hover{background:var(--mist);color:var(--ember);}
+
+.m1-main{background:var(--white);border-radius:22px;box-shadow:var(--shadow);min-height:calc(100vh - 140px);display:flex;flex-direction:column;}
+.m1-stage{flex:1;padding:44px 52px 28px;}
+.m1-foot{display:flex;align-items:center;gap:12px;padding:16px 52px;border-top:1px solid var(--line);background:var(--card);position:sticky;bottom:0;border-radius:0 0 22px 22px;z-index:5;}
+.m1-foot .hint{flex:1;text-align:center;font-size:13px;color:var(--muted);}
+.m1-foot .hint.ok{color:var(--mint);font-weight:700;}
+.m1-scrim{display:none;}
+
+/* ---------- knapper ---------- */
+.m1 .btn{font-size:14.5px;font-weight:700;padding:11px 20px;border-radius:99px;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .16s,box-shadow .16s,background .16s,opacity .16s;text-decoration:none;}
+.m1 .btn:hover:not(:disabled){transform:translateY(-2px);}
+.m1 .btn:disabled{opacity:.45;cursor:not-allowed;}
+.m1 .btn-p{background:var(--amber);color:var(--navy);box-shadow:0 4px 14px rgba(245,166,35,.35);}
+.m1 .btn-p:hover:not(:disabled){box-shadow:0 8px 22px rgba(245,166,35,.45);}
+.m1 .btn-d{background:var(--navy);color:#fff;box-shadow:0 4px 14px rgba(14,34,51,.25);}
+.m1 .btn-s{background:var(--mist);color:var(--ink);}
+.m1 .btn-s:hover:not(:disabled){background:#E2EAF0;}
+.m1 .btn-sm{font-size:13px;padding:8px 14px;}
+.m1 .btn.ready{animation:m1Nudge 1.4s ease-in-out 2;}
+
+/* ---------- typografi ---------- */
+.m1 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--amberD);margin-bottom:10px;}
+.m1 .eyebrow .n{background:var(--amberS);padding:3px 8px;border-radius:6px;letter-spacing:.05em;}
+.m1 h1.t{font-family:var(--serif);font-size:clamp(30px,4.2vw,46px);line-height:1.1;font-weight:700;margin-bottom:14px;letter-spacing:-.01em;}
+.m1 h2.t{font-family:var(--serif);font-size:clamp(22px,2.6vw,28px);line-height:1.2;margin:34px 0 10px;}
+.m1 h3{font-family:var(--serif);font-size:19px;line-height:1.3;margin-bottom:6px;}
+.m1 .lede{font-size:18px;color:var(--muted);line-height:1.6;max-width:70ch;}
+.m1 .prose p{font-size:16px;line-height:1.7;max-width:72ch;margin-top:12px;}
+.m1 .prose ul.dots{margin-top:10px;display:grid;gap:8px;max-width:72ch;}
+.m1 ul.dots li{position:relative;padding-left:22px;font-size:15.5px;line-height:1.6;}
+.m1 ul.dots li::before{content:"";position:absolute;left:4px;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--amber);}
+.m1 .muted{color:var(--muted);}
+.m1 .small{font-size:13px;}
+.m1 mark{background:linear-gradient(transparent 55%,rgba(245,166,35,.35) 55%);color:inherit;padding:0 2px;}
+.m1 .src{font-size:12px;color:var(--muted);font-style:italic;margin-top:10px;}
+.m1 .mod{display:inline-block;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:6px;background:var(--mist);color:var(--slate);letter-spacing:.03em;}
+
+/* ---------- blokker ---------- */
+.m1 .grid{display:grid;gap:16px;}
+.m1 .g2{grid-template-columns:repeat(2,minmax(0,1fr));}
+.m1 .g3{grid-template-columns:repeat(3,minmax(0,1fr));}
+.m1 .g4{grid-template-columns:repeat(4,minmax(0,1fr));}
+.m1 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;}
+.m1 .card.lift{transition:transform .2s,box-shadow .2s;}
+.m1 .card.lift:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(14,34,51,.10);}
+.m1 .card p{font-size:14.5px;color:var(--muted);line-height:1.55;}
+.m1 .ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;margin-bottom:12px;background:var(--amberS);color:var(--amberD);}
+.m1 .callout{border-radius:var(--r);padding:18px 20px 18px 58px;position:relative;margin-top:22px;border:1px solid transparent;}
+.m1 .callout>.ci{position:absolute;left:18px;top:18px;font-size:24px;}
+.m1 .callout h4{font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;}
+.m1 .callout p{font-size:15px;line-height:1.6;}
+.m1 .callout p+p{margin-top:8px;}
+.m1 .c-fact{background:var(--amberS);border-color:#F8DDAE;} .m1 .c-fact h4,.m1 .c-fact .ci{color:var(--amberD);}
+.m1 .c-warn{background:var(--emberS);border-color:#F2CFC6;} .m1 .c-warn h4,.m1 .c-warn .ci{color:var(--ember);}
+.m1 .c-tip{background:var(--mintS);border-color:#C4E8DB;} .m1 .c-tip h4,.m1 .c-tip .ci{color:var(--mint);}
+.m1 .c-info{background:var(--skyS);border-color:#CADDF1;} .m1 .c-info h4,.m1 .c-info .ci{color:var(--sky);}
+.m1 .task{margin-top:26px;border:2px dashed #D4E0E9;border-radius:20px;padding:22px;background:#FBFDFE;}
+.m1 .task-h{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.m1 .task-h .tag{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:#fff;padding:4px 9px;border-radius:6px;}
+.m1 .task-h b{font-family:var(--serif);font-size:18px;}
+.m1 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:99px;background:var(--mist);color:var(--ink);border:1px solid transparent;}
+.m1 .chips{display:flex;flex-wrap:wrap;gap:8px;}
+.m1 .stat{font-family:var(--serif);font-size:clamp(34px,4.6vw,50px);font-weight:700;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums;}
+.m1 .quote{font-family:var(--serif);font-size:clamp(20px,2.4vw,26px);line-height:1.4;border-left:4px solid var(--amber);padding:6px 0 6px 20px;margin-top:20px;}
+
+/* ---------- skjema ---------- */
+.m1 textarea,.m1 input[type=text]{width:100%;font-family:inherit;font-size:15.5px;color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;transition:border-color .15s,box-shadow .15s;resize:vertical;}
+.m1 textarea:focus,.m1 input[type=text]:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 4px rgba(245,166,35,.18);}
+.m1 label.lbl{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--slate);}
+.m1 .saved{font-size:12.5px;color:var(--mint);font-weight:700;opacity:0;transition:opacity .3s;}
+.m1 .saved.on{opacity:1;}
+
+/* ---------- svaralternativer / tilbakemelding ---------- */
+.m1 .q{font-weight:700;font-size:16.5px;margin-bottom:12px;line-height:1.45;}
+.m1 .opts{display:grid;gap:10px;}
+.m1 .opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:13px 15px;font-size:15px;line-height:1.45;cursor:pointer;transition:border-color .15s,background .15s,transform .15s;}
+.m1 .opt:hover:not(:disabled){border-color:var(--amber);transform:translateX(3px);}
+.m1 .opt .k{width:26px;height:26px;border-radius:8px;background:var(--mist);display:grid;place-items:center;font-weight:800;font-size:12.5px;flex:none;color:var(--slate);}
+.m1 .opt.ok{border-color:var(--mint);background:var(--mintS);}
+.m1 .opt.ok .k{background:var(--mint);color:#fff;}
+.m1 .opt.no{border-color:var(--ember);background:var(--emberS);animation:m1Shake .4s;}
+.m1 .opt.no .k{background:var(--ember);color:#fff;}
+.m1 .opt:disabled{cursor:default;}
+.m1 .fb{margin-top:12px;border-radius:12px;padding:12px 14px;font-size:14.5px;line-height:1.55;display:none;}
+.m1 .fb.show{display:block;animation:m1Rise .35s both;}
+.m1 .fb.good{background:var(--mintS);color:#1D5E4C;}
+.m1 .fb.bad{background:var(--emberS);color:#8A3526;}
+
+/* ---------- sorteringsspill ---------- */
+.m1 .pool{display:flex;flex-wrap:wrap;gap:10px;padding:16px;border-radius:16px;background:var(--mist);min-height:66px;align-items:center;}
+.m1 .pool:empty::after{content:"Alt er sortert!";color:var(--mint);font-weight:700;margin:auto;}
+.m1 .itm{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:9px 13px;font-size:14px;font-weight:600;cursor:grab;display:inline-flex;text-align:left;gap:7px;align-items:center;box-shadow:0 2px 4px rgba(14,34,51,.05);transition:transform .15s,box-shadow .15s,border-color .15s;user-select:none;}
+.m1 .itm:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(14,34,51,.1);}
+.m1 .itm.sel{border-color:var(--amber);box-shadow:0 0 0 4px rgba(245,166,35,.25);transform:translateY(-2px);}
+.m1 .itm.placed{cursor:default;border-color:transparent;background:#fff;font-size:13px;padding:6px 10px;animation:m1Pop .35s;}
+.m1 .itm.bad{animation:m1Shake .4s;border-color:var(--ember);}
+.m1 .bins{display:grid;gap:12px;margin-top:14px;}
+.m1 .bin{border:2px dashed var(--line);border-radius:16px;padding:12px;background:#fff;min-height:96px;transition:border-color .15s,background .15s,transform .15s;cursor:pointer;display:flex;flex-direction:column;gap:8px;}
+.m1 .bin:hover,.m1 .bin.over{border-color:var(--amber);background:var(--amberS);}
+.m1 .bin.flash{animation:m1Flash .5s;}
+.m1 .bin-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13.5px;}
+.m1 .bin-h .bi{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:15px;color:#fff;flex:none;}
+.m1 .bin-l{display:flex;flex-wrap:wrap;gap:6px;}
+.m1 .sortfb{min-height:24px;margin-top:10px;font-size:14px;font-weight:600;}
+.m1 .sortfb.good{color:var(--mint);} .m1 .sortfb.bad{color:var(--ember);}
+
+/* ---------- kortstokk ---------- */
+.m1 .deck{max-width:680px;margin:18px auto 0;}
+.m1 .deck-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;color:var(--muted);font-weight:700;}
+.m1 .pips{display:flex;gap:5px;}
+.m1 .pips i{width:22px;height:6px;border-radius:9px;background:var(--line);transition:background .3s;}
+.m1 .pips i.ok{background:var(--mint);} .m1 .pips i.no{background:var(--ember);} .m1 .pips i.on{background:var(--amber);}
+.m1 .dcard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:0 14px 34px rgba(14,34,51,.10);animation:m1Deal .45s cubic-bezier(.2,.8,.3,1) both;position:relative;}
+.m1 .dcard .sit{font-size:18px;line-height:1.5;font-family:var(--serif);}
+.m1 .dcard .sit-ico{width:52px;height:52px;border-radius:16px;background:var(--mist);display:grid;place-items:center;font-size:26px;margin-bottom:14px;color:var(--slate);}
+.m1 .dchoices{display:grid;gap:10px;margin-top:20px;}
+.m1 .dchoices.c3{grid-template-columns:repeat(3,1fr);}
+.m1 .dchoices.c2{grid-template-columns:repeat(2,1fr);}
+.m1 .dbtn{border:2px solid var(--line);background:#fff;border-radius:14px;padding:14px 10px;font-weight:800;font-size:15px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .15s,border-color .15s,background .15s;}
+.m1 .dbtn small{font-weight:600;font-size:12px;color:var(--muted);}
+.m1 .dbtn:hover:not(:disabled){transform:translateY(-3px);border-color:var(--amber);}
+.m1 .dbtn.ok{border-color:var(--mint);background:var(--mintS);}
+.m1 .dbtn.no{border-color:var(--ember);background:var(--emberS);animation:m1Shake .4s;}
+.m1 .dbtn:disabled{cursor:default;}
+.m1 .stamp{position:absolute;top:18px;right:18px;font-weight:900;font-size:13px;letter-spacing:.14em;padding:6px 10px;border:3px solid;border-radius:8px;transform:rotate(8deg);animation:m1Stamp .4s cubic-bezier(.3,1.6,.5,1) both;}
+.m1 .stamp.ok{color:var(--mint);} .m1 .stamp.no{color:var(--ember);}
+.m1 .dsum{text-align:center;padding:30px;}
+.m1 .dsum .big{font-family:var(--serif);font-size:54px;font-weight:700;}
+
+/* ---------- SIKRE-sirkel (intro) ---------- */
+.m1 .hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr);gap:30px;align-items:center;}
+.m1 .sikre{width:100%;max-width:340px;margin:auto;display:block;}
+.m1 .sikre .ring{fill:none;stroke:var(--line);stroke-width:2;stroke-dasharray:4 6;animation:m1Spin 60s linear infinite;transform-origin:130px 130px;}
+.m1 .sikre .node circle{fill:#fff;stroke:var(--line);stroke-width:2;}
+.m1 .sikre .node text{font-family:var(--serif);font-weight:700;font-size:22px;fill:var(--mutedl);text-anchor:middle;dominant-baseline:central;}
+.m1 .sikre .node.on circle{fill:var(--amber);stroke:var(--amber);}
+.m1 .sikre .node.on text{fill:var(--navy);}
+.m1 .sikre .pulse{fill:none;stroke:var(--amber);stroke-width:2;animation:m1Pulse 2s ease-out infinite;transform-box:fill-box;transform-origin:center;}
+.m1 .goal{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);}
+.m1 .goal:last-child{border-bottom:0;}
+.m1 .goal .gi{width:36px;height:36px;border-radius:10px;background:var(--mist);display:grid;place-items:center;font-size:18px;color:var(--slate);flex:none;}
+.m1 .goal p{font-size:15.5px;line-height:1.5;padding-top:6px;}
+
+/* ---------- hus-analogi ---------- */
+.m1 .house{position:relative;max-width:420px;margin:auto;}
+.m1 .house svg{width:100%;display:block;}
+.m1 .hot{position:absolute;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;border:0;background:var(--amber);color:var(--navy);font-size:22px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(245,166,35,.45);transition:transform .2s,background .2s;}
+.m1 .hot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--amber);animation:m1Pulse 2s ease-out infinite;}
+.m1 .hot.seen{background:var(--mint);color:#fff;box-shadow:0 6px 16px rgba(47,154,125,.35);}
+.m1 .hot.seen::after{display:none;}
+.m1 .hot:hover{transform:translate(-50%,-50%) scale(1.1);}
+.m1 .hot.act{box-shadow:0 0 0 6px rgba(14,34,51,.15);}
+.m1 .hpanel{min-height:170px;}
+.m1 .pair{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px;animation:m1Rise .4s both;}
+.m1 .pair .side{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;}
+.m1 .pair .side small{display:block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.m1 .pair .side.dig{background:var(--skyS);border-color:#CADDF1;}
+.m1 .pair .arr{font-size:22px;color:var(--amberD);}
+.m1 .habits{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
+.m1 .habit{background:var(--navy);color:#fff;border-radius:16px;padding:18px;position:relative;overflow:hidden;}
+.m1 .habit .hn{font-family:var(--serif);font-size:34px;color:var(--amber);line-height:1;}
+.m1 .habit p{font-size:14px;color:#D3E0EA;margin-top:8px;line-height:1.5;}
+
+/* ---------- vippekort ---------- */
+.m1 .flip{perspective:1000px;cursor:pointer;min-height:220px;border:0;background:none;padding:0;text-align:left;width:100%;}
+.m1 .flip-in{position:relative;width:100%;height:100%;min-height:190px;transition:transform .6s cubic-bezier(.3,.8,.3,1);transform-style:preserve-3d;}
+.m1 .flip-in{min-height:220px;}
+.m1 .flip.on .flip-in{transform:rotateY(180deg);}
+.m1 .flip-f,.m1 .flip-b{position:absolute;inset:0;border-radius:var(--r);padding:20px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;}
+.m1 .flip-f{background:var(--navy);color:#fff;justify-content:space-between;}
+.m1 .flip-f h3{color:#fff;font-size:20px;}
+.m1 .flip-f .tap{font-size:12px;color:var(--mutedl);display:flex;gap:6px;align-items:center;}
+.m1 .flip-b{background:var(--amberS);border:1px solid #F8DDAE;transform:rotateY(180deg);justify-content:center;}
+.m1 .flip-b p{font-size:14.5px;line-height:1.55;color:var(--ink);}
+
+/* ---------- rekkefølge-puslespill ---------- */
+.m1 .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;}
+.m1 .slot{border:2px dashed var(--line);border-radius:14px;min-height:78px;display:flex;align-items:center;gap:10px;padding:12px;font-family:var(--serif);font-size:17px;font-weight:700;background:#fff;}
+.m1 .slot .sn{width:30px;height:30px;border-radius:50%;background:var(--mist);display:grid;place-items:center;font-family:var(--sans);font-size:13px;font-weight:800;flex:none;color:var(--muted);}
+.m1 .slot.fill{border-style:solid;border-color:var(--mint);background:var(--mintS);animation:m1Pop .35s;}
+.m1 .slot.fill .sn{background:var(--mint);color:#fff;}
+.m1 .frames{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px;position:relative;}
+.m1 .frame{border-radius:16px;padding:18px;background:#fff;border:1px solid var(--line);text-align:center;}
+.m1 .frame small{display:block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.m1 .frame .fb1{font-family:var(--serif);font-weight:700;font-size:17px;margin:8px 0 10px;}
+.m1 .frame .first{display:inline-block;background:var(--amber);color:var(--navy);font-weight:800;font-size:13px;padding:6px 12px;border-radius:99px;animation:m1Pop .5s both;}
+.m1 .frame .rest{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.m1 .frame .rest span{font-size:11px;background:var(--mist);color:var(--muted);padding:3px 7px;border-radius:6px;}
+
+/* ---------- Saras dag ---------- */
+.m1 .sara{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-top:18px;}
+.m1 .ava{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#FFD7A0,#F5A623);display:grid;place-items:center;font-family:var(--serif);font-size:28px;font-weight:700;color:var(--navy);flex:none;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08);}
+.m1 .tl{position:relative;margin-top:24px;padding-left:34px;}
+.m1 .tl::before{content:"";position:absolute;left:12px;top:6px;bottom:6px;width:3px;background:var(--line);border-radius:3px;}
+.m1 .tl-fill{position:absolute;left:12px;top:6px;width:3px;background:var(--amber);border-radius:3px;transition:height .6s;}
+.m1 .ev{position:relative;margin-bottom:18px;}
+.m1 .ev::before{content:"";position:absolute;left:-29px;top:18px;width:17px;height:17px;border-radius:50%;background:#fff;border:3px solid var(--line);}
+.m1 .ev.act::before{border-color:var(--amber);box-shadow:0 0 0 5px rgba(245,166,35,.2);}
+.m1 .ev.fin::before{background:var(--mint);border-color:var(--mint);}
+.m1 .ev.lock{opacity:.45;}
+.m1 .ev-box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;transition:box-shadow .2s;}
+.m1 .ev.act .ev-box{box-shadow:0 12px 30px rgba(14,34,51,.10);border-color:#F3D29A;}
+.m1 .ev-time{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:14px;color:var(--amberD);font-variant-numeric:tabular-nums;}
+.m1 .ev-time .i{animation:m1Spin 6s linear infinite;}
+.m1 .ev-sit{font-size:15.5px;line-height:1.6;margin:6px 0 12px;}
+.m1 .reveal{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;animation:m1Rise .4s both;}
+.m1 .reveal div{border-radius:12px;padding:10px 12px;font-size:13.5px;}
+.m1 .reveal small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.75;}
+.m1 .reveal .trap{background:var(--emberS);color:#8A3526;}
+.m1 .reveal .val{background:var(--skyS);color:#1E4E7C;}
+.m1 .ev.lock .ev-body{display:none;}
+
+/* ---------- kategoriutforsker ---------- */
+.m1 .dual{display:grid;gap:14px;margin-top:14px;}
+.m1 .dual-row{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center;}
+.m1 .dual-row b{font-size:14.5px;}
+.m1 .meter{display:grid;gap:6px;}
+.m1 .meter div{display:grid;grid-template-columns:92px 1fr;gap:10px;align-items:center;font-size:12.5px;color:var(--muted);font-weight:700;}
+.m1 .meter span{height:10px;border-radius:9px;background:var(--mist);overflow:hidden;position:relative;}
+.m1 .meter span i{position:absolute;inset:0 auto 0 0;border-radius:9px;width:0;transition:width 1.2s cubic-bezier(.3,.8,.3,1);}
+.m1 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;}
+.m1 .tile{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:16px;text-align:left;cursor:pointer;display:flex;gap:12px;align-items:center;transition:transform .15s,border-color .15s,box-shadow .15s;position:relative;}
+.m1 .tile:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(14,34,51,.08);}
+.m1 .tile .ti{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;color:#fff;flex:none;}
+.m1 .tile b{font-size:14.5px;line-height:1.3;display:block;}
+.m1 .tile small{font-size:12px;color:var(--muted);}
+.m1 .tile.act{border-color:var(--navy);box-shadow:0 0 0 3px rgba(14,34,51,.1);}
+.m1 .tile .ck{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--mint);color:#fff;display:none;place-items:center;font-size:11px;}
+.m1 .tile.seen .ck{display:grid;animation:m1Pop .35s;}
+.m1 .detail{margin-top:16px;border-radius:20px;padding:26px;background:var(--card);border:1px solid var(--line);animation:m1Rise .4s both;}
+.m1 .detail-h{display:flex;gap:14px;align-items:center;margin-bottom:6px;}
+.m1 .detail-h .ti{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:25px;color:#fff;flex:none;}
+.m1 .detail .prose p:first-child{margin-top:4px;}
+.m1 .twoq{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+.m1 .twoq div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;}
+.m1 .twoq b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--amberD);margin-bottom:3px;}
+.m1 .chain{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.m1 .chain span{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;font-weight:700;animation:m1Rise .4s both;}
+.m1 .chain .i{color:var(--amberD);}
+.m1 .chain span.hot2{background:var(--navy);color:#fff;border-color:var(--navy);}
+.m1 .rule{background:var(--navy);color:#fff;border-radius:20px;padding:26px 28px;margin-top:20px;position:relative;overflow:hidden;}
+.m1 .rule h4{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;display:flex;gap:8px;align-items:center;}
+.m1 .rule p{font-size:16px;line-height:1.6;color:#DCE7EF;}
+.m1 .rule .big{font-family:var(--serif);font-size:24px;color:#fff;margin-top:12px;line-height:1.3;}
+.m1 .rule .alw{display:inline-block;margin-top:10px;color:var(--amber);font-weight:900;letter-spacing:.14em;font-size:14px;border:2px solid var(--amber);padding:5px 12px;border-radius:8px;transform:rotate(-3deg);animation:m1Stamp .6s .4s cubic-bezier(.3,1.6,.5,1) both;}
+
+/* ---------- identitet ---------- */
+.m1 .orbit{position:relative;width:260px;height:260px;margin:auto;}
+.m1 .orbit .core{position:absolute;inset:70px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#58C3A6,var(--mint));color:#fff;display:grid;place-items:center;text-align:center;font-family:var(--serif);font-weight:700;font-size:15px;line-height:1.2;padding:12px;box-shadow:0 12px 30px rgba(47,154,125,.35);animation:m1Pop .8s 1.6s both;}
+.m1 .orbit .o{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:19px;animation:m1Merge 2.2s cubic-bezier(.5,0,.3,1) both;}
+.m1 .orbit .spin{position:absolute;inset:0;animation:m1Spin 26s linear infinite;}
+
+/* ---------- KIT-trekant ---------- */
+.m1 .kit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;align-items:start;margin-top:10px;}
+.m1 .kit>div>svg{width:100%;max-width:520px;display:block;margin:auto;overflow:visible;}
+.m1 .kit .edge{stroke:#B9CAD7;stroke-width:3;fill:none;stroke-dasharray:1200;stroke-dashoffset:1200;animation:m1Draw 1.6s .2s ease forwards;}
+.m1 .kit .face{fill:url(#m1tri);opacity:0;animation:m1Fade .8s 1.2s forwards;}
+.m1 .kit .vx{cursor:pointer;}
+.m1 .kit .vx .bg{transition:transform .2s;transform-box:fill-box;transform-origin:center;}
+.m1 .kit .vx:hover .bg,.m1 .kit .vx:focus .bg{transform:scale(1.08);}
+.m1 .kit .vx text{font-family:var(--serif);font-weight:700;fill:#fff;text-anchor:middle;pointer-events:none;}
+.m1 .kit .vx .seenring{fill:none;stroke:var(--mint);stroke-width:4;opacity:0;}
+.m1 .kit .vx.seen .seenring{opacity:1;}
+.m1 .kit .vx.act .bg{stroke:var(--amber);stroke-width:6;}
+.m1 .kitp{min-height:260px;}
+.m1 .kitp .detail{margin-top:0;}
+.m1 .kitlbl{font-family:var(--serif);font-size:13px;fill:var(--muted);text-anchor:middle;}
+
+/* ---------- donut ---------- */
+.m1 .donut{width:140px;height:140px;flex:none;}
+.m1 .donut circle{fill:none;stroke-width:14;}
+.m1 .donut .tr{stroke:var(--mist);}
+.m1 .donut .val{stroke:var(--ember);stroke-linecap:round;stroke-dasharray:0 252;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray 1.6s cubic-bezier(.3,.8,.3,1);}
+.m1 .donut text{font-family:var(--serif);font-weight:700;font-size:22px;fill:var(--ink);text-anchor:middle;dominant-baseline:central;}
+.m1 .statrow{display:flex;gap:22px;align-items:center;}
+
+/* ---------- verdikart ---------- */
+.m1 .vk{position:relative;height:620px;margin-top:18px;border-radius:22px;background:radial-gradient(circle at 50% 50%,#FFF8EC 0,#F7FAFC 55%);border:1px solid var(--line);overflow:hidden;}
+.m1 .vk svg.lines{position:absolute;inset:0;width:100%;height:100%;}
+.m1 .vk svg.lines line{stroke:#C9D6E0;stroke-width:2;stroke-dasharray:6 6;vector-effect:non-scaling-stroke;animation:m1Dash 30s linear infinite;}
+.m1 .vk svg.lines line.has{stroke:var(--amber);stroke-dasharray:none;}
+.m1 .vk-me{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:132px;height:132px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;text-align:center;box-shadow:0 0 0 10px rgba(14,34,51,.06),0 16px 40px rgba(14,34,51,.3);z-index:2;}
+.m1 .vk-me b{font-family:var(--serif);font-size:24px;display:block;}
+.m1 .vk-me small{font-size:11px;color:var(--mutedl);display:block;}
+.m1 .vk-me .cnt{font-size:12px;color:var(--amber);font-weight:800;margin-top:3px;}
+.m1 .vk-node{position:absolute;transform:translate(-50%,-50%);width:190px;background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 12px;cursor:pointer;text-align:left;z-index:3;transition:border-color .15s,box-shadow .15s,transform .2s;animation:m1Fade .5s both;}
+.m1 .vk-node:hover{box-shadow:0 10px 24px rgba(14,34,51,.12);}
+.m1 .vk-node.act{border-color:var(--amber);box-shadow:0 0 0 4px rgba(245,166,35,.22),0 10px 24px rgba(14,34,51,.12);}
+.m1 .vk-node .nh{display:flex;align-items:center;gap:8px;}
+.m1 .vk-node .ni{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:15px;color:#fff;flex:none;}
+.m1 .vk-node b{font-size:12.5px;line-height:1.25;flex:1;}
+.m1 .vk-node .nc{font-size:11.5px;font-weight:800;min-width:22px;height:22px;border-radius:99px;background:var(--mist);display:grid;place-items:center;padding:0 6px;color:var(--muted);}
+.m1 .vk-node.has .nc{background:var(--mint);color:#fff;}
+.m1 .vk-node .np{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.m1 .vk-ed{margin-top:16px;border-radius:20px;padding:20px;background:#fff;border:2px solid var(--amber);box-shadow:0 12px 30px rgba(245,166,35,.12);animation:m1Rise .35s both;}
+.m1 .vk-add{display:flex;gap:10px;margin-top:10px;}
+.m1 .vk-add input{flex:1;}
+.m1 .mine{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;min-height:36px;}
+.m1 .mine .chip{background:var(--navy);color:#fff;animation:m1Pop .3s;}
+.m1 .mine .chip button{border:0;background:rgba(255,255,255,.18);color:#fff;width:18px;height:18px;border-radius:50%;cursor:pointer;display:grid;place-items:center;font-size:10px;padding:0;}
+.m1 .sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.m1 .sugg button{border:1.5px dashed #C9D6E0;background:#fff;border-radius:99px;padding:5px 11px;font-size:12.5px;cursor:pointer;color:var(--slate);transition:all .15s;}
+.m1 .sugg button:hover{border-color:var(--amber);border-style:solid;background:var(--amberS);}
+.m1 .sugg button::before{content:"+ ";font-weight:800;color:var(--amberD);}
+.m1 .checks{display:grid;gap:8px;margin-top:10px;}
+.m1 .checks label{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.5;cursor:pointer;padding:8px 10px;border-radius:10px;}
+.m1 .checks label:hover{background:var(--mist);}
+.m1 .checks input{width:18px;height:18px;margin-top:2px;accent-color:var(--mint);flex:none;}
+.m1 input[type=range]{width:100%;accent-color:var(--amber);}
+
+/* ---------- stjerner / tabell ---------- */
+.m1 .stargrp{margin-top:14px;}
+.m1 .stargrp h4{font-size:12.5px;font-weight:800;display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.m1 .stargrp h4 i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.m1 .starbtn{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 12px 7px 10px;font-size:13.5px;font-weight:600;cursor:pointer;display:inline-flex;gap:6px;align-items:center;transition:all .15s;}
+.m1 .starbtn .i{color:var(--mutedl);font-size:15px;transition:color .15s,transform .3s;}
+.m1 .starbtn:hover{border-color:var(--amber);}
+.m1 .starbtn.on{background:var(--amberS);border-color:var(--amber);}
+.m1 .starbtn.on .i{color:var(--amber);fill:var(--amber);transform:rotate(72deg) scale(1.15);}
+.m1 .top3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;}
+.m1 .t3{border:2px dashed var(--line);border-radius:16px;padding:16px;min-height:92px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;}
+.m1 .t3 .n{font-family:var(--serif);font-size:28px;color:var(--mutedl);line-height:1;}
+.m1 .t3.fill{border-style:solid;border-color:var(--amber);background:var(--amberS);animation:m1Pop .35s;}
+.m1 .t3.fill .n{color:var(--amberD);}
+.m1 .t3 b{font-size:14.5px;}
+.m1 .jq{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;}
+.m1 .jq div{border-radius:14px;padding:14px;}
+.m1 .jq b{display:block;font-size:14px;margin-bottom:3px;}
+.m1 .jq p{font-size:13px;line-height:1.45;color:var(--muted);}
+.m1 .row3{border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px;background:#fff;}
+.m1 .row3.ex{background:var(--card);}
+.m1 .row3-h{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.m1 .row3-h .n{width:32px;height:32px;border-radius:50%;background:var(--amber);color:var(--navy);display:grid;place-items:center;font-weight:800;flex:none;}
+.m1 .row3.ex .row3-h .n{background:var(--mist);color:var(--muted);font-size:12px;}
+.m1 .row3-h b{font-family:var(--serif);font-size:18px;}
+.m1 .cols4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.m1 .cols4 label.lbl{display:flex;gap:6px;align-items:center;}
+.m1 .cols4 .kb{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;color:#fff;font-size:11px;font-weight:800;}
+.m1 .cols4 textarea{min-height:92px;font-size:14px;}
+.m1 .cols4 .exv{font-size:13.5px;line-height:1.5;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:92px;}
+
+/* ---------- eksport ---------- */
+.m1 .sheet{border:1px solid var(--line);border-radius:18px;padding:28px;background:#fff;box-shadow:0 20px 40px rgba(14,34,51,.08);margin-top:18px;position:relative;}
+.m1 .sheet::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:linear-gradient(90deg,var(--amber),var(--ember));border-radius:18px 18px 0 0;}
+.m1 .sheet h3{font-size:22px;}
+.m1 .sheet h5{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px;}
+.m1 .sheet p,.m1 .sheet li{font-size:14px;line-height:1.55;}
+.m1 .sheet ul{display:grid;gap:4px;}
+.m1 .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+
+/* ---------- oppsummering (avslør) ---------- */
+.m1 .sum{display:grid;gap:12px;margin-top:18px;}
+.m1 .sumi{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;}
+.m1 .sumi .n{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;}
+.m1 .sumi p{font-size:15.5px;line-height:1.6;padding-top:4px;}
+.m1 .blank{display:inline-block;border:0;border-bottom:2px dashed var(--amber);background:var(--amberS);color:transparent;border-radius:6px 6px 0 0;padding:0 6px;cursor:pointer;font:inherit;font-weight:700;position:relative;min-width:90px;}
+.m1 .blank::after{content:"trykk";position:absolute;inset:0;color:var(--amberD);font-size:11px;display:grid;place-items:center;letter-spacing:.1em;text-transform:uppercase;font-weight:800;}
+.m1 .blank.on{color:var(--ink);background:var(--mintS);border-bottom-color:var(--mint);cursor:default;animation:m1Pop .35s;}
+.m1 .blank.on::after{display:none;}
+
+/* ---------- sluttest ---------- */
+.m1 .quiz{max-width:720px;margin:18px auto 0;}
+.m1 .qhead{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;}
+.m1 .qbar{height:6px;background:var(--mist);border-radius:9px;overflow:hidden;margin-bottom:18px;}
+.m1 .qbar i{display:block;height:100%;background:var(--navy);transition:width .4s;}
+.m1 .result{text-align:center;padding:10px 0;}
+.m1 .result .ring{width:170px;height:170px;margin:0 auto 10px;}
+.m1 .result .ring circle{fill:none;stroke-width:12;}
+.m1 .result .ring .tr{stroke:var(--mist);}
+.m1 .result .ring .val{stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray 1.4s cubic-bezier(.3,.8,.3,1);}
+.m1 .result .ring text{font-family:var(--serif);font-size:30px;font-weight:700;text-anchor:middle;dominant-baseline:central;fill:var(--ink);}
+.m1 .review{text-align:left;margin-top:18px;display:grid;gap:8px;}
+.m1 .review div{font-size:13.5px;padding:10px 12px;border-radius:10px;background:var(--card);border-left:4px solid var(--mint);}
+.m1 .review div.no{border-left-color:var(--ember);}
+
+/* ---------- fullført ---------- */
+.m1 .cert{position:relative;border-radius:24px;padding:40px 36px;background:linear-gradient(145deg,#fff 0,#FFF7E8 100%);border:1px solid #F3D9A8;text-align:center;overflow:hidden;margin-top:10px;}
+.m1 .cert::before,.m1 .cert::after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(245,166,35,.10);}
+.m1 .cert::before{top:-120px;left:-80px;} .m1 .cert::after{bottom:-140px;right:-60px;}
+.m1 .medal{width:110px;height:110px;margin:0 auto 12px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFD27A,var(--amber));display:grid;place-items:center;font-size:52px;color:var(--navy);box-shadow:0 0 0 10px rgba(245,166,35,.18),0 18px 40px rgba(245,166,35,.4);animation:m1Pop .8s cubic-bezier(.3,1.6,.5,1) both;position:relative;z-index:1;}
+.m1 .cert h1{position:relative;z-index:1;}
+.m1 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px;position:relative;z-index:1;}
+.m1 .kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 10px;}
+.m1 .kpi b{display:block;font-family:var(--serif);font-size:30px;line-height:1;}
+.m1 .kpi small{font-size:12px;color:var(--muted);}
+.m1 .next{display:flex;gap:18px;align-items:center;background:var(--navy);color:#fff;border-radius:20px;padding:22px 24px;margin-top:22px;}
+.m1 .next .L{width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid var(--amber);display:grid;place-items:center;font-family:var(--serif);font-size:30px;font-weight:700;color:var(--amber);flex:none;}
+.m1 .next p{color:#C9D8E3;font-size:14.5px;line-height:1.5;}
+.m1 .next b{font-family:var(--serif);font-size:19px;display:block;margin-bottom:2px;}
+
+/* ---------- toast + konfetti ---------- */
+.m1-toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,30px);background:var(--navy);color:#fff;padding:12px 18px;border-radius:14px;font-size:14px;font-weight:700;display:flex;gap:10px;align-items:center;box-shadow:0 14px 34px rgba(14,34,51,.3);opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:60;max-width:calc(100vw - 32px);}
+.m1-toast.on{opacity:1;transform:translate(-50%,0);}
+.m1-toast .i{color:var(--amber);font-size:18px;}
+.m1-confetti{position:fixed;inset:0;pointer-events:none;z-index:70;}
+
+/* ---------- inngangsanimasjon ---------- */
+.m1 .rv{animation:m1Rise .6s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--d,0) * 90ms);}
+.m1-stage.enter{animation:m1Fade .35s both;}
+
+@keyframes m1Rise{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+@keyframes m1Fade{from{opacity:0;}to{opacity:1;}}
+@keyframes m1Pop{0%{transform:scale(.7);opacity:0;}70%{transform:scale(1.06);opacity:1;}100%{transform:scale(1);}}
+@keyframes m1Shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-7px);}40%{transform:translateX(7px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+@keyframes m1Pulse{0%{transform:scale(1);opacity:.9;}100%{transform:scale(1.7);opacity:0;}}
+@keyframes m1Spin{to{transform:rotate(360deg);}}
+@keyframes m1Draw{to{stroke-dashoffset:0;}}
+@keyframes m1Dash{to{stroke-dashoffset:-200;}}
+@keyframes m1Shine{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+@keyframes m1Nudge{0%,100%{transform:none;}30%{transform:translateX(5px);}60%{transform:translateX(-2px);}}
+@keyframes m1Deal{from{opacity:0;transform:translateY(24px) rotate(-2deg) scale(.96);}to{opacity:1;transform:none;}}
+@keyframes m1Stamp{from{opacity:0;transform:rotate(8deg) scale(2);}to{opacity:1;}}
+@keyframes m1Flash{0%,100%{border-color:var(--line);}50%{border-color:var(--ember);background:var(--emberS);}}
+@keyframes m1Merge{0%{transform:rotate(var(--a)) translate(118px) rotate(calc(var(--a) * -1)) scale(1);opacity:0;}20%{opacity:1;}60%{transform:rotate(calc(var(--a) + 120deg)) translate(118px) rotate(calc((var(--a) + 120deg) * -1)) scale(1);opacity:1;}100%{transform:rotate(calc(var(--a) + 180deg)) translate(104px) rotate(calc((var(--a) + 180deg) * -1)) scale(.8);opacity:1;}}
+
+@media (prefers-reduced-motion:reduce){
+  .m1 *,.m1 *::before,.m1 *::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;}
+}
+
+/* ---------- responsivt ---------- */
+@media (max-width:1080px){
+  .m1-layout{grid-template-columns:1fr;padding:16px;}
+  .m1-side{position:fixed;top:0;left:0;bottom:0;width:300px;max-height:none;border-radius:0 18px 18px 0;z-index:55;transform:translateX(-105%);transition:transform .3s;}
+  .m1.open .m1-side{transform:none;}
+  .m1.open .m1-scrim{display:block;position:fixed;inset:0;background:rgba(14,34,51,.4);z-index:50;}
+  .m1-menu{display:grid;}
+  .m1-stage{padding:32px 28px 24px;}
+  .m1-foot{padding:14px 28px;}
+}
+@media (max-width:820px){
+  .m1 .g3,.m1 .g4,.m1 .tiles,.m1 .habits,.m1 .frames,.m1 .slots,.m1 .jq,.m1 .top3{grid-template-columns:1fr 1fr;}
+  .m1 .hero,.m1 .kit,.m1 .g2{grid-template-columns:1fr;}
+  .m1 .cols4{grid-template-columns:1fr 1fr;}
+  .m1 .kpis{grid-template-columns:1fr 1fr;}
+  .m1 .vk{height:auto;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--card);}
+  .m1 .vk svg.lines{display:none;}
+  .m1 .vk-me{position:static;transform:none;width:auto;height:auto;border-radius:16px;padding:14px;grid-column:1/-1;}
+  .m1 .vk-node{position:static;transform:none;width:auto;}
+}
+@media (max-width:560px){
+  .m1-top-in{padding:10px 16px;gap:10px;}
+  .m1-brand>div,.m1-pill span{display:none;}
+  .m1-layout{padding:0;}
+  .m1-main{border-radius:0;box-shadow:none;}
+  .m1-foot{border-radius:0;}
+  .m1-stage{padding:26px 16px 20px;}
+  .m1-foot{padding:12px 16px;}
+  .m1-foot .hint{font-size:12px;}
+  .m1-foot .btn{padding:10px 14px;}
+  .m1 .g3,.m1 .g4,.m1 .tiles,.m1 .habits,.m1 .frames,.m1 .slots,.m1 .jq,.m1 .top3,.m1 .cols4,.m1 .twoq,.m1 .reveal{grid-template-columns:1fr;}
+  .m1 .dchoices.c3{grid-template-columns:1fr;}
+  .m1 .pair{grid-template-columns:1fr;}
+  .m1 .pair .arr{transform:rotate(90deg);justify-self:center;}
+  .m1 .dual-row{grid-template-columns:1fr;gap:6px;}
+  .m1 .vk{grid-template-columns:1fr;}
+  .m1 .statrow{flex-direction:column;align-items:flex-start;}
+  .m1 .next{flex-direction:column;align-items:flex-start;}
+  .m1 .dcard{padding:22px 18px;}
+  .m1 .callout{padding:16px 16px 16px 50px;}
+  .m1 .callout>.ci{left:14px;top:16px;}
+}
+
+/* ---------- utskrift: bare planarket ---------- */
+.m1-print{display:none;}
+@media print{
+  body *{visibility:hidden!important;}
+  .m1-print,.m1-print *{visibility:visible!important;}
+  .m1-print{display:block!important;position:absolute;left:0;top:0;width:100%;padding:0 10mm;font-family:Georgia,serif;color:#111;}
+  .m1-print h1{font-size:22pt;margin:0 0 4pt;}
+  .m1-print h2{font-size:13pt;margin:14pt 0 4pt;border-bottom:1px solid #999;padding-bottom:2pt;}
+  .m1-print p,.m1-print li,.m1-print td,.m1-print th{font-size:10.5pt;line-height:1.45;font-family:Arial,sans-serif;}
+  .m1-print table{width:100%;border-collapse:collapse;margin-top:6pt;}
+  .m1-print td,.m1-print th{border:1px solid #999;padding:5pt;vertical-align:top;text-align:left;}
+}
+</style>
+</head>
+<body>
+
+<div class="m1" id="m1">
+  <header class="m1-top">
+    <div class="m1-top-in">
+      <button class="m1-menu" id="m1-menu" aria-label="Vis innholdsfortegnelse" aria-expanded="false"></button>
+      <div class="m1-brand">
+        <div class="m1-logo" aria-hidden="true"></div>
+        <div><small>Cybersecurity 101 · Modul 1</small><b>S – Se hva som skal beskyttes</b></div>
+      </div>
+      <div class="m1-prog" aria-label="Fremdrift i modulen">
+        <div class="m1-bar"><i id="m1-bar"></i></div>
+        <div class="m1-pct" id="m1-pct">0 %</div>
+      </div>
+      <div class="m1-pill" id="m1-pts" title="Poeng"></div>
+    </div>
+  </header>
+
+  <div class="m1-layout">
+    <aside class="m1-side" id="m1-side" aria-label="Innhold i modul 1">
+      <nav class="m1-nav" id="m1-nav"></nav>
+      <div class="m1-side-foot">
+        <p>Fremdriften og svarene dine lagres bare i denne nettleseren på denne enheten.</p>
+        <button class="m1-link" id="m1-reset"></button>
+      </div>
+    </aside>
+    <div class="m1-scrim" id="m1-scrim"></div>
+
+    <main class="m1-main">
+      <article class="m1-stage" id="m1-stage" tabindex="-1" aria-live="polite"></article>
+      <footer class="m1-foot">
+        <button class="btn btn-s" id="m1-prev"></button>
+        <div class="hint" id="m1-hint"></div>
+        <button class="btn btn-p" id="m1-next"></button>
+      </footer>
+    </main>
+  </div>
+
+  <div class="m1-toast" id="m1-toast" role="status"></div>
+  <canvas class="m1-confetti" id="m1-confetti"></canvas>
+</div>
+<div class="m1-print" id="m1-print"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   Ikoner
+   ========================================================= */
+var ICONS={
+  key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16 7l3 3M14 9l2 2"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  phone:'<rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18h2"/>',
+  cloud:'<path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>',
+  card:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6.5 15h4"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  shield:'<path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/>',
+  lock:'<rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>',
+  star:'<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/>',
+  check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  right:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  left:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+  alert:'<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/>',
+  download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  print:'<path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7"/>',
+  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+  menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+  trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4.5a3 3 0 0 0 3.5 4M16 6h3.5a3 3 0 0 1-3.5 4M12 13v4M8.5 21h7"/>',
+  pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  home:'<path d="M3 11 12 3l9 8M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',
+  wifi:'<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/>',
+  qr:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/>',
+  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 21h4"/>',
+  bot:'<rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01M9.5 16.5h5"/>',
+  msg:'<path d="M4 5h16v11H9l-5 4z"/>',
+  alarm:'<circle cx="12" cy="13" r="7"/><circle cx="12" cy="13" r="2.2"/><path d="M5 4 3 6M19 4l2 2"/>',
+  umbrella:'<path d="M3 12a9 9 0 0 1 18 0zM12 12v6a2 2 0 0 0 4 0M12 3v1"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+  map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.8"/><path d="M16 14.2a5 5 0 0 1 5.5 5"/>',
+  crown:'<path d="m3 8 4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+  gem:'<path d="M6 3h12l3 6-9 12L3 9z"/><path d="M3 9h18M12 21 8 9l4-6 4 6z"/>',
+  sparkle:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
+  flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  hand:'<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11M11 10V4.5a1.5 1.5 0 0 1 3 0V11M14 10.5V6a1.5 1.5 0 0 1 3 0v7.5a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.9-2.6L3 14.4a1.6 1.6 0 0 1 2.5-2L8 15"/>',
+  book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M19 19v2H6"/>',
+  play:'<path d="M7 4v16l13-8z"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>',
+  layers:'<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>'
+};
+function ic(n,cls){return '<svg class="i'+(cls?' '+cls:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
+function h(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+/* =========================================================
+   Tilstand (lagres lokalt)
+   ========================================================= */
+var KEY='sk101-modul1-v1';
+function fresh(){return {cur:0,done:{},pts:0,got:{},r1:'',r2:{cat:'',note:''},map:{},checks:{},guess:40,stars:[],table:{},quizBest:null,finished:null};}
+var S=fresh();
+try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);for(var k in o){if(Object.prototype.hasOwnProperty.call(S,k))S[k]=o[k];}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* =========================================================
+   Kategorier (brukes i flere leksjoner)
+   ========================================================= */
+var CATS=[
+  {id:'kontoer',name:'Kontoer og innlogginger',short:'Kontoer',icon:'key',color:'#2F74B5',hint:'e-post · sosiale medier · Feide/jobbkonto · spill',
+    sugg:['Hovedkontoen for e-post','Gammel e-postkonto','Feide / studiekonto','Jobbkonto (Microsoft 365)','Instagram','Facebook','Snapchat','TikTok','Spillkonto','Gamle nettbutikk-kontoer']},
+  {id:'epost',name:'E-post og meldinger',short:'E-post',icon:'mail',color:'#6E54B8',hint:'Gmail/Outlook · Messenger · Snapchat · Teams-chat',
+    sugg:['Innboksen i Gmail / Outlook','Messenger','Snapchat-samtaler','WhatsApp','Teams-chat','Kvitteringer og billetter','Lønnsslipper','Bilde av pass sendt på e-post']},
+  {id:'filer',name:'Filer, bilder, dokumenter',short:'Filer',icon:'file',color:'#D9772E',hint:'bildearkiv · oppgaver · kontrakter · CV',
+    sugg:['Bildearkivet','Familievideoer','Oppgaven jeg skriver på','Kontrakter','CV','Skannet pass / vitnemål','Skattemeldinger']},
+  {id:'enheter',name:'Mobil, PC og nettbrett',short:'Enheter',icon:'phone',color:'#1D4E6B',hint:'mobil · PC/Mac · nettbrett · smartklokke · ruter',
+    sugg:['Mobilen','PC / Mac','Nettbrett','Smartklokke','Hjemmeruteren','Smart-TV','Spillkonsoll','Gammel mobil i skuffen']},
+  {id:'sky',name:'Skytjenester og apper',short:'Sky og apper',icon:'cloud',color:'#2A95AE',hint:'OneDrive/iCloud/Google · abonnementer · KI-verktøy',
+    sugg:['iCloud','OneDrive','Google Disk','Dropbox','Strømmeabonnementer','KI-verktøy','Apper med tilgang til kontakter og bilder']},
+  {id:'bank',name:'BankID, betaling og sensitive tjenester',short:'BankID og betaling',icon:'card',color:'#C9503C',hint:'nettbank · Vipps · kort · BankID',
+    sugg:['BankID','Nettbank','Vipps','Kort lagret i nettbutikker','Helsenorge','NAV','Skatteetaten']},
+  {id:'id',name:'Identitet og omdømme',short:'Identitet',icon:'user',color:'#2F9A7D',hint:'profiler · rykte · hva et nettsøk på deg viser',
+    sugg:['Profilene mine','Ryktet mitt blant venner','Hva et nettsøk på meg viser','Kredittverdigheten min','Navnet mitt i jobbsammenheng']}
+];
+function cat(id){for(var i=0;i<CATS.length;i++)if(CATS[i].id===id)return CATS[i];return CATS[0];}
+function mapItems(id){return (S.map[id]=S.map[id]||[]);}
+function allItems(){var r=[];CATS.forEach(function(c){mapItems(c.id).forEach(function(t){r.push({cat:c.id,t:t});});});return r;}
+function itemCount(){return allItems().length;}
+
+/* =========================================================
+   Gjenbrukbare interaktive komponenter
+   ========================================================= */
+
+/* Flervalg: prøv til riktig svar er funnet */
+function mcq(el,o){
+  var L='ABCDEFG',tries=0,solved=false;
+  el.innerHTML=(o.q?'<p class="q">'+o.q+'</p>':'')+'<div class="opts">'+o.options.map(function(op,i){
+    return '<button class="opt" data-i="'+i+'"><span class="k">'+L[i]+'</span><span>'+op.t+'</span></button>';}).join('')+'</div><div class="fb" aria-live="polite"></div>';
+  var fb=$('.fb',el);
+  if(o.solved){solveUI();return;}
+  $$('.opt',el).forEach(function(b){b.addEventListener('click',function(){
+    if(solved)return;var op=o.options[+b.dataset.i];tries++;
+    if(op.ok){solved=true;solveUI(b);if(tries===1&&o.key)award(o.key,5);if(o.onCorrect)o.onCorrect(tries);}
+    else{b.classList.add('no');b.disabled=true;fb.className='fb show bad';fb.innerHTML='<b>Ikke helt.</b> '+(op.fb||'Prøv igjen.');}
+  });});
+  function solveUI(btn){
+    var idx=o.options.findIndex(function(x){return x.ok;});
+    btn=btn||$$('.opt',el)[idx];btn.classList.add('ok');
+    $$('.opt',el).forEach(function(x){x.disabled=true;});
+    var op=o.options[idx];fb.className='fb show good';fb.innerHTML='<b>Riktig!</b> '+(op.fb||'');
+  }
+}
+
+/* Sorteringsspill: klikk (eller dra) et element til riktig bås */
+function sortGame(el,o){
+  var items=shuffle(o.items),done=o.solved,wrong={},sel=null,left=items.length;
+  el.innerHTML='<p class="small muted" style="margin-bottom:10px">'+ic('hand')+' Trykk på et kort og deretter på riktig bås – eller dra kortet dit.</p>'+
+    '<div class="pool" role="list"></div><div class="sortfb" aria-live="polite"></div>'+
+    '<div class="bins" style="grid-template-columns:repeat('+(o.cols||o.bins.length)+',minmax(0,1fr))">'+o.bins.map(function(b){
+      return '<div class="bin" data-b="'+b.id+'" role="button" tabindex="0" aria-label="Legg i '+h(b.name)+'"><div class="bin-h"><span class="bi" style="background:'+b.color+'">'+ic(b.icon)+'</span>'+h(b.name)+'</div><div class="bin-l"></div></div>';}).join('')+'</div>';
+  var pool=$('.pool',el),fb=$('.sortfb',el);
+  items.forEach(function(it){
+    var b=document.createElement('button');b.className='itm';b.textContent=it.t;b.draggable=true;b.dataset.id=it.t;b._it=it;
+    if(done){place(b,it);return;}
+    pool.appendChild(b);
+    b.addEventListener('click',function(){ if(b.classList.contains('placed'))return;
+      if(sel)sel.classList.remove('sel'); sel=(sel===b)?null:b; if(sel)sel.classList.add('sel');});
+    b.addEventListener('dragstart',function(e){sel=b;try{e.dataTransfer.setData('text/plain',it.t);}catch(x){}});
+  });
+  $$('.bin',el).forEach(function(bin){
+    function act(){if(!sel)return;check(sel,bin);}
+    bin.addEventListener('click',act);
+    bin.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();act();}});
+    bin.addEventListener('dragover',function(e){e.preventDefault();bin.classList.add('over');});
+    bin.addEventListener('dragleave',function(){bin.classList.remove('over');});
+    bin.addEventListener('drop',function(e){e.preventDefault();bin.classList.remove('over');if(sel)check(sel,bin);});
+  });
+  if(done){fb.className='sortfb good';fb.textContent='Alt er sortert riktig.';}
+  function place(b,it){
+    b.classList.remove('sel','bad');b.classList.add('placed');b.draggable=false;b.innerHTML=ic('check')+' '+h(it.t);
+    $('.bin[data-b="'+it.b+'"] .bin-l',el).appendChild(b);
+  }
+  function check(b,bin){
+    var it=b._it;
+    if(it.b===bin.dataset.b){
+      place(b,it);sel=null;left--;
+      if(!wrong[it.t]&&o.key)award(o.key+':'+it.t,2);
+      fb.className='sortfb good';fb.innerHTML=ic('check')+' '+(it.why||'Riktig!');
+      if(left===0){fb.innerHTML=ic('trophy')+' Alt er sortert! '+(o.doneText||'');if(o.onDone)o.onDone();}
+    }else{
+      wrong[it.t]=1;b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');
+      bin.classList.remove('flash');void bin.offsetWidth;bin.classList.add('flash');
+      fb.className='sortfb bad';fb.innerHTML=ic('x')+' Ikke der. '+(it.hint||'Tenk over hva som er verdien her, og prøv en annen bås.');
+    }
+  }
+}
+
+/* Kortstokk: ett scenario om gangen, svar med store knapper */
+function deck(el,o){
+  var i=0,score=0,res=[];
+  function pips(){return '<div class="pips">'+o.cards.map(function(c,k){return '<i class="'+(res[k]===true?'ok':res[k]===false?'no':k===i?'on':'')+'"></i>';}).join('')+'</div>';}
+  function show(){
+    if(i>=o.cards.length){return summary();}
+    var c=o.cards[i];
+    el.innerHTML='<div class="deck"><div class="deck-top"><span>Kort '+(i+1)+' av '+o.cards.length+'</span>'+pips()+'</div>'+
+      '<div class="dcard"><div class="sit-ico">'+ic(c.icon||'eye')+'</div><p class="sit">'+c.t+'</p>'+
+      '<div class="dchoices c'+o.choices.length+'">'+o.choices.map(function(ch){return '<button class="dbtn" data-c="'+ch.id+'">'+ch.label+(ch.sub?'<small>'+ch.sub+'</small>':'')+'</button>';}).join('')+'</div>'+
+      '<div class="fb"></div><div class="actions" style="justify-content:flex-end;display:none"><button class="btn btn-d btn-sm nx">'+(i===o.cards.length-1?'Se resultatet':'Neste kort')+' '+ic('right')+'</button></div></div></div>';
+    $$('.dbtn',el).forEach(function(b){b.addEventListener('click',function(){
+      var ok=b.dataset.c===c.a;res[i]=ok;if(ok){score++;if(o.key)award(o.key+':'+i,3);}
+      $$('.dbtn',el).forEach(function(x){x.disabled=true;if(x.dataset.c===c.a)x.classList.add('ok');});
+      if(!ok)b.classList.add('no');
+      var card=$('.dcard',el);card.insertAdjacentHTML('beforeend','<span class="stamp '+(ok?'ok':'no')+'">'+(ok?'RIKTIG':'FEIL')+'</span>');
+      var fb=$('.fb',el);fb.className='fb show '+(ok?'good':'bad');fb.innerHTML=c.why;
+      $('.deck-top .pips',el).outerHTML=pips();
+      var a=$('.actions',el);a.style.display='flex';var nx=$('.nx',el);nx.focus();nx.addEventListener('click',function(){i++;show();});
+    });});
+  }
+  function summary(){
+    var n=o.cards.length;
+    el.innerHTML='<div class="deck"><div class="dcard dsum"><div class="big">'+score+' / '+n+'</div><p class="muted" style="margin:6px 0 16px">'+(score===n?'Perfekt! ':score>=n-2?'Godt jobbet! ':'Bra forsøk! ')+(o.sumText||'')+'</p>'+
+      '<button class="btn btn-s btn-sm again">'+ic('refresh')+' Ta runden på nytt</button></div></div>';
+    $('.again',el).addEventListener('click',function(){i=0;score=0;res=[];show();});
+    if(o.onDone)o.onDone(score);
+  }
+  if(o.solved&&o.showSolvedSummary!==false){el.innerHTML='<div class="deck"><div class="dcard dsum"><div class="big">'+ic('check')+'</div><p class="muted" style="margin:6px 0 16px">Du har fullført denne runden.</p><button class="btn btn-s btn-sm again">'+ic('refresh')+' Ta runden på nytt</button></div></div>';$('.again',el).addEventListener('click',show);}
+  else show();
+}
+
+/* Tall som teller opp */
+function countUp(root){
+  $$('[data-count]',root).forEach(function(n){
+    if(n._c)return;n._c=1;var to=parseFloat(n.dataset.count),dec=(n.dataset.dec|0),suf=n.dataset.suf||'',t0=null,dur=1500;
+    function f(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur);p=1-Math.pow(1-p,3);
+      var v=to*p;n.textContent=v.toLocaleString('nb-NO',{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf;if(p<1)requestAnimationFrame(f);}
+    requestAnimationFrame(f);
+  });
+}
+
+/* Autolagring av tekstfelt */
+function bindText(el,get,set,after){
+  el.value=get()||'';var t;
+  el.addEventListener('input',function(){set(el.value);clearTimeout(t);t=setTimeout(function(){save();var s=el.parentNode.querySelector('.saved');if(s){s.classList.add('on');setTimeout(function(){s.classList.remove('on');},1400);}},350);if(after)after();});
+}
+
+/* =========================================================
+   LEKSJONENE
+   ========================================================= */
+var L=[];
+
+/* ---------- 0. Intro ---------- */
+L.push({id:'intro',sec:'Start',title:'Velkommen til modul 1',icon:'play',
+html:function(){
+  var nodes=[['S',130,38],['I',217.5,101.6],['K',184,204.4],['R',76,204.4],['E',42.5,101.6]];
+  return '<div class="hero"><div>'+
+   '<div class="eyebrow rv"><span class="n">Modul 1</span> SIKRE-trinn S</div>'+
+   '<h1 class="t rv" style="--d:1">Se hva som skal beskyttes</h1>'+
+   '<p class="lede rv" style="--d:2">Før du kan beskytte noe, må du vite hva du har. I denne modulen kartlegger du dine digitale verdier – og lager første kapittel i din egen <b>«Min SIKRE-plan»</b>.</p>'+
+   '<div class="chips rv" style="--d:3;margin-top:18px"><span class="chip">'+ic('timer')+' ca. 75–90 min</span><span class="chip">'+ic('layers')+' '+L.length+' steg</span><span class="chip">'+ic('map')+' Praktisk oppgave</span><span class="chip">'+ic('trophy')+' Sluttest</span></div>'+
+  '</div><div class="rv" style="--d:2">'+
+   '<svg class="sikre" viewBox="0 0 260 260" role="img" aria-label="SIKRE-modellen, der S er uthevet">'+
+   '<circle class="ring" cx="130" cy="130" r="92"/>'+
+   '<text x="130" y="122" text-anchor="middle" style="font-family:Georgia,serif;font-weight:700;font-size:26px;fill:#16324B">SIKRE</text>'+
+   '<text x="130" y="146" text-anchor="middle" style="font-size:11px;fill:#5D7183;letter-spacing:.12em">DU ER HER: S</text>'+
+   nodes.map(function(n,k){return '<g class="node'+(k===0?' on':'')+'">'+(k===0?'<circle class="pulse" cx="'+n[1]+'" cy="'+n[2]+'" r="24"/>':'')+'<circle cx="'+n[1]+'" cy="'+n[2]+'" r="24"/><text x="'+n[1]+'" y="'+n[2]+'">'+n[0]+'</text></g>';}).join('')+
+   '</svg></div></div>'+
+  '<h2 class="t rv" style="--d:4">Dette lærer du i modulen</h2>'+
+  '<div class="card rv" style="--d:5;padding:6px 20px">'+[
+    ['home','Hva cybersikkerhet betyr i en vanlig hverdag – uten teknisk sjargong'],
+    ['target','Hvorfor godt sikkerhetsarbeid starter med å kjenne hvilke digitale verdier du har, <i>ikke</i> med å kjøpe verktøy'],
+    ['layers','En oversikt over seks kategorier av digitale verdier – pluss en sjuende, usynlig'],
+    ['shield','De tre grunnmålene for beskyttelse: konfidensialitet, integritet og tilgjengelighet (KIT)'],
+    ['map','Hvordan du lager ditt eget digitale verdikart – den første byggesteinen i «Min SIKRE-plan»']
+  ].map(function(g,k){return '<div class="goal rv" style="--d:'+(6+k)+'"><div class="gi">'+ic(g[0])+'</div><p>'+g[1]+'</p></div>';}).join('')+'</div>'+
+  '<div class="callout c-info rv" style="--d:9"><span class="ci">'+ic('bulb')+'</span><h4>Slik fungerer modulen</h4><p>Du går gjennom stegene i rekkefølge. Noen steg har en liten oppgave som må løses før du kan gå videre – da lyser <b>Neste</b>-knappen opp. Du samler poeng for riktige svar på første forsøk, og alt du skriver lagres automatisk <b>bare i din egen nettleser</b>.</p></div>';
+}});
+
+/* ---------- 1.1.1 ---------- */
+var HOUSE=[
+  {k:'lock',x:44,y:73,home:'Du låser døren når du går.',dig:'Du låser skjermen og bruker gode, forskjellige passord.'},
+  {k:'key',x:73,y:84,home:'Du gir ikke nøkkelen til fremmede.',dig:'Du gir aldri fra deg passord, BankID-koder eller engangskoder.'},
+  {k:'alarm',x:61,y:44,home:'Du har røykvarsler som sier fra tidlig.',dig:'Du legger merke til varsler, f.eks. om «ny innlogging», og reagerer raskt.'},
+  {k:'umbrella',x:20,y:30,home:'Du har innboforsikring hvis noe skjer.',dig:'Du har sikkerhetskopi, så et tap ikke blir en katastrofe.'}
+];
+L.push({id:'l111',sec:'1.1 Hva er cybersikkerhet i praksis?',title:'Hva betyr det å være digitalt sikker?',icon:'home',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.1.1</span> Cybersikkerhet i praksis</div>'+
+  '<h1 class="t rv" style="--d:1">Hva betyr det å være digitalt sikker?</h1>'+
+  '<p class="lede rv" style="--d:2">Tenk på hjemmet ditt. Ingen av tiltakene under gjør hjemmet umulig å bryte seg inn i – men til sammen gjør de innbrudd vanskeligere og konsekvensene mer håndterbare. Derfor kan du leve normalt uten å bekymre deg hele tiden.</p>'+
+  '<div class="grid g2 rv" style="--d:3;margin-top:22px;align-items:center">'+
+   '<div class="house"><svg viewBox="0 0 100 100" aria-hidden="true">'+
+    '<ellipse cx="50" cy="94" rx="44" ry="4" fill="#EDF2F6"/>'+
+    '<path d="M14 50 50 18l36 32" fill="none" stroke="#16324B" stroke-width="3" stroke-linejoin="round"/>'+
+    '<path d="M20 46v46h60V46L50 20z" fill="#fff" stroke="#16324B" stroke-width="2"/>'+
+    '<path d="M20 46 50 20l30 26" fill="#F5A623" opacity=".18"/>'+
+    '<rect x="37" y="62" width="16" height="30" rx="1.5" fill="#1D4E6B"/><circle cx="49.5" cy="78" r="1.2" fill="#F5A623"/>'+
+    '<rect x="59" y="58" width="14" height="12" rx="1.5" fill="#E7F0FA" stroke="#16324B" stroke-width="1.5"/><path d="M66 58v12M59 64h14" stroke="#16324B" stroke-width="1"/>'+
+    '<rect x="64" y="86" width="16" height="4" rx="1" fill="#DCE6ED"/>'+
+    '<rect x="66" y="22" width="7" height="14" fill="#16324B"/>'+
+   '</svg>'+HOUSE.map(function(p,i){return '<button class="hot" data-i="'+i+'" style="left:'+p.x+'%;top:'+p.y+'%" aria-label="Utforsk tiltak '+(i+1)+'">'+ic(p.k)+'</button>';}).join('')+'</div>'+
+   '<div class="hpanel" id="hp"><p class="muted" style="font-size:15px">'+ic('hand')+' Trykk på de lysende punktene på huset. Hvert tiltak i hjemmet har en digital «tvilling».</p></div>'+
+  '</div>'+
+  '<p class="rv" style="--d:4;font-size:16px;line-height:1.7;margin-top:18px;max-width:72ch">Digital sikkerhet bygger på samme prinsipp, men gjelder den delen av livet ditt som ligger på telefonen, PC-en og i skyen.</p>'+
+  '<div class="task rv" style="--d:5"><div class="task-h"><span class="tag">Oppgave</span><b>Hva betyr – og hva betyr ikke – å være digitalt sikker?</b></div><div id="sg"></div></div>'+
+  '<div id="after" style="display:none">'+
+   '<h2 class="t">Legg merke til ordet <mark>vaner</mark></h2>'+
+   '<p class="prose" style="font-size:16px;line-height:1.7;max-width:72ch">Sikkerhet er ikke et produkt du kjøper, eller en app du installerer én gang. Det er summen av mange små valg. Forskjellen på en trygg og en utsatt digital hverdag er ofte mindre enn mange tror – og den kan læres.</p>'+
+   '<div class="habits">'+[['2 sek','Du nøler to sekunder før du klikker på en lenke.'],['1:1','Du bruker forskjellige passord på forskjellige tjenester.'],[ic('lock'),'Du låser skjermen når du går fra enheten.']].map(function(x,k){return '<div class="habit rv" style="--d:'+k+'"><div class="hn">'+x[0]+'</div><p>'+x[1]+'</p></div>';}).join('')+'</div>'+
+  '</div>';
+},
+mount:function(r,ctx){
+  var seen={};
+  $$('.hot',r).forEach(function(b){b.addEventListener('click',function(){
+    var p=HOUSE[+b.dataset.i];seen[b.dataset.i]=1;$$('.hot',r).forEach(function(x){x.classList.remove('act');});b.classList.add('act','seen');
+    $('#hp',r).innerHTML='<div class="pair"><div class="side"><small>'+ic('home')+' I hjemmet</small>'+p.home+'</div><div class="arr">'+ic('right')+'</div><div class="side dig"><small>'+ic('phone')+' Digitalt</small>'+p.dig+'</div></div>'+
+      '<p class="small muted" style="margin-top:10px">'+Object.keys(seen).length+' av 4 utforsket</p>';
+  });});
+  var B=[{id:'yes',name:'Betyr at …',icon:'check',color:'#2F9A7D'},{id:'no',name:'Betyr IKKE at …',icon:'x',color:'#C9503C'}];
+  var items=[
+    {t:'ingen noen gang vil forsøke å svindle deg',b:'no',why:'Riktig – forsøk vil komme. Målet er å håndtere dem.'},
+    {t:'du må forstå hvordan datamaskiner virker',b:'no',why:'Riktig – du trenger ingen teknisk bakgrunn.'},
+    {t:'du må slutte med sosiale medier, nettbank eller KI',b:'no',why:'Riktig – du skal kunne leve digitalt, bare tryggere.'},
+    {t:'du vet hva du har som er verdt å beskytte',b:'yes',why:'Riktig – det er denne modulen (S).'},
+    {t:'du gjenkjenner de vanligste digitale truslene',b:'yes',why:'Riktig – det lærer du i modul 2 (I).'},
+    {t:'du har noen få gode vaner som stopper de fleste svindelforsøk',b:'yes',why:'Riktig – det bygger du i modul 3 (K).'},
+    {t:'du vet hva du gjør hvis noe skjer – uten å få panikk',b:'yes',why:'Riktig – det øver du på i modul 4 (R).'},
+    {t:'du holder sikkerhetsvanene dine ved like',b:'yes',why:'Riktig – det handler modul 5 om (E).'}
+  ];
+  function reveal(){$('#after',r).style.display='block';}
+  sortGame($('#sg',r),{items:items,bins:B,key:'l111',solved:ctx.done,doneText:'Legg merke til at hvert «betyr at» svarer til én bokstav i SIKRE.',onDone:function(){reveal();ctx.complete();}});
+  if(ctx.done)reveal();
+}});
+
+/* ---------- Refleksjon 1 ---------- */
+L.push({id:'refl1',sec:'1.1 Hva er cybersikkerhet i praksis?',title:'Refleksjon: det verste som kunne skje',icon:'pen',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">Refleksjon</span> før du leser videre</div>'+
+  '<h1 class="t rv" style="--d:1">Fullfør setningen – ærlig</h1>'+
+  '<p class="lede rv" style="--d:2">Det finnes ingen feil svar. Ta vare på svaret: Du skal bruke det i den praktiske oppgaven på slutten av modulen – og det kan hende det endrer seg underveis.</p>'+
+  '<div class="quote rv" style="--d:3">«Det verste som kunne skjedd meg digitalt, er at …»</div>'+
+  '<div class="rv" style="--d:4;margin-top:16px"><textarea id="r1" rows="4" placeholder="… skriv med egne ord"></textarea><div style="display:flex;justify-content:space-between;margin-top:6px"><span class="small muted">'+ic('lock')+' Lagres bare lokalt i nettleseren din.</span><span class="saved">'+ic('check')+' Lagret</span></div></div>'+
+  '<div class="callout c-tip rv" style="--d:5"><span class="ci">'+ic('bulb')+'</span><h4>Står du fast?</h4><p>Tenk på hva som ville gjort mest vondt: at noen leste noe privat, at noe forsvant for alltid, at noen utga seg for å være deg, eller at du mistet penger?</p></div>';
+},
+mount:function(r,ctx){
+  var ta=$('#r1',r);
+  function chk(){if(ta.value.trim().length>=8&&!ctx.done){ctx.complete();}}
+  bindText(ta,function(){return S.r1;},function(v){S.r1=v;},chk);
+}});
+
+/* ---------- 1.1.2 ---------- */
+L.push({id:'l112',sec:'1.1 Hva er cybersikkerhet i praksis?',title:'Verdier først, ikke verktøy',icon:'target',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.1.2</span> Cybersikkerhet i praksis</div>'+
+  '<h1 class="t rv" style="--d:1">Hvorfor cybersikkerhet starter med verdier – ikke verktøy</h1>'+
+  '<p class="lede rv" style="--d:2">Mange gjør den samme feilen, både privatpersoner og store virksomheter: De starter med løsningene. «Bør jeg ha VPN? Trenger jeg antivirus? Hva med appen naboen anbefalte?»</p>'+
+  '<div class="quote rv" style="--d:3">Det er som å kjøpe låser før du vet hvilke dører du har.</div>'+
+  '<div class="task rv" style="--d:4"><div class="task-h"><span class="tag">Sjekk</span><b>Du vil bli tryggere digitalt. Hva gjør du først?</b></div><div id="q1"></div></div>'+
+  '<h2 class="t rv">NSMs tre setninger – i riktig rekkefølge</h2>'+
+  '<p class="prose rv" style="font-size:16px;line-height:1.7;max-width:72ch">Da Nasjonal sikkerhetsmyndighet (NSM) la frem risikovurderingen <i>Risiko 2026</i> i februar 2026, ble hovedbudskapet til norske virksomheter formulert i tre korte setninger. Klikk dem i den rekkefølgen du tror NSM brukte.</p>'+
+  '<div class="task" id="ord"><div class="chips" id="ordpool"></div><div class="slots">'+[1,2,3].map(function(n){return '<div class="slot" data-n="'+n+'"><span class="sn">'+n+'</span><span class="tx"></span></div>';}).join('')+'</div><div class="fb" id="ordfb"></div></div>'+
+  '<div id="more" style="display:none">'+
+   '<h2 class="t">Alle seriøse rammeverk starter på samme sted</h2>'+
+   '<div class="frames">'+[
+     ['NSMs grunnprinsipper','Identifisere og kartlegge',['Beskytte','Oppdage','Håndtere']],
+     ['NIST CSF 2.0','Identify',['Protect','Detect','Respond','Recover','Govern']],
+     ['SIKRE-modellen','S – Se hva som skal beskyttes',['I','K','R','E']]
+   ].map(function(f,k){return '<div class="frame rv" style="--d:'+k+'"><small>'+f[0]+'</small><div class="fb1">Starter med</div><span class="first" style="animation-delay:'+(0.4+k*0.25)+'s">'+f[1]+'</span><div class="rest">'+f[2].map(function(x){return '<span>'+x+'</span>';}).join('')+'</div></div>';}).join('')+'</div>'+
+   '<p style="font-size:16px;line-height:1.7;margin-top:16px;max-width:72ch">NSM peker i samme rapport på at en gjennomgående mangel hos norske virksomheter er at de <b>ikke har oppdatert oversikt over egne verdier og avhengigheter</b>. Da kan de ende med å beskytte feil ting – eller ingenting. Rådet er skrevet for virksomheter, men logikken er nøyaktig den samme for deg.</p>'+
+   '<h2 class="t">Tre gevinster for deg <span class="small muted" style="font-family:var(--sans);font-weight:600">– trykk på kortene</span></h2>'+
+   '<div class="grid g3">'+[
+     ['Du prioriterer riktigere','Du har ikke tid til å sikre alt like godt. Når du vet at e-postkontoen og BankID er blant de mest kritiske verdiene dine, vet du også hvor den sterkeste beskyttelsen bør ligge.'],
+     ['Du oppdager risiko du ikke visste om','Mange blir overrasket: «Har jeg virkelig 87 kontoer? Ligger skattemeldingen min i en delt mappe fra 2019?»'],
+     ['Du blir vanskeligere å lure','Svindlere angriper gjerne det du ikke tenker på. Den som vet at Instagram-kontoen er en verdi, reagerer raskere på en falsk «kontoen din blir slettet»-melding.']
+   ].map(function(c,k){return '<button class="flip rv" style="--d:'+k+'"><div class="flip-in"><div class="flip-f"><span class="ico" style="background:rgba(245,166,35,.15);color:#F5A623">'+ic(['target','eye','shield'][k])+'</span><h3>'+c[0]+'</h3><span class="tap">'+ic('refresh')+' Snu kortet</span></div><div class="flip-b"><p>'+c[1]+'</p></div></div></button>';}).join('')+'</div>'+
+   '<div class="callout c-fact"><span class="ci">'+ic('bulb')+'</span><h4>Visste du at?</h4>'+
+    '<div class="grid g2" style="margin-top:8px"><div><div class="stat" data-count="700000">0</div><p style="margin-top:6px">nordmenn har opplevd at noen har kapret kontoen deres i sosiale medier eller opprettet en falsk profil i deres navn.</p></div>'+
+    '<div><div class="stat" data-count="14" data-suf=" %">0</div><p style="margin-top:6px">av alle henvendelser til hjelpetjenesten slettmeg.no handler om kontokapring.</p></div></div>'+
+    '<p style="margin-top:10px">«Vanlige» kontoer er reelle mål – nettopp fordi mange ikke regner dem som verdifulle.</p><p class="src">Kilde: ID-tyverirapporten 2025, NorSIS (nå en del av NSM).</p></div>'+
+  '</div>';
+},
+mount:function(r,ctx){
+  var aOK=ctx.done,bOK=ctx.done;
+  function both(){if(aOK&&bOK){var m=$('#more',r);if(m.style.display!=='block'){m.style.display='block';countUp(m);}ctx.complete();}}
+  mcq($('#q1',r),{key:'l112q',solved:ctx.done,options:[
+    {t:'Kjøper et VPN-abonnement',fb:'VPN kan være nyttig i noen situasjoner, men du vet ennå ikke hva du skal beskytte.'},
+    {t:'Installerer antivirus på alle enhetene',fb:'Et verktøy før du vet hva som er viktigst – det er å kjøpe låser før du kjenner dørene.'},
+    {t:'Skaffer meg oversikt over hva jeg har som er verdt å beskytte',ok:true,fb:'Nettopp. Verdiene først – så vet du hvor beskyttelsen gjør mest nytte.'},
+    {t:'Laster ned appen naboen anbefalte',fb:'Kanskje en god app, men den løser ikke nødvendigvis ditt viktigste problem.'}
+  ],onCorrect:function(){aOK=true;both();}});
+  var right=['Kjenn dine verdier.','Reduser sårbarheter.','Bygg reserveløsninger.'],pos=0;
+  var pool=$('#ordpool',r),fb=$('#ordfb',r);
+  function fill(){right.forEach(function(t,k){var s=$('.slot[data-n="'+(k+1)+'"]',r);s.classList.add('fill');$('.tx',s).textContent=t;});pool.innerHTML='';fb.className='fb show good';fb.innerHTML='<b>Riktig rekkefølge!</b> Legg merke til at <b>verdiene kommer først</b>. Det samme prinsippet ligger øverst i NSMs grunnprinsipper for IKT-sikkerhet og først i NIST-rammeverket.';}
+  if(bOK)fill();else{
+    shuffle(right).forEach(function(t){var b=document.createElement('button');b.className='itm';b.textContent=t;pool.appendChild(b);
+      b.addEventListener('click',function(){
+        if(t===right[pos]){var s=$('.slot[data-n="'+(pos+1)+'"]',r);s.classList.add('fill');$('.tx',s).textContent=t;b.remove();pos++;fb.className='fb';
+          if(pos===3){award('l112ord',5);fill();bOK=true;both();}}
+        else{b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');fb.className='fb show bad';fb.innerHTML='Ikke den – tenk: hva må du vite <i>før</i> du kan redusere sårbarheter og bygge reserver?';}
+      });});
+  }
+  $$('.flip',r).forEach(function(f){f.addEventListener('click',function(){f.classList.toggle('on');});});
+  both();
+}});
+
+/* ---------- 1.1.3 Saras dag ---------- */
+var SARA=[
+  {tm:'07.15',ic:'msg',sit:'Sara sjekker mobilen. En SMS fra «Posten»: pakken hennes er holdt tilbake, og hun må klikke på lenken for å betale 19 kroner i toll. Hun venter faktisk en pakke.',
+   o:[{t:'Klikke og betale – hun venter jo en pakke, og det er bare 19 kroner.',fb:'Det er nettopp dette svindlerne regner med: en ekte forventning og et lite beløp. Lenken fører til en svært troverdig kopi av Postens nettside som fanger opp kortnummeret.'},
+      {t:'Åpne Posten-appen eller skrive inn posten.no selv og sjekke sendingen der.',ok:true,fb:'Gå alltid inn via en vei du selv kontrollerer – aldri via lenken i meldingen.'},
+      {t:'Svare på SMS-en og spørre om den er ekte.',fb:'Svindleren svarer selvsagt «ja» – og vet nå at nummeret er aktivt.'}],
+   trap:'Smishing (SMS-phishing)',mod:'Modul 2',val:'Betalingskortet'},
+  {tm:'09.40',ic:'wifi',sit:'På lesesalen logger hun på «Campus_Gjest»-nettverket – eller det hun tror er det riktige nettverket.',
+   o:[{t:'Koble til det første nettverket med et navn som ser riktig ut.',fb:'Hvem som helst kan sette opp et nettverk med et troverdig navn.'},
+      {t:'Sjekke med skolen hvilket nettverk som er det ekte, og vente med sensitive innlogginger på åpne nett.',ok:true,fb:'Riktig nettverk og forsiktighet med hva du gjør på åpne nett – det lærer du mer om i modul 3.'},
+      {t:'Det er trygt så lenge navnet inneholder «Campus».',fb:'Navnet på et nettverk beviser ingenting.'}],
+   trap:'Usikre og falske nettverk',mod:'Modul 3',val:'Innloggingene og trafikken hennes'},
+  {tm:'12.05',ic:'mail',sit:'En e-post fra «IT-avdelingen» ber henne bekrefte Feide-passordet før en «systemoppgradering». Språket er feilfritt, logoen stemmer, og den ser ut til å komme fra skolen.',
+   o:[{t:'Bekrefte passordet – språket er feilfritt og logoen stemmer.',fb:'Feilfritt språk er ikke lenger et tegn på ekthet. Denne e-posten er skrevet av en KI.'},
+      {t:'Svare på e-posten og be om mer informasjon.',fb:'Da har hun kontakt med svindleren, som gjerne «forklarer» mer.'},
+      {t:'Ikke oppgi passordet, og kontakte IT-avdelingen via kanaler hun kjenner fra før.',ok:true,fb:'En ekte IT-avdeling ber aldri om passordet ditt på e-post.'}],
+   trap:'KI-støttet phishing',mod:'Modul 2',val:'Feide-passordet (studiekontoen)'},
+  {tm:'15.30',ic:'qr',sit:'På jobb skanner hun en QR-kode på en plakat i pauserommet for å «vinne julebordsbilletter».',
+   o:[{t:'Skanne – plakaten henger jo på jobben, så den må være trygg.',fb:'Koden var klistret over den ekte av noen utenfra.'},
+      {t:'Se etter om koden er et klistremerke over en annen, og sjekke adressen nøye før hun åpner noe.',ok:true,fb:'QR-koder er bare lenker du ikke kan lese. Stopp opp og sjekk før du åpner.'},
+      {t:'Skanne, men bare fylle inn navn og kortnummer.',fb:'Det er akkurat de opplysningene svindleren er ute etter.'}],
+   trap:'QR-svindel (quishing)',mod:'Modul 2',val:'Mobilen og opplysningene hennes'},
+  {tm:'19.00',ic:'bell',sit:'Hjemme får hun et varsel: «Ny innlogging på din konto?» med en Godkjenn-knapp. Hun har ikke prøvd å logge inn, men varselet kommer tre ganger.',
+   o:[{t:'Trykke Godkjenn for å få slutt på varslene.',fb:'Da slipper hun angriperen inn – han har allerede passordet og trenger bare godkjenningen hennes.'},
+      {t:'Trykke Avvis, bytte passord og sjekke kontoen – noen kjenner passordet hennes.',ok:true,fb:'Varsler hun ikke har bedt om, betyr at noen prøver. Avvis og sikre kontoen.'},
+      {t:'Ignorere varslene og legge fra seg mobilen.',fb:'Bedre enn å godkjenne – men noen har passordet hennes, og det må byttes.'}],
+   trap:'MFA-utmattelse',mod:'Modul 2 og 3',val:'Kontoen – via tålmodigheten hennes'},
+  {tm:'22.30',ic:'bot',sit:'Før leggetid limer hun hele praksisrapporten – med fullt navn og helseopplysninger om en pasient – inn i et KI-verktøy som ikke er godkjent for slike opplysninger, for å «fikse språket».',
+   o:[{t:'Lime inn hele rapporten – det er jo bare for å fikse språket.',fb:'Alt du limer inn, forlater din kontroll og lagres hos en tjenesteleverandør.'},
+      {t:'Bruke KI-verktøyet i en inkognitofane.',fb:'Inkognito skjuler ingenting for tjenesteleverandøren.'},
+      {t:'Fjerne alle personopplysninger først, og bare bruke verktøy som er godkjent for slike data.',ok:true,fb:'Pasientens opplysninger er ikke hennes å dele. Trygg KI-bruk får et eget kapittel i modul 3.'}],
+   trap:'Data på avveie i KI-tjenester',mod:'Modul 3',val:'En annen persons sensitive opplysninger'}
+];
+L.push({id:'l113',sec:'1.1 Hva er cybersikkerhet i praksis?',title:'Saras dag: seks feller',icon:'clock',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.1.3</span> Hva kan gå galt i en vanlig hverdag?</div>'+
+  '<h1 class="t rv" style="--d:1">Én vanlig dag. Seks feller.</h1>'+
+  '<p class="lede rv" style="--d:2">Vi følger en vanlig dag – ikke for å skremme, men for å trene blikket. Ingenting av det som skjer krever en «hacker» i hettegenser. Eksemplene bygger på vanlige hendelsesmønstre som norske myndigheter og banker rapporterer om.</p>'+
+  '<div class="sara rv" style="--d:3"><div class="ava">S</div><div><b style="font-family:var(--serif);font-size:18px">Møt Sara (24)</b><p class="muted" style="font-size:14.5px">Sykepleierstudent med deltidsjobb i butikk. For hver situasjon: Hva burde Sara gjort?</p></div><div style="margin-left:auto;text-align:right"><div class="stat" style="font-size:30px" id="saracnt">0/6</div><span class="small muted">feller avslørt</span></div></div>'+
+  '<div class="tl" id="tl"><div class="tl-fill" id="tlf"></div>'+SARA.map(function(e,i){return '<div class="ev" data-i="'+i+'"><div class="ev-box"><span class="ev-time">'+ic('clock')+' kl. '+e.tm+'</span><div class="ev-body"><p class="ev-sit">'+e.sit+'</p><div class="evq"></div><div class="evr"></div></div></div></div>';}).join('')+'</div>'+
+  '<div id="saraend" style="display:none"><div class="callout c-info"><span class="ci">'+ic('users')+'</span><h4>Poenget er ikke at Sara er uforsiktig</h4><p>Hun gjør det mange kunne gjort. Poenget er at hver felle retter seg mot en verdi hun ikke nødvendigvis har tenkt på: <b>kortet, passordet, jobbkontoen, tilliten hennes</b> – og til slutt <b>en annen persons sensitive opplysninger</b>. Etter dette kurset skal du lettere kunne gjenkjenne slike situasjoner før du handler.</p></div></div>';
+},
+mount:function(r,ctx){
+  var n=ctx.done?6:0;
+  function upd(){
+    $$('.ev',r).forEach(function(ev,i){ev.classList.toggle('fin',i<n);ev.classList.toggle('act',i===n);ev.classList.toggle('lock',i>n);});
+    $('#saracnt',r).textContent=n+'/6';
+    var tl=$('#tl',r),evs=$$('.ev',r),last=evs[Math.min(n,5)];
+    $('#tlf',r).style.height=Math.max(0,(last.offsetTop+24))+'px';
+    if(n===6)$('#saraend',r).style.display='block';
+  }
+  function solved(i){
+    var e=SARA[i],ev=$$('.ev',r)[i];
+    $('.evr',ev).innerHTML='<div class="reveal"><div class="trap"><small>Fellen</small>'+e.trap+' · '+e.mod+'</div><div class="val"><small>Verdien som angripes</small>'+e.val+'</div></div>';
+  }
+  SARA.forEach(function(e,i){
+    var ev=$$('.ev',r)[i];
+    mcq($('.evq',ev),{options:e.o,key:'sara'+i,solved:i<n,onCorrect:function(){solved(i);n=Math.max(n,i+1);upd();
+      if(n<6){setTimeout(function(){var nx=$$('.ev',r)[n];if(nx)nx.scrollIntoView({behavior:'smooth',block:'center'});},500);}
+      else ctx.complete();}});
+    if(i<n)solved(i);
+  });
+  requestAnimationFrame(upd);
+}});
+
+/* ---------- 1.2.1–1.2.6 Kategorier ---------- */
+var CATDETAIL={
+ kontoer:{n:'1.2.1',lead:'Kontoene dine er dørene inn til alt annet – og e-postkontoen er hoveddøren.',
+  body:'<p>Tenk etter: Når du glemmer et passord, hvor sendes lenken for å nullstille det? Til e-posten din. Den som kontrollerer e-posten din, kan i praksis overta nesten alle andre kontoer du har, én etter én. Derfor omtales e-postkontoen ofte som <b>«nøkkelen til kongeriket»</b>.</p>'+
+   '<div class="chain"><span>'+ic('lock')+' «Glemt passord?»</span>'+ic('right')+'<span>Nullstillingslenke</span>'+ic('right')+'<span class="hot2">'+ic('mail')+' Innboksen din</span>'+ic('right')+'<span>Bank, sky, sosiale medier …</span></div>'+
+   '<p style="margin-top:16px"><b>Andre kontoer med høy verdi:</b></p><ul class="dots"><li><b>Jobb- og studiekontoer</b> (Microsoft 365, Feide, Google Workspace) gir tilgang til organisasjonens systemer. Et angrep på deg kan bli et angrep på hele arbeidsplassen.</li><li><b>Sosiale medier</b> brukes til å svindle vennene dine («Hei! Kan du vippse meg 500 kr, betaler tilbake i morgen»), fordi meldinger fra kjente vekker mindre mistanke. Kaprede kontoer selges og brukes også til utpressing.</li><li><b>Gamle kontoer du har glemt:</b> gamle nettbutikk-, spill- og forumkontoer med gjenbrukte passord er en vanlig bakdør inn til de nye kontoene dine.</li></ul>'},
+ epost:{n:'1.2.2',lead:'Selve innholdet i innboksen er en egen verdi.',
+  body:'<p>Skroll gjennom din egen e-post og se hva som ligger der: kvitteringer, billetter, kontrakter, lønnsslipper, passordlenker og kanskje bilder av pass eller førerkort du sendte «bare den ene gangen».</p>'+
+   '<p>For en kriminell er innboksen din et <b>ferdig research-dokument</b>. Den viser:</p><div class="chips" style="margin-top:10px"><span class="chip">'+ic('card')+' hvilken bank du bruker</span><span class="chip">'+ic('flag')+' hvor du handler</span><span class="chip">'+ic('users')+' hvem du kjenner</span><span class="chip">'+ic('pen')+' hvordan du skriver</span></div>'+
+   '<p>… som er godt råstoff for skreddersydd svindel.</p><p><b>Meldingsapper</b> (Messenger, Snapchat, WhatsApp, Teams-chat) inneholder ofte svært privat informasjon: fortrolige samtaler, bilder og småhemmeligheter som kan brukes til utpressing eller til å utgi seg for å være deg.</p>'},
+ filer:{n:'1.2.3',lead:'Her skiller vi mellom to typer verdi.',
+  body:'<div class="grid g2" style="margin-top:12px"><div class="card" style="background:#fff"><h3>'+ic('gem')+' Uerstattelig for deg</h3><p>Bildearkivet, barnas oppvekst, masteroppgaven kvelden før frist, musikk- eller skriveprosjekter. Ingen svindler trenger å ønske seg disse filene – men et løsepengevirus eller en mistet telefon kan gjøre at de forsvinner for alltid. <b>Trusselen her er ikke først og fremst tyveri, men tap.</b></p></div>'+
+   '<div class="card" style="background:#fff"><h3>'+ic('eye')+' Verdifull for andre</h3><p>Skannede kopier av pass og vitnemål, skattemeldinger, kontrakter, kundelister og interne dokumenter fra jobben. Dette er <b>byggeklosser for ID-tyveri og industrispionasje</b>.</p></div></div>'+
+   '<div class="callout c-fact"><span class="ci">'+ic('bulb')+'</span><h4>Visste du at?</h4><div class="statrow"><div class="stat" data-count="42.5" data-dec="1" data-suf=" %">0</div><p>Ifølge Finanstilsynet økte betalingstilbydernes tap som følge av svindel med sosial manipulering med 42,5 prosent fra 2023 til 2024. Råstoffet for manipulasjonen er ofte informasjon som ligger i innbokser, skylagring og sosiale medier.</p></div></div>'},
+ enheter:{n:'1.2.4',lead:'Enhetene dine er både verdier i seg selv og beholdere for andre verdier.',
+  body:'<p>De koster penger, er innlogget i kontoene dine, lagrer filene dine og mottar engangskodene dine. En ulåst telefon på et kafébord kan i praksis være:</p>'+
+   '<div class="grid g3" style="margin-top:12px">'+[['card','en åpen lommebok'],['key','et nøkkelknippe'],['book','en dagbok']].map(function(x){return '<div class="card" style="background:#fff;text-align:center"><div class="ico" style="margin:0 auto 8px">'+ic(x[0])+'</div><b>'+x[1]+'</b></div>';}).join('')+'</div>'+
+   '<p style="margin-top:14px">… på samme tid. Glem heller ikke de <b>«usynlige» enhetene</b>: smartklokken, hjemmeruteren, smart-TV-en og den gamle mobilen i skuffen som fortsatt er logget inn i alt. <mark>I kartleggingen din teller alt som kobler seg til internett.</mark></p>'},
+ sky:{n:'1.2.5',lead:'Skyen har for mange blitt hovedlageret – ofte uten at vi tenker over det.',
+  body:'<p>OneDrive, iCloud, Google Disk og Dropbox fylles gjerne automatisk fordi telefonen sikkerhetskopierer av seg selv. Skykontoen din kan derfor inneholde store deler av det digitale livet ditt samlet på ett sted. Praktisk for deg – men også et <b>konsentrert mål</b>: én vellykket innlogging kan gi tilgang til svært mye.</p>'+
+   '<p><b>Apper</b> er også verdier – eller sårbarheter – avhengig av hvilke tillatelser de har fått. En lommelykt-app som har tilgang til kontaktene, posisjonen og bildene dine, kan i praksis bli en kanal ut.</p>'+
+   '<p><b>KI-verktøy</b> fortjener også oppmerksomhet: Alt du limer inn i dem, forlater din kontroll og lagres hos en tjenesteleverandør. <span class="mod">Modul 3</span></p>'},
+ bank:{n:'1.2.6',lead:'En av de mest kritiske digitale verdiene i Norge: BankID.',
+  body:'<p>BankID er ikke bare en bankløsning – det er <b>den juridiske signaturen din</b>. Med BankID kan noen:</p>'+
+   '<div class="chips" style="margin-top:10px"><span class="chip">tømme kontoen din</span><span class="chip">ta opp forbrukslån i ditt navn</span><span class="chip">selge bilen din</span><span class="chip">endre adressen din</span><span class="chip">signere juridisk bindende avtaler</span></div>'+
+   '<p>Derfor kan svindlere være villige til å ringe, presse, smigre og true i lang tid for å få deg til å oppgi koder eller godkjenne i appen.</p>'+
+   '<div class="rule"><h4>'+ic('alert')+' Viktig huskeregel</h4><p>Ingen seriøs aktør – verken banken, politiet eller Skatteetaten – vil noen gang be deg om å oppgi BankID-koder, passord eller engangskoder, eller be deg godkjenne en innlogging eller betaling mens de er på telefon.</p><p class="big">Den som ber om det, er en svindler.</p><span class="alw">ALLTID. UTEN UNNTAK.</span></div>'+
+   '<p style="margin-top:16px">I samme kategori ligger nettbank, Vipps, betalingskort lagret i nettbutikker, helsetjenester (Helsenorge), NAV og Skatteetaten – tjenester der innholdet enten er penger eller svært personlige opplysninger.</p>'}
+};
+L.push({id:'l12',sec:'1.2 Dine digitale verdier',title:'Seks kategorier av verdier',icon:'layers',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.2</span> Dine digitale verdier</div>'+
+  '<h1 class="t rv" style="--d:1">Hva er en digital verdi?</h1>'+
+  '<div class="quote rv" style="--d:2">En digital verdi er alt digitalt som er verdt noe <b>for deg</b> – eller <b>for en kriminell</b>.</div>'+
+  '<p class="rv" style="--d:3;font-size:16px;line-height:1.7;margin-top:14px;max-width:72ch">De to listene er ikke alltid like:</p>'+
+  '<div class="dual rv" style="--d:4">'+
+   '<div class="dual-row"><b>'+ic('file')+' Bildene av bestemor</b><div class="meter"><div>For deg<span><i data-w="96" style="background:var(--mint)"></i></span></div><div>For en svindler<span><i data-w="8" style="background:var(--ember)"></i></span></div></div></div>'+
+   '<div class="dual-row"><b>'+ic('mail')+' En halvglemt e-postkonto</b><div class="meter"><div>For deg<span><i data-w="12" style="background:var(--mint)"></i></span></div><div>For en angriper<span><i data-w="88" style="background:var(--ember)"></i></span></div></div></div>'+
+  '</div>'+
+  '<h2 class="t rv" style="--d:5">Utforsk de seks kategoriene</h2>'+
+  '<p class="rv muted" style="--d:5;font-size:15px">Les hver kategori med to spørsmål i bakhodet: <b>Hva har jeg her?</b> og <b>Hva kan noen andre bruke det til?</b> Åpne alle seks for å gå videre.</p>'+
+  '<div class="tiles rv" style="--d:6">'+CATS.slice(0,6).map(function(c){return '<button class="tile" data-c="'+c.id+'"><span class="ti" style="background:'+c.color+'">'+ic(c.icon)+'</span><span><b>'+c.name+'</b><small>'+CATDETAIL[c.id].n+'</small></span><span class="ck">'+ic('check')+'</span></button>';}).join('')+'</div>'+
+  '<div id="det"></div><p class="small muted" id="catcnt" style="margin-top:10px"></p>';
+},
+mount:function(r,ctx){
+  setTimeout(function(){$$('.meter i',r).forEach(function(i){i.style.width=i.dataset.w+'%';});},300);
+  var seen=ctx.done?{kontoer:1,epost:1,filer:1,enheter:1,sky:1,bank:1}:{};
+  function cnt(){var k=Object.keys(seen).length;$('#catcnt',r).textContent=k+' av 6 kategorier utforsket'+(k===6?' – bra!':'');$$('.tile',r).forEach(function(t){t.classList.toggle('seen',!!seen[t.dataset.c]);});if(k===6)ctx.complete();}
+  $$('.tile',r).forEach(function(t){t.addEventListener('click',function(){
+    var c=cat(t.dataset.c),d=CATDETAIL[c.id];seen[c.id]=1;
+    $$('.tile',r).forEach(function(x){x.classList.remove('act');});t.classList.add('act');
+    var det=$('#det',r);
+    det.innerHTML='<div class="detail"><div class="detail-h"><span class="ti" style="background:'+c.color+'">'+ic(c.icon)+'</span><div><span class="small muted" style="font-weight:800">'+d.n+'</span><h3 style="font-size:22px;margin:0">'+c.name+'</h3></div></div>'+
+      '<p style="font-family:var(--serif);font-size:18px;margin-top:10px;line-height:1.45">'+d.lead+'</p><div class="prose">'+d.body+'</div>'+
+      '<div class="twoq"><div><b>Hva har jeg her?</b>Tenk konkret – du skal bruke det i verdikartet ditt senere.</div><div><b>Hva kan andre bruke det til?</b>Svindel, utpressing, ID-tyveri – eller bare å ødelegge.</div></div></div>';
+    countUp(det);cnt();
+    setTimeout(function(){det.scrollIntoView({behavior:'smooth',block:'nearest'});},60);
+  });});
+  cnt();
+}});
+
+/* ---------- BankID-test ---------- */
+L.push({id:'bankid',sec:'1.2 Dine digitale verdier',title:'BankID-regelen: svindel eller trygt?',icon:'shield',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.2.6</span> Øv på huskeregelen</div>'+
+  '<h1 class="t rv" style="--d:1">Svindel eller trygt?</h1>'+
+  '<p class="lede rv" style="--d:2">Huskeregelen er absolutt. Nøkkelspørsmålet er: <b>Hvem tok kontakt?</b> Hvis noen kontakter <i>deg</i> og ber om koder, passord eller en godkjenning, er svaret alltid det samme.</p>'+
+  '<div id="dk" class="rv" style="--d:3"></div>';
+},
+mount:function(r,ctx){
+  deck($('#dk',r),{key:'bankid',solved:ctx.done,choices:[{id:'s',label:'Svindel',sub:'legg på / ikke svar'},{id:'t',label:'Trygt',sub:'du tok initiativet'}],
+   sumText:'Regelen er enkel nok til å huskes under press – og det er nettopp da den trengs.',
+   cards:[
+    {icon:'phone',t:'«Politiet» ringer: Kontoen din er angrepet, og for å sikre pengene må du lese opp engangskoden du nettopp fikk.',a:'s',why:'Politiet ber <b>aldri</b> om engangskoder. Den som ber om det, er en svindler – alltid.'},
+    {icon:'phone',t:'«Banken» ringer om mistenkelig aktivitet og ber deg godkjenne i BankID-appen mens dere snakker, «for å stoppe svindelen».',a:'s',why:'Ingen seriøs aktør ber deg godkjenne en innlogging eller betaling mens de er på telefon. Legg på og ring banken selv på nummeret du finner på kortet eller nettsiden.'},
+    {icon:'lock',t:'Du åpner selv nettbanken på mobilen for å betale en regning. BankID-appen ber deg bekrefte innloggingen.',a:'t',why:'Her er det <b>du</b> som startet innloggingen. Det er slik BankID skal fungere.'},
+    {icon:'msg',t:'SMS fra «Skatteetaten»: Du har penger til gode. Logg inn via lenken og oppgi passordet ditt for å få utbetalingen.',a:'s',why:'Skatteetaten ber aldri om passord via en lenke i en SMS. Gå alltid inn via skatteetaten.no selv.'},
+    {icon:'users',t:'En hyggelig «rådgiver» har ringt deg flere ganger denne uken om en investering, og ber deg nå signere «bare en formalitet» med BankID.',a:'s',why:'Svindlere kan bruke lang tid på å smigre og bygge tillit. Når noen som kontaktet deg ber deg signere med BankID – stopp.'},
+    {icon:'user',t:'Du skriver selv inn helsenorge.no i nettleseren og logger inn med BankID for å lese en melding fra fastlegen.',a:'t',why:'Du valgte selv tjenesten og adressen, og du startet innloggingen. Trygt.'}
+   ],onDone:function(){ctx.complete();}});
+}});
+
+/* ---------- Refleksjon 2 ---------- */
+L.push({id:'refl2',sec:'1.2 Dine digitale verdier',title:'Refleksjon: ditt svake punkt',icon:'pen',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">Refleksjon</span> før du leser videre</div>'+
+  '<h1 class="t rv" style="--d:1">Hvilken kategori hadde du tenkt minst på?</h1>'+
+  '<p class="lede rv" style="--d:2">Velg den av de seks kategoriene du hadde tenkt minst på før du leste dette. Det kan være et svakt punkt i dag.</p>'+
+  '<div class="tiles rv" style="--d:3">'+CATS.slice(0,6).map(function(c){return '<button class="tile" data-c="'+c.id+'" aria-pressed="false"><span class="ti" style="background:'+c.color+'">'+ic(c.icon)+'</span><span><b>'+c.name+'</b></span><span class="ck">'+ic('check')+'</span></button>';}).join('')+'</div>'+
+  '<div id="r2fb"></div>'+
+  '<div class="rv" style="--d:4;margin-top:16px"><label class="lbl" for="r2n">Notat til deg selv (valgfritt)</label><textarea id="r2n" rows="3" placeholder="Hvorfor tror du akkurat denne ble glemt?"></textarea><span class="saved">'+ic('check')+' Lagret</span></div>';
+},
+mount:function(r,ctx){
+  function sel(id){
+    $$('.tile',r).forEach(function(t){var on=t.dataset.c===id;t.classList.toggle('act',on);t.classList.toggle('seen',on);t.setAttribute('aria-pressed',on);});
+    $('#r2fb',r).innerHTML='<div class="callout c-tip"><span class="ci">'+ic('bulb')+'</span><h4>Notert</h4><p>Du valgte <b>'+h(cat(id).name)+'</b>. For mange er svaret «gamle kontoer» eller «skyen». Uansett: Nå vet du hvor du bør se ekstra nøye etter når du lager verdikartet ditt.</p></div>';
+  }
+  $$('.tile',r).forEach(function(t){t.addEventListener('click',function(){S.r2.cat=t.dataset.c;save();sel(t.dataset.c);ctx.complete();});});
+  if(S.r2.cat)sel(S.r2.cat);
+  bindText($('#r2n',r),function(){return S.r2.note;},function(v){S.r2.note=v;});
+}});
+
+/* ---------- 1.2.7 Identitet ---------- */
+L.push({id:'l127',sec:'1.2 Dine digitale verdier',title:'Den sjuende, usynlige verdien',icon:'user',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.2.7</span> Identiteten og omdømmet ditt</div>'+
+  '<h1 class="t rv" style="--d:1">Den sjuende kategorien er usynlig</h1>'+
+  '<div class="grid g2" style="align-items:center;margin-top:10px"><div class="rv" style="--d:2">'+
+   '<div class="orbit"><div class="spin">'+CATS.slice(0,6).map(function(c,k){return '<span class="o" style="--a:'+(k*60)+'deg;background:'+c.color+';animation-delay:'+(k*0.08)+'s">'+ic(c.icon)+'</span>';}).join('')+'</div><div class="core">Identitet og omdømme</div></div>'+
+  '</div><div class="prose rv" style="--d:3">'+
+   '<p style="font-size:17px">Den er <b>summen av de seks andre</b>. Den kan ikke lagres, låses eller sikkerhetskopieres – men den er den som tar lengst tid å bygge opp igjen.</p>'+
+   '<p>Blir det tatt opp lån i navnet ditt, kan pengene ofte ordnes opp i; betalingsanmerkningen og tiden det tar, er verre.</p>'+
+  '</div></div>'+
+  '<div class="task rv" style="--d:4"><div class="task-h"><span class="tag">Sjekk</span><b>Facebook-kontoen din blir kapret og brukt til å svindle vennene dine. Hva er det største tapet?</b></div><div id="q"></div></div>'+
+  '<div id="myth" style="display:none"><h2 class="t">Mytesjekk</h2><div class="grid g2">'+
+   '<button class="flip" style="min-height:170px"><div class="flip-in" style="min-height:170px"><div class="flip-f"><h3>«Jeg har jo ingenting å skjule.»</h3><span class="tap">'+ic('refresh')+' Snu kortet for å se hvorfor det er et dårlig argument</span></div><div class="flip-b"><p style="font-family:var(--serif);font-size:19px;line-height:1.4">Du har noe å <b>miste</b>, selv om du ikke har noe å <b>skjule</b>.</p></div></div></button>'+
+   '<div class="card"><h3>'+ic('users')+' Hvorfor dette betyr mye</h3><p>Identiteten din er det svindlere låner når de lurer familien, vennene og kollegaene dine. Å beskytte de seks andre kategoriene er også å beskytte dem.</p></div>'+
+  '</div></div>';
+},
+mount:function(r,ctx){
+  function show(){$('#myth',r).style.display='block';}
+  mcq($('#q',r),{key:'l127',solved:ctx.done,options:[
+    {t:'At du mister selve kontoen og bildene i den',fb:'Det er ille, men kontoen kan ofte gjenopprettes.'},
+    {t:'At folk du er glad i ble lurt – i ditt navn',ok:true,fb:'Det største tapet er ikke kontoen, men at folk du er glad i ble lurt i ditt navn. Det rammer tilliten – og omdømmet ditt.'},
+    {t:'At du må lage en ny profil',fb:'Det er bare litt tidkrevende. Tenk på hvem andre som rammes.'}
+  ],onCorrect:function(){show();ctx.complete();}});
+  if(ctx.done)show();
+  $$('.flip',r).forEach(function(f){f.addEventListener('click',function(){f.classList.toggle('on');});});
+}});
+
+/* ---------- Sorteringsspill 7 kategorier ---------- */
+L.push({id:'sort7',sec:'1.2 Dine digitale verdier',title:'Øvelse: sorter verdiene',icon:'layers',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">Øvelse</span> Dine digitale verdier</div>'+
+  '<h1 class="t rv" style="--d:1">Hvor hører verdiene hjemme?</h1>'+
+  '<p class="lede rv" style="--d:2">Sorter hver verdi i riktig kategori. Dette er den samme tenkningen du skal bruke når du lager ditt eget verdikart.</p>'+
+  '<div class="task rv" style="--d:3"><div id="sg"></div></div>';
+},
+mount:function(r,ctx){
+  var bins=CATS.map(function(c){return {id:c.id,name:c.short,icon:c.icon,color:c.color};});
+  var items=[
+    {t:'Feide-kontoen',b:'kontoer',why:'En studie-/jobbkonto gir tilgang til organisasjonens systemer.'},
+    {t:'Gammel spillkonto fra 2015',b:'kontoer',why:'Glemte kontoer med gjenbrukte passord er en vanlig bakdør.',hint:'Det er en innlogging – selv om du har glemt den.'},
+    {t:'Lønnsslipper i innboksen',b:'epost',why:'Innholdet i innboksen er en egen verdi – et ferdig research-dokument.',hint:'Hvor ligger de? Tenk på innholdet i innboksen.'},
+    {t:'Snapchat-samtaler',b:'epost',why:'Meldingsapper inneholder ofte svært privat informasjon.'},
+    {t:'Bildearkivet',b:'filer',why:'Uerstattelig for deg. Trusselen er først og fremst tap.'},
+    {t:'Skannet kopi av passet',b:'filer',why:'Verdifull for andre – en byggekloss for ID-tyveri.'},
+    {t:'Hjemmeruteren',b:'enheter',why:'Alt som kobler seg til internett teller i kartleggingen.',hint:'Det er en fysisk ting som kobler seg til internett.'},
+    {t:'Gammel mobil i skuffen',b:'enheter',why:'Den kan fortsatt være logget inn i alt.'},
+    {t:'Lommelykt-app med tilgang til kontaktene',b:'sky',why:'Apper er verdier eller sårbarheter avhengig av tillatelsene de har fått.',hint:'Det handler om en app og tillatelsene den har fått.'},
+    {t:'iCloud-sikkerhetskopien',b:'sky',why:'Skyen er et konsentrert mål – én innlogging kan gi tilgang til svært mye.'},
+    {t:'Vipps',b:'bank',why:'Penger og betaling hører til i samme kategori som BankID.'},
+    {t:'Helsenorge',b:'bank',why:'Sensitive tjenester med svært personlige opplysninger hører hjemme her.',hint:'Tenk: sensitive tjenester der innholdet er svært personlig.'},
+    {t:'Det gode navnet ditt blant venner',b:'id',why:'Omdømmet ditt er den usynlige sjuende verdien.'},
+    {t:'Kredittverdigheten din',b:'id',why:'Lån i ditt navn kan gi betalingsanmerkninger som tar lang tid å rydde opp i.',hint:'Hva skjer med deg hvis noen tar opp lån i ditt navn?'}
+  ];
+  sortGame($('#sg',r),{items:items,bins:bins,cols:4,key:'sort7',solved:ctx.done,doneText:'Du kjenner nå alle sju kategoriene.',onDone:function(){ctx.complete();}});
+}});
+
+/* ---------- 1.3 KIT ---------- */
+var KIT={
+ K:{name:'Konfidensialitet',color:'#2F74B5',sub:'At uvedkommende ikke får tilgang',brudd:'Noen leser e-posten din',
+  body:'<p>Konfidensialitet betyr at <b>kun de rette personene</b> får se og bruke informasjonen. Dette er det mange først forbinder med «sikkerhet»: at ingen leser e-posten din, ser bildene dine eller logger inn på kontoene dine.</p><p>Brudd på konfidensialitet kalles gjerne <b>datainnbrudd</b> eller <b>lekkasje</b>. Det er dette passord, tofaktorpålogging og kryptering først og fremst skal beskytte mot.</p>'},
+ I:{name:'Integritet',color:'#6E54B8',sub:'At informasjon ikke blir endret eller manipulert',brudd:'Fakturaen er manipulert',
+  body:'<p>Dette målet er lett å glemme – helt til det rammer deg selv. Integritet betyr at informasjonen er <b>riktig og uendret</b>. Se for deg at noen ikke stjeler noe fra deg i det hele tatt, men i stedet:</p><ul class="dots"><li>endrer kontonummeret på en faktura du skal betale (<b>fakturasvindel</b> – et av de dyreste angrepene mot norske virksomheter),</li><li>redigerer et dokument du deler med andre,</li><li>legger ut meldinger i ditt navn fra din egen konto,</li><li>eller, 2026-varianten, lager en <b>deepfake</b>-video der «du» sier ting du aldri har sagt.</li></ul><p>Ingenting er «borte», men skaden kan likevel bli større enn ved et tyveri. Spørsmålet <mark>«er dette ekte og uendret?»</mark> blir en viktig sikkerhetsferdighet.</p>'},
+ T:{name:'Tilgjengelighet',color:'#2F9A7D',sub:'At kontoer, data og tjenester er der når du trenger dem',brudd:'Filene er låst av løsepengevirus',
+  body:'<p>Det tredje målet blir ofte undervurdert: at det du er avhengig av, <b>faktisk fungerer når du trenger det</b>. Et løsepengevirus som låser alle filene dine, behøver ikke avsløre innholdet for å skape problemer. Det samme gjelder hvis du mister telefonen som gir deg tilgang til kontoene dine, eller hvis skytjenesten er nede når du trenger den mest.</p><p>NSM understreker i <i>Risiko 2026</i> at konsekvensen kan bli den samme enten årsaken er en kriminell handling eller en vanlig teknisk feil. Derfor trenger alle <b>reserveløsninger</b> – for deg først og fremst <b>sikkerhetskopi</b> og <b>alternative innloggingsmetoder</b>. <span class="mod">Modul 3</span></p>'}
+};
+L.push({id:'l13',sec:'1.3 Hva må beskyttes?',title:'KIT-trekanten',icon:'shield',gate:true,
+html:function(){
+  var V={K:[260,70],I:[90,330],T:[430,330]};
+  return '<div class="eyebrow rv"><span class="n">1.3</span> Hva må beskyttes?</div>'+
+  '<h1 class="t rv" style="--d:1">Tre mål for all beskyttelse</h1>'+
+  '<p class="lede rv" style="--d:2">Hva vil det egentlig si å «beskytte» verdiene dine? Sikkerhetsfaget har et presist og ganske enkelt svar, kjent internasjonalt som <b>CIA-triaden</b>. På norsk kaller vi den <b>KIT-trekanten</b>. Trykk på hvert hjørne.</p>'+
+  '<div class="kit"><div>'+
+   '<svg viewBox="0 0 520 400" role="group" aria-label="KIT-trekanten">'+
+    '<defs><linearGradient id="m1tri" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E7F0FA"/><stop offset=".5" stop-color="#EFEAFA"/><stop offset="1" stop-color="#E3F4EE"/></linearGradient></defs>'+
+    '<path class="face" d="M260 70 L90 330 L430 330 Z"/>'+
+    '<path class="edge" d="M260 70 L90 330 L430 330 Z"/>'+
+    '<rect x="195" y="232" width="130" height="36" rx="18" fill="#fff" stroke="#DCE6ED"/><text x="260" y="255" class="kitlbl" style="font-weight:700;fill:#16324B">KIT-trekanten</text>'+
+    ['K','I','T'].map(function(k){var p=V[k],c=KIT[k];return '<g class="vx" data-k="'+k+'" tabindex="0" role="button" aria-label="'+c.name+'"><circle class="seenring" cx="'+p[0]+'" cy="'+p[1]+'" r="54"/><circle class="bg" cx="'+p[0]+'" cy="'+p[1]+'" r="46" fill="'+c.color+'"/><text x="'+p[0]+'" y="'+(p[1]+11)+'" font-size="34">'+k+'</text><text class="kitlbl" x="'+p[0]+'" y="'+(k==='K'?p[1]-62:p[1]+72)+'" style="fill:#16324B;font-weight:700;font-size:15px">'+c.name+'</text></g>';}).join('')+
+   '</svg></div><div class="kitp" id="kp"><div class="card" style="text-align:center;padding:40px 20px"><div class="ico" style="margin:0 auto 10px">'+ic('hand')+'</div><p>All beskyttelse handler om å ivareta ett eller flere av disse tre målene. Velg et hjørne i trekanten.</p></div></div></div>'+
+  '<p class="small muted" id="kc" style="margin-top:6px"></p>';
+},
+mount:function(r,ctx){
+  var seen=ctx.done?{K:1,I:1,T:1}:{};
+  function cnt(){var k=Object.keys(seen).length;$('#kc',r).textContent=k+' av 3 mål utforsket';$$('.vx',r).forEach(function(v){v.classList.toggle('seen',!!seen[v.dataset.k]);});if(k===3)ctx.complete();}
+  function open(k){var c=KIT[k];seen[k]=1;
+    $$('.vx',r).forEach(function(v){v.classList.toggle('act',v.dataset.k===k);});
+    $('#kp',r).innerHTML='<div class="detail" style="border-top:5px solid '+c.color+'"><div class="detail-h"><span class="ti" style="background:'+c.color+';font-family:var(--serif);font-weight:700">'+k+'</span><div><h3 style="font-size:22px;margin:0">'+c.name+'</h3><span class="small muted">'+c.sub+'</span></div></div><div class="prose">'+c.body+'</div><div style="margin-top:14px;display:flex;gap:8px;align-items:center;background:var(--emberS);color:#8A3526;border-radius:12px;padding:10px 12px;font-size:13.5px;font-weight:600">'+ic('alert')+'<span>Eksempel på brudd: '+c.brudd+'</span></div></div>';
+    cnt();}
+  $$('.vx',r).forEach(function(v){v.addEventListener('click',function(){open(v.dataset.k);});v.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open(v.dataset.k);}});});
+  cnt();
+}});
+
+/* ---------- KIT-spill ---------- */
+L.push({id:'kitgame',sec:'1.3 Hva må beskyttes?',title:'Øvelse: K, I eller T?',icon:'target',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">Øvelse</span> KIT-trekanten</div>'+
+  '<h1 class="t rv" style="--d:1">Hvilket mål er brutt?</h1>'+
+  '<p class="lede rv" style="--d:2">Les hver situasjon og velg hvilket av de tre målene som først og fremst rammes.</p><div id="dk" class="rv" style="--d:3"></div>';
+},
+mount:function(r,ctx){
+  deck($('#dk',r),{key:'kit',solved:ctx.done,choices:[{id:'K',label:'K',sub:'Konfidensialitet'},{id:'I',label:'I',sub:'Integritet'},{id:'T',label:'T',sub:'Tilgjengelighet'}],
+   sumText:'Mange situasjoner rammer flere mål samtidig – men å finne hovedmålet hjelper deg å velge riktig beskyttelse.',
+   cards:[
+    {icon:'mail',t:'Noen gjetter passordet ditt og leser e-posten din i flere måneder uten at du merker noe.',a:'K',why:'Uvedkommende har fått <b>tilgang</b> – et brudd på konfidensialitet.'},
+    {icon:'file',t:'Kontonummeret på en faktura du skal betale, er i det stille byttet ut med svindlerens.',a:'I',why:'Ingenting er stjålet, men informasjonen er <b>endret</b>. Fakturasvindel er et klassisk integritetsbrudd.'},
+    {icon:'lock',t:'Et løsepengevirus låser alle filene på PC-en din. Ingen har lest dem.',a:'T',why:'Filene er der, men du får ikke brukt dem – et brudd på <b>tilgjengelighet</b>.'},
+    {icon:'eye',t:'En deepfake-video der «du» sier ting du aldri har sagt, sprer seg på sosiale medier.',a:'I',why:'Noe er <b>forfalsket</b>. Spørsmålet «er dette ekte og uendret?» handler om integritet.'},
+    {icon:'phone',t:'Du mister mobilen – den eneste enheten som mottar engangskodene dine – og kommer ikke inn på kontoene.',a:'T',why:'Kontoene er ikke stjålet, men de er <b>utilgjengelige</b> for deg. Derfor trenger du alternative innloggingsmetoder.'},
+    {icon:'bot',t:'En praksisrapport med en pasients helseopplysninger limes inn i et KI-verktøy som ikke er godkjent for slike data.',a:'K',why:'Sensitive opplysninger havner hos <b>noen som ikke skal ha dem</b> – et brudd på konfidensialitet.'},
+    {icon:'msg',t:'Noen poster meldinger fra den ekte kontoen din, i ditt navn, til alle vennene dine.',a:'I',why:'Budskapet ser ut til å komme fra deg, men er <b>manipulert</b> – modulen plasserer dette under integritet.'},
+    {icon:'cloud',t:'Skytjenesten der alle dokumentene dine ligger, er nede kvelden før eksamensinnlevering.',a:'T',why:'Konsekvensen er den samme enten årsaken er et angrep eller en teknisk feil – derfor trenger alle reserveløsninger.'}
+   ],onDone:function(){ctx.complete();}});
+}});
+
+/* ---------- 1.3.4 Kronjuveler ---------- */
+L.push({id:'l134',sec:'1.3 Hva må beskyttes?',title:'Dine kronjuveler',icon:'crown',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.3.4</span> Hva er mest kritisk for deg?</div>'+
+  '<h1 class="t rv" style="--d:1">Finn kronjuvelene dine</h1>'+
+  '<p class="lede rv" style="--d:2">Ikke alt er like viktig – og det er både lov og nødvendig å prioritere. I sikkerhetsarbeid brukes ofte betegnelsen <b>«kronjuveler»</b> om de viktigste verdiene. Tre spørsmål hjelper deg å finne dine:</p>'+
+  '<div class="jq">'+[
+   ['key','#2F74B5','var(--skyS)','1. Hva gir tilgang til alt annet?','<b>Nøkler</b> – e-postkonto, mobil, BankID, passordbehandler. Disse skal ha den sterkeste beskyttelsen du kan gi dem.'],
+   ['gem','#D9772E','var(--amberS)','2. Hva kan ikke erstattes?','<b>Uerstattelig</b> – bildearkiv, originaldokumenter, oppgaven du skriver på. Disse bør ha sikkerhetskopi.'],
+   ['users','#2F9A7D','var(--mintS)','3. Hva kan skade andre enn meg?','<b>Ansvar</b> – jobbkontoen, pasient- eller kundedata, delte filer i en gruppe. Disse forvalter du på vegne av andre.']
+  ].map(function(x,k){return '<div class="rv" style="--d:'+(3+k)+';background:'+x[2]+'"><div class="ico" style="background:'+x[1]+';color:#fff">'+ic(x[0])+'</div><b>'+x[3]+'</b><p>'+x[4]+'</p></div>';}).join('')+'</div>'+
+  '<div class="task rv" style="--d:6"><div class="task-h"><span class="tag">Øvelse</span><b>Hvilket kronjuvel-spørsmål passer best?</b></div><div id="sg"></div></div>'+
+  '<div id="vz" style="display:none"><h2 class="t">Du er en del av et større forsvarsverk</h2>'+
+   '<div class="statrow card"><svg class="donut" viewBox="0 0 100 100"><circle class="tr" cx="50" cy="50" r="40"/><circle class="val" cx="50" cy="50" r="40"/><text x="50" y="50">62 %</text></svg>'+
+   '<div><p style="font-size:15.5px;color:var(--ink);line-height:1.6">Verizons <i>Data Breach Investigations Report 2026</i> viser at <b>det menneskelige elementet inngår i 62 prosent</b> av bekreftede sikkerhetsbrudd. Angriperne velger bevisst den enkleste veien inn – som ofte er en travel medarbeider en onsdag ettermiddag.</p><p style="margin-top:8px;font-size:15.5px;color:var(--ink)">Når du sikrer dine egne verdier, bidrar du også til å sikre fellesskapets.</p></div></div></div>';
+},
+mount:function(r,ctx){
+  function show(){var v=$('#vz',r);v.style.display='block';setTimeout(function(){var c=$('.donut .val',v);if(c)c.style.strokeDasharray=(0.62*251.3)+' 251.3';},200);}
+  sortGame($('#sg',r),{key:'l134',solved:ctx.done,bins:[{id:'n',name:'Nøkler',icon:'key',color:'#2F74B5'},{id:'u',name:'Uerstattelig',icon:'gem',color:'#D9772E'},{id:'a',name:'Ansvar',icon:'users',color:'#2F9A7D'}],
+   items:[
+    {t:'E-postkontoen',b:'n',why:'Nullstillingslenker sendes hit – den åpner alt annet.'},
+    {t:'Mobiltelefonen',b:'n',why:'Beholderen som mottar kodene og åpner alt annet.'},
+    {t:'BankID',b:'n',why:'Penger og juridisk identitet – en nøkkel til svært mye.'},
+    {t:'Passordbehandleren',b:'n',why:'Den inneholder nøklene til alle de andre kontoene.'},
+    {t:'Bildearkivet',b:'u',why:'Kan ikke erstattes – trenger sikkerhetskopi.'},
+    {t:'Bacheloroppgaven du skriver på',b:'u',why:'Kan ikke erstattes kvelden før frist.'},
+    {t:'Pasientdata i jobbsystemet',b:'a',why:'Du forvalter dette på vegne av andre.'},
+    {t:'Den delte gruppemappen',b:'a',why:'Andre er avhengige av at du tar vare på den.'},
+    {t:'Kundelisten på jobben',b:'a',why:'Et lekkasjeproblem for arbeidsgiveren og kundene.'}
+   ],onDone:function(){show();ctx.complete();}});
+  if(ctx.done)show();
+}});
+
+/* ---------- 1.4 Steg 1 Verdikart ---------- */
+L.push({id:'vk1',sec:'1.4 Praktisk oppgave: Ditt digitale verdikart',title:'Steg 1: Lag verdikartet',icon:'map',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.4.1</span> Praktisk oppgave · Steg 1 av 3</div>'+
+  '<h1 class="t rv" style="--d:1">Lag ditt digitale verdikart</h1>'+
+  '<p class="lede rv" style="--d:2">Nå skal teorien brukes i praksis. Du står i midten, med de sju kategoriene rundt deg. Trykk på en gren og fyll ut så konkret du klarer. Dette blir <b>første kapittel i «Min SIKRE-plan»</b>.</p>'+
+  '<div class="callout c-warn rv" style="--d:3"><span class="ci">'+ic('alert')+'</span><h4>Ikke i et åpent KI-verktøy</h4><p>Du kartlegger dine mest verdifulle data. Denne siden sender ingenting noe sted – alt lagres bare i nettleseren din. Du kan gjerne bruke kallenavn i stedet for fulle kontonavn.</p></div>'+
+  '<div class="vk rv" style="--d:4" id="vk"></div>'+
+  '<div id="ed"></div>'+
+  '<div class="grid g2" style="margin-top:22px">'+
+   '<div class="card"><h3>'+ic('bulb')+' Hjelpespørsmål mens du fyller ut</h3><div class="checks">'+[
+     'Gå gjennom telefonen din: Hvilke apper er du innlogget i? Hver app = minst én konto.',
+     'Søk i e-posten etter «velkommen», «bekreft kontoen» og «kvittering» – her finner du trolig kontoer du hadde glemt.',
+     'Sjekk hva som faktisk ligger i skyen din (OneDrive/iCloud/Google Disk).',
+     'Ikke glem smartklokke, spillkonsoll, gamle enheter i skuffen eller delte familiekontoer.'
+   ].map(function(t,k){return '<label><input type="checkbox" data-k="'+k+'">'+t+'</label>';}).join('')+'</div></div>'+
+   '<div class="card"><h3>'+ic('key')+' Hvor mange kontoer tror du at du har?</h3><div class="stat" id="gv" style="margin:14px 0 6px">40</div><input type="range" id="guess" min="0" max="150" step="1" aria-label="Antall kontoer"><p style="margin-top:10px">Mange ender med <b>40–100 kontoer</b>. Det er ikke unormalt – og nettopp derfor du trenger passordbehandleren du lærer om i modul 3.</p></div>'+
+  '</div><p class="small muted" id="vkst" style="margin-top:14px"></p>';
+},
+mount:function(r,ctx){
+  var act=null,vk=$('#vk',r);
+  function pos(k){var a=(-90+k*360/7)*Math.PI/180;return [50+37*Math.cos(a),50+39*Math.sin(a)];}
+  function draw(){
+    var tot=itemCount();
+    vk.innerHTML='<svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">'+CATS.map(function(c,k){var p=pos(k);return '<line x1="50" y1="50" x2="'+p[0]+'" y2="'+p[1]+'" class="'+(mapItems(c.id).length?'has':'')+'"/>';}).join('')+'</svg>'+
+      '<div class="vk-me"><div><b>MEG</b><small>min digitale hverdag</small><div class="cnt">'+tot+' verdier</div></div></div>'+
+      CATS.map(function(c,k){var p=pos(k),it=mapItems(c.id);return '<button class="vk-node'+(it.length?' has':'')+(act===c.id?' act':'')+'" data-c="'+c.id+'" style="left:'+p[0]+'%;top:'+p[1]+'%;animation-delay:'+(k*60)+'ms"><div class="nh"><span class="ni" style="background:'+c.color+'">'+ic(c.icon)+'</span><b>'+c.name+'</b><span class="nc">'+it.length+'</span></div><div class="np">'+(it.length?it.map(h).join(' · '):c.hint)+'</div></button>';}).join('');
+    $$('.vk-node',vk).forEach(function(b){b.addEventListener('click',function(){act=b.dataset.c;draw();editor();});});
+    var filled=CATS.filter(function(c){return mapItems(c.id).length>0;}).length;
+    $('#vkst',r).innerHTML=(filled===7?ic('check')+' Alle sju grener har minst én verdi. Fortsett gjerne å fylle ut – eller gå videre.':'Fyll ut minst én verdi i hver av de sju grenene for å gå videre ('+filled+'/7).');
+    if(filled===7)ctx.complete();
+  }
+  function editor(){
+    var ed=$('#ed',r);if(!act){ed.innerHTML='';return;}
+    var c=cat(act),it=mapItems(act);
+    ed.innerHTML='<div class="vk-ed"><div class="detail-h"><span class="ti" style="background:'+c.color+';width:40px;height:40px;font-size:20px;border-radius:12px">'+ic(c.icon)+'</span><div><h3 style="margin:0">'+c.name+'</h3><span class="small muted">'+c.hint+'</span></div><button class="btn btn-s btn-sm" id="cl" style="margin-left:auto">Lukk</button></div>'+
+      '<div class="vk-add"><input type="text" id="ni" maxlength="80" placeholder="Skriv en verdi og trykk Enter …" aria-label="Ny verdi i '+h(c.name)+'"><button class="btn btn-d btn-sm" id="ad">Legg til</button></div>'+
+      '<div class="mine">'+(it.length?it.map(function(t,i){return '<span class="chip">'+h(t)+'<button data-i="'+i+'" aria-label="Fjern '+h(t)+'">'+ic('x')+'</button></span>';}).join(''):'<span class="small muted">Ingen verdier ennå.</span>')+'</div>'+
+      '<p class="small muted" style="margin-top:12px;font-weight:700">Forslag – trykk for å legge til:</p><div class="sugg">'+c.sugg.filter(function(s){return it.indexOf(s)<0;}).map(function(s){return '<button>'+h(s)+'</button>';}).join('')+'</div></div>';
+    var inp=$('#ni',ed);
+    function add(v){v=(v||'').trim();if(!v)return;if(it.indexOf(v)<0){it.push(v);save();}draw();editor();var n=$('#ni',r);if(n)n.focus();}
+    $('#ad',ed).addEventListener('click',function(){add(inp.value);});
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();add(inp.value);}});
+    $$('.sugg button',ed).forEach(function(b){b.addEventListener('click',function(){add(b.textContent);});});
+    $$('.mine button',ed).forEach(function(b){b.addEventListener('click',function(){var t=it[+b.dataset.i];it.splice(+b.dataset.i,1);S.stars=S.stars.filter(function(s){return !(s.cat===act&&s.t===t);});save();draw();editor();});});
+    $('#cl',ed).addEventListener('click',function(){act=null;draw();editor();});
+  }
+  draw();
+  $$('.checks input',r).forEach(function(c){c.checked=!!S.checks[c.dataset.k];c.addEventListener('change',function(){S.checks[c.dataset.k]=c.checked;save();});});
+  var g=$('#guess',r),gv=$('#gv',r);g.value=S.guess;gv.textContent=S.guess;
+  g.addEventListener('input',function(){S.guess=+g.value;gv.textContent=g.value+(g.value>=150?'+':'');save();});
+}});
+
+/* ---------- Steg 2: Tre viktigste ---------- */
+L.push({id:'vk2',sec:'1.4 Praktisk oppgave: Ditt digitale verdikart',title:'Steg 2: Velg dine tre viktigste',icon:'star',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.4.2</span> Praktisk oppgave · Steg 2 av 3</div>'+
+  '<h1 class="t rv" style="--d:1">Velg dine tre viktigste digitale verdier</h1>'+
+  '<p class="lede rv" style="--d:2">Bruk de tre kronjuvel-spørsmålene – <b>nøkler, uerstattelig, ansvar</b> – og sett en stjerne ved dine tre mest verdifulle verdier. Vær streng: <b>bare tre</b>.</p>'+
+  '<div class="top3 rv" style="--d:3" id="t3"></div>'+
+  '<div class="rv" style="--d:4" id="sl"></div>'+
+  '<details class="card rv" style="--d:5;margin-top:22px"><summary style="cursor:pointer;font-weight:700">'+ic('users')+' Hva velger mange andre i Norge?</summary><ol style="margin-top:10px;display:grid;gap:6px;font-size:14.5px;list-style:decimal;padding-left:20px"><li>E-postkontoen din (hoveddøren til alt)</li><li>BankID og nettbank (penger og juridisk identitet)</li><li>Mobiltelefonen (beholderen som åpner alt annet), bildearkivet eller jobbkontoen</li></ol><p class="small muted" style="margin-top:8px">Din liste kan være annerledes – og det er hele poenget.</p></details>';
+},
+mount:function(r,ctx){
+  function isStar(c,t){return S.stars.some(function(s){return s.cat===c&&s.t===t;});}
+  function draw(){
+    S.stars=S.stars.filter(function(s){return mapItems(s.cat).indexOf(s.t)>=0;});
+    $('#t3',r).innerHTML=[0,1,2].map(function(i){var s=S.stars[i];return s?'<div class="t3 fill"><span class="n">'+ic('star')+'</span><b>'+h(s.t)+'</b><span class="small muted">'+h(cat(s.cat).short)+'</span></div>':'<div class="t3"><span class="n">'+(i+1)+'</span><span class="small muted">Velg en verdi</span></div>';}).join('');
+    var grp=CATS.filter(function(c){return mapItems(c.id).length;});
+    $('#sl',r).innerHTML=grp.length?grp.map(function(c){return '<div class="stargrp"><h4><i style="background:'+c.color+'"></i>'+c.name+'</h4><div class="chips">'+mapItems(c.id).map(function(t){return '<button class="starbtn'+(isStar(c.id,t)?' on':'')+'" data-c="'+c.id+'" data-t="'+h(t)+'" aria-pressed="'+isStar(c.id,t)+'">'+ic('star')+h(t)+'</button>';}).join('')+'</div></div>';}).join(''):'<div class="callout c-warn"><span class="ci">'+ic('alert')+'</span><p>Verdikartet ditt er tomt. Gå tilbake til steg 1 og fyll det ut først.</p></div>';
+    $$('.starbtn',r).forEach(function(b){b.addEventListener('click',function(){
+      var c=b.dataset.c,t=b.dataset.t;
+      if(isStar(c,t))S.stars=S.stars.filter(function(s){return !(s.cat===c&&s.t===t);});
+      else{if(S.stars.length>=3){toast('Vær streng: bare tre! Fjern en stjerne først.','star');return;}S.stars.push({cat:c,t:t});}
+      save();draw();
+    });});
+    if(S.stars.length===3)ctx.complete();else ctx.uncomplete();
+  }
+  draw();
+}});
+
+/* ---------- Steg 3: KIT-tabell ---------- */
+var TF=[['k','Hvis noen andre får tilgang','K','#2F74B5'],['i','Hvis den endres / forfalskes','I','#6E54B8'],['t','Hvis den blir utilgjengelig','T','#2F9A7D'],['w','Hvem rammes i tillegg til meg?','','#1D4E6B']];
+L.push({id:'vk3',sec:'1.4 Praktisk oppgave: Ditt digitale verdikart',title:'Steg 3: Forklar hva som kan skje',icon:'pen',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">1.4.3</span> Praktisk oppgave · Steg 3 av 3</div>'+
+  '<h1 class="t rv" style="--d:1">Forklar hva som kan skje</h1>'+
+  '<p class="lede rv" style="--d:2">For hver av de tre stjernemerkede verdiene: Beskriv med egne ord hva som skjer hvis hvert av KIT-målene brytes – og hvem andre som rammes.</p>'+
+  (S.r1?'<div class="callout c-info rv" style="--d:3"><span class="ci">'+ic('pen')+'</span><h4>Husker du refleksjonen din?</h4><p>«Det verste som kunne skjedd meg digitalt, er at '+h(S.r1)+'»</p><p class="small">Finner du den verdien blant kronjuvelene dine? Har svaret endret seg?</p></div>':'')+
+  '<div class="row3 ex rv" style="--d:4"><div class="row3-h"><span class="n">Eks.</span><b>E-postkontoen</b></div><div class="cols4">'+
+   [['Kan nullstille alle andre passord, lese alt om meg'],['Kan sende svindel i mitt navn til alle jeg kjenner'],['Mister billetter, dokumenter, tilgang til andre kontoer'],['Venner, familie, arbeidsgiver']].map(function(v,k){var f=TF[k];return '<div><label class="lbl">'+(f[2]?'<span class="kb" style="background:'+f[3]+'">'+f[2]+'</span>':ic('users'))+f[1]+'</label><div class="exv">'+v[0]+'</div></div>';}).join('')+'</div></div>'+
+  '<div id="rows"></div><p class="small muted" id="tst" style="margin-top:12px"></p>';
+},
+mount:function(r,ctx){
+  var rows=$('#rows',r);
+  if(S.stars.length<3){rows.innerHTML='<div class="callout c-warn"><span class="ci">'+ic('alert')+'</span><p>Du har ikke valgt tre verdier ennå. Gå tilbake til steg 2.</p></div>';return;}
+  rows.innerHTML=S.stars.map(function(s,i){var key=s.cat+'|'+s.t;return '<div class="row3 rv" style="--d:'+(5+i)+'"><div class="row3-h"><span class="n">'+(i+1)+'</span><b>'+h(s.t)+'</b><span class="chip" style="margin-left:auto">'+h(cat(s.cat).short)+'</span></div><div class="cols4">'+TF.map(function(f){return '<div><label class="lbl" for="f'+i+f[0]+'">'+(f[2]?'<span class="kb" style="background:'+f[3]+'">'+f[2]+'</span>':ic('users'))+f[1]+'</label><textarea id="f'+i+f[0]+'" data-key="'+h(key)+'" data-f="'+f[0]+'" placeholder="Med egne ord …"></textarea></div>';}).join('')+'</div></div>';}).join('');
+  function chk(){
+    var tot=0,filled=0;
+    S.stars.forEach(function(s){var t=S.table[s.cat+'|'+s.t]||{};TF.forEach(function(f){tot++;if((t[f[0]]||'').trim().length>=3)filled++;});});
+    $('#tst',r).innerHTML=filled===tot?ic('check')+' Tabellen er fylt ut. Du har gjort en reell verdivurdering!':filled+' av '+tot+' felt fylt ut. Fyll ut alle for å gå videre.';
+    if(filled===tot)ctx.complete();else ctx.uncomplete();
+  }
+  $$('textarea',rows).forEach(function(ta){var key=ta.dataset.key,f=ta.dataset.f;
+    bindText(ta,function(){return (S.table[key]||{})[f];},function(v){(S.table[key]=S.table[key]||{})[f]=v;},chk);});
+  chk();
+}});
+
+/* ---------- Lever/arkiver ---------- */
+function planData(){
+  return {r1:S.r1,r2:S.r2.cat?cat(S.r2.cat).name:'',r2n:S.r2.note,
+    map:CATS.map(function(c){return {name:c.name,items:mapItems(c.id).slice()};}),
+    stars:S.stars.map(function(s){var t=S.table[s.cat+'|'+s.t]||{};return {t:s.t,cat:cat(s.cat).name,k:t.k||'',i:t.i||'',tt:t.t||'',w:t.w||''};}),
+    date:new Date().toLocaleDateString('nb-NO',{day:'numeric',month:'long',year:'numeric'})};
+}
+function planText(){
+  var d=planData(),o=[];
+  o.push('MIN SIKRE-PLAN');o.push('Kapittel 1: S – Se hva som skal beskyttes');o.push('Cybersecurity 101 · '+d.date);o.push('');
+  o.push('REFLEKSJON');o.push('Det verste som kunne skjedd meg digitalt, er at '+(d.r1||'…'));
+  if(d.r2)o.push('Kategorien jeg hadde tenkt minst på: '+d.r2+(d.r2n?' – '+d.r2n:''));o.push('');
+  o.push('MITT DIGITALE VERDIKART ('+itemCount()+' verdier)');
+  d.map.forEach(function(m){o.push('• '+m.name+': '+(m.items.length?m.items.join(', '):'–'));});o.push('');
+  o.push('MINE TRE KRONJUVELER');
+  d.stars.forEach(function(s,i){o.push((i+1)+'. '+s.t+' ('+s.cat+')');o.push('   K – hvis noen andre får tilgang: '+s.k);o.push('   I – hvis den endres/forfalskes: '+s.i);o.push('   T – hvis den blir utilgjengelig: '+s.tt);o.push('   Hvem rammes i tillegg til meg: '+s.w);});
+  o.push('');o.push('Neste steg: I modul 2 legger du trusler oppå kartet, i modul 3 velger du tiltak for de mest kritiske verdiene, og i modul 5 settes alt sammen i «Min SIKRE-plan».');
+  return o.join('\n');
+}
+function planHTML(){
+  var d=planData();
+  return '<h3>Min SIKRE-plan</h3><p class="muted small">Kapittel 1: S – Se hva som skal beskyttes · '+h(d.date)+'</p>'+
+   '<h5>Refleksjon</h5><p>«Det verste som kunne skjedd meg digitalt, er at '+h(d.r1||'…')+'»</p>'+(d.r2?'<p class="small muted" style="margin-top:4px">Minst tenkt på: <b>'+h(d.r2)+'</b>'+(d.r2n?' – '+h(d.r2n):'')+'</p>':'')+
+   '<h5>Mitt digitale verdikart · '+itemCount()+' verdier</h5><ul>'+d.map.map(function(m){return '<li><b>'+h(m.name)+':</b> '+(m.items.length?m.items.map(h).join(', '):'–')+'</li>';}).join('')+'</ul>'+
+   '<h5>Mine tre kronjuveler</h5>'+d.stars.map(function(s,i){return '<div style="margin-top:10px"><p><b>'+(i+1)+'. '+h(s.t)+'</b> <span class="small muted">('+h(s.cat)+')</span></p><ul style="margin-top:4px;padding-left:12px"><li><b>K:</b> '+h(s.k)+'</li><li><b>I:</b> '+h(s.i)+'</li><li><b>T:</b> '+h(s.tt)+'</li><li><b>Rammer også:</b> '+h(s.w)+'</li></ul></div>';}).join('');
+}
+function planPrint(){
+  var d=planData();
+  return '<h1>Min SIKRE-plan</h1><p>Kapittel 1: S – Se hva som skal beskyttes · Cybersecurity 101 · '+h(d.date)+'</p>'+
+   '<h2>Refleksjon</h2><p>«Det verste som kunne skjedd meg digitalt, er at '+h(d.r1||'…')+'»</p>'+(d.r2?'<p>Kategorien jeg hadde tenkt minst på: '+h(d.r2)+(d.r2n?' – '+h(d.r2n):'')+'</p>':'')+
+   '<h2>Mitt digitale verdikart ('+itemCount()+' verdier)</h2><table>'+d.map.map(function(m){return '<tr><th style="width:32%">'+h(m.name)+'</th><td>'+(m.items.length?m.items.map(h).join(', '):'–')+'</td></tr>';}).join('')+'</table>'+
+   '<h2>Mine tre kronjuveler</h2><table><tr><th>Min verdi</th><th>Hvis noen andre får tilgang (K)</th><th>Hvis den endres/forfalskes (I)</th><th>Hvis den blir utilgjengelig (T)</th><th>Hvem rammes i tillegg til meg?</th></tr>'+
+   d.stars.map(function(s,i){return '<tr><td><b>'+(i+1)+'. '+h(s.t)+'</b></td><td>'+h(s.k)+'</td><td>'+h(s.i)+'</td><td>'+h(s.tt)+'</td><td>'+h(s.w)+'</td></tr>';}).join('')+'</table>'+
+   '<p style="margin-top:14pt"><i>I modul 2 legger du trusler oppå kartet, i modul 3 velger du tiltak for de mest kritiske verdiene, og i modul 5 settes alt sammen i «Min SIKRE-plan».</i></p>';
+}
+function download(){
+  try{var b=new Blob([planText()],{type:'text/plain;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Min-SIKRE-plan_Modul-1.txt';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);toast('Planen er lastet ned','download');}
+  catch(e){toast('Nedlasting støttes ikke her – bruk «Skriv ut» i stedet.','alert');}
+}
+function printPlan(){$('#m1-print').innerHTML=planPrint();window.print();}
+L.push({id:'arkiv',sec:'1.4 Praktisk oppgave: Ditt digitale verdikart',title:'Ta vare på verdikartet',icon:'download',
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">Lever / arkiver</span> Min SIKRE-plan</div>'+
+  '<h1 class="t rv" style="--d:1">Du har gjort noe de færreste gjør</h1>'+
+  '<p class="lede rv" style="--d:2">Du har gjennomført en reell verdivurdering – samme øvelse som NSM etterlyser hos norske virksomheter, der manglende oversikt over egne verdier er et gjennomgående funn. Alt du lærer i resten av kurset, kobles nå til <b>dine konkrete verdier</b> i stedet for abstrakte råd.</p>'+
+  '<div class="actions rv" style="--d:3"><button class="btn btn-p" id="dl">'+ic('download')+' Last ned som tekstfil</button><button class="btn btn-s" id="pr">'+ic('print')+' Skriv ut / lagre som PDF</button></div>'+
+  '<div class="sheet rv" style="--d:4">'+planHTML()+'</div>'+
+  '<div class="callout c-tip rv" style="--d:5"><span class="ci">'+ic('layers')+'</span><h4>Ta vare på verdikartet og tabellen</h4><p>I <b>modul 2</b> skal du legge trusler oppå kartet, i <b>modul 3</b> skal du velge tiltak for de mest kritiske verdiene, og i <b>modul 5</b> settes alt sammen i «Min SIKRE-plan».</p></div>';
+},
+mount:function(r){$('#dl',r).addEventListener('click',download);$('#pr',r).addEventListener('click',printPlan);}
+});
+
+/* ---------- 1.5 Oppsummering ---------- */
+L.push({id:'l15',sec:'1.5 Oppsummering og sluttest',title:'Oppsummering av modul 1',icon:'book',gate:true,
+html:function(){
+  var P=[
+    'Digital sikkerhet handler om [vaner], ikke bare verktøy – og den første vanen er å vite hvilke digitale verdier du har.',
+    'Profesjonelt sikkerhetsarbeid, fra NSM til NIST, starter med å [kjenne verdiene sine]. Nå gjør du det også.',
+    'Dine digitale verdier faller i seks kategorier – kontoer, e-post/meldinger, filer, enheter, sky/apper og BankID/betaling – pluss den usynlige sjuende: [identiteten og omdømmet ditt].',
+    'Beskyttelse har tre mål (KIT): at ingen uvedkommende får tilgang ([Konfidensialitet]), at ingenting forfalskes ([Integritet]), og at alt virker når du trenger det ([Tilgjengelighet]).',
+    'De viktigste verdiene finner du med tre spørsmål: Hva [åpner alt annet]? Hva kan ikke [erstattes]? Hva kan [skade andre]?',
+    'Den absolutte regelen: Ingen legitim aktør som kontakter deg, ber deg noensinne om [BankID-koder, passord eller engangskoder].'
+  ];
+  var n=0;
+  return '<div class="eyebrow rv"><span class="n">1.5</span> Oppsummering</div>'+
+  '<h1 class="t rv" style="--d:1">Det viktigste fra modul 1</h1>'+
+  '<p class="lede rv" style="--d:2">Aktiv gjenkalling: Tenk på hva som skjuler seg bak hvert felt <i>før</i> du trykker på det.</p>'+
+  '<div class="sum">'+P.map(function(p,k){return '<div class="sumi rv" style="--d:'+(3+k)+'"><span class="n">'+(k+1)+'</span><p>'+p.replace(/\[([^\]]+)\]/g,function(m,t){n++;return '<button class="blank" aria-label="Vis skjult ord">'+t+'</button>';})+'</p></div>';}).join('')+'</div>'+
+  '<p class="small muted" id="bc" style="margin-top:12px"></p>';
+},
+mount:function(r,ctx){
+  var bl=$$('.blank',r);
+  function cnt(){var on=bl.filter(function(b){return b.classList.contains('on');}).length;$('#bc',r).textContent=on+' av '+bl.length+' felt avslørt';if(on===bl.length)ctx.complete();}
+  bl.forEach(function(b){if(ctx.done){b.classList.add('on');b.removeAttribute('aria-label');}
+    b.addEventListener('click',function(){if(b.classList.contains('on'))return;b.classList.add('on');b.removeAttribute('aria-label');cnt();});});
+  cnt();
+}});
+
+/* ---------- Sluttest ---------- */
+var QUIZ=[
+  {q:'Hvor starter godt sikkerhetsarbeid ifølge både NSM, NIST og SIKRE-modellen?',o:['Med å kjenne verdiene man har','Med å kjøpe gode sikkerhetsverktøy','Med å installere antivirus','Med å lære seg programmering'],why:'«Kjenn dine verdier» kommer først – før man reduserer sårbarheter og bygger reserveløsninger.'},
+  {q:'Hvorfor kalles e-postkontoen ofte «nøkkelen til kongeriket»?',o:['Fordi lenker for å nullstille passord sendes dit','Fordi den er dyrest å kjøpe','Fordi den alltid er kryptert','Fordi den inneholder BankID'],why:'Den som kontrollerer e-posten din, kan nullstille og overta nesten alle andre kontoer.'},
+  {q:'«Banken» ringer og ber deg godkjenne i BankID-appen mens dere snakker. Hva er riktig?',o:['Legge på – dette er svindel, alltid','Godkjenne hvis nummeret ser riktig ut','Godkjenne hvis de kan kontonummeret ditt','Be dem sende en SMS først, og så godkjenne'],why:'Ingen seriøs aktør ber deg godkjenne mens de er på telefon. Den som ber om det, er en svindler.'},
+  {q:'Noen endrer i det stille kontonummeret på en faktura du skal betale. Hvilket KIT-mål er brutt?',o:['Integritet','Konfidensialitet','Tilgjengelighet','Ingen av dem'],why:'Informasjonen er endret – fakturasvindel er et klassisk integritetsbrudd.'},
+  {q:'Et løsepengevirus låser filene dine uten å lese dem. Hvilket mål rammes først og fremst?',o:['Tilgjengelighet','Konfidensialitet','Integritet','Autentisitet'],why:'Filene er der, men du får ikke brukt dem.'},
+  {q:'Hva er den sjuende, «usynlige» kategorien av digitale verdier?',o:['Identiteten og omdømmet ditt','Passordbehandleren','Hjemmeruteren','Strømmeabonnementene'],why:'Den er summen av de seks andre – og tar lengst tid å bygge opp igjen.'},
+  {q:'Du har tilgang til pasientdata på jobb. Hvilket kronjuvel-spørsmål passer best?',o:['Hva kan skade andre enn meg?','Hva gir tilgang til alt annet?','Hva kan ikke erstattes?','Ingen – det er arbeidsgiverens ansvar'],why:'Dette forvalter du på vegne av andre – her møtes ditt ansvar og arbeidsplassens.'},
+  {q:'Hva er den største trusselen mot bildearkivet ditt?',o:['Tap – for eksempel løsepengevirus eller mistet telefon','At svindlere vil stjele bildene','At bildene blir redigert','At bildene tar for stor plass'],why:'Uerstattelige filer trues først og fremst av tap – derfor trenger de sikkerhetskopi.'},
+  {q:'Hvorfor er gamle, glemte kontoer en risiko?',o:['Gjenbrukte passord kan bli en bakdør inn til de nye kontoene','De sletter seg selv etter en tid','De er alltid uten passord','De koster penger'],why:'Gamle nettbutikk-, spill- og forumkontoer med gjenbrukte passord er en vanlig bakdør.'},
+  {q:'Hvorfor er «Jeg har jo ingenting å skjule» et dårlig argument?',o:['Du har noe å miste selv om du ikke har noe å skjule','Fordi alle har noe å skjule','Fordi loven krever at man skjuler ting','Det er et godt argument'],why:'Identitet, omdømme, penger og andres tillit kan gå tapt – uansett hva du har å skjule.'},
+  {q:'Hvilke enheter skal med i verdikartet ditt?',o:['Alt som kobler seg til internett – også smartklokke, ruter og gammel mobil','Bare mobilen og PC-en','Bare enheter du har kjøpt selv','Bare enheter med BankID'],why:'«Usynlige» enheter som ruteren og den gamle mobilen i skuffen teller også.'},
+  {q:'Sara får tre varsler om «ny innlogging» som hun ikke har bedt om. Hva bør hun gjøre?',o:['Avvise, bytte passord og sjekke kontoen','Godkjenne for å få fred','Vente og se om det gir seg','Slå av varsler på telefonen'],why:'Noen har passordet hennes og prøver å slite henne ut (MFA-utmattelse).'}
+];
+var PASS=0.8,QN=10;
+L.push({id:'quiz',sec:'1.5 Oppsummering og sluttest',title:'Sluttest',icon:'trophy',gate:true,
+html:function(){
+  return '<div class="eyebrow rv"><span class="n">Sluttest</span> Modul 1</div>'+
+  '<h1 class="t rv" style="--d:1">Vis hva du kan</h1>'+
+  '<p class="lede rv" style="--d:2">'+QN+' spørsmål fra hele modulen. Du trenger minst <b>'+Math.ceil(QN*PASS)+' riktige</b> for å fullføre. Du får forklaring etter hvert svar, og kan ta testen så mange ganger du vil.</p>'+
+  (S.quizBest!=null?'<p class="chip rv" style="--d:3;margin-top:12px">'+ic('trophy')+' Beste resultat så langt: '+S.quizBest+' / '+QN+'</p>':'')+
+  '<div id="qz" class="rv" style="--d:3"></div>';
+},
+mount:function(r,ctx){
+  var el=$('#qz',r),qs,i,score,log;
+  function start(){
+    qs=shuffle(QUIZ).slice(0,QN).map(function(q){return {q:q.q,why:q.why,o:shuffle(q.o.map(function(t,k){return {t:t,ok:k===0};}))};});
+    i=0;score=0;log=[];show();
+  }
+  function intro(){
+    el.innerHTML='<div class="quiz"><div class="dcard" style="text-align:center"><div class="ico" style="margin:0 auto 12px;width:64px;height:64px;font-size:30px">'+ic('trophy')+'</div><h3>Klar?</h3><p class="muted" style="margin:6px 0 16px">Ta deg god tid. Les alle alternativene før du svarer.</p><button class="btn btn-p" id="go">'+ic('play')+' Start sluttesten</button></div></div>';
+    $('#go',el).addEventListener('click',start);
+  }
+  function show(){
+    var q=qs[i],Lt='ABCD';
+    el.innerHTML='<div class="quiz"><div class="qhead"><span>Spørsmål '+(i+1)+' av '+QN+'</span><span>'+ic('check')+' '+score+' riktige</span></div><div class="qbar"><i style="width:'+(i/QN*100)+'%"></i></div>'+
+      '<div class="dcard"><p class="q" style="font-family:var(--serif);font-size:20px;font-weight:700">'+q.q+'</p><div class="opts">'+q.o.map(function(o,k){return '<button class="opt" data-k="'+k+'"><span class="k">'+Lt[k]+'</span><span>'+o.t+'</span></button>';}).join('')+'</div><div class="fb"></div><div class="actions" style="justify-content:flex-end;display:none"><button class="btn btn-d btn-sm" id="nq">'+(i===QN-1?'Se resultatet':'Neste spørsmål')+' '+ic('right')+'</button></div></div></div>';
+    $$('.opt',el).forEach(function(b){b.addEventListener('click',function(){
+      var o=q.o[+b.dataset.k];if(o.ok)score++;log.push({q:q.q,ok:o.ok,why:q.why});
+      $$('.opt',el).forEach(function(x){x.disabled=true;if(q.o[+x.dataset.k].ok)x.classList.add('ok');});if(!o.ok)b.classList.add('no');
+      var fb=$('.fb',el);fb.className='fb show '+(o.ok?'good':'bad');fb.innerHTML='<b>'+(o.ok?'Riktig!':'Ikke riktig.')+'</b> '+q.why;
+      $('.actions',el).style.display='flex';var nq=$('#nq',el);nq.focus();nq.addEventListener('click',function(){i++;if(i<QN)show();else result();});
+    });});
+  }
+  function result(){
+    var pass=score>=Math.ceil(QN*PASS),pct=score/QN;
+    if(S.quizBest==null||score>S.quizBest){S.quizBest=score;save();}
+    el.innerHTML='<div class="quiz"><div class="dcard result"><svg class="ring" viewBox="0 0 100 100"><circle class="tr" cx="50" cy="50" r="42"/><circle class="val" cx="50" cy="50" r="42" stroke="'+(pass?'#2F9A7D':'#C9503C')+'" style="stroke-dasharray:0 264"/><text x="50" y="50">'+score+'/'+QN+'</text></svg>'+
+      '<h3 style="font-size:24px">'+(pass?(score===QN?'Fantastisk – alt riktig!':'Bestått – godt jobbet!'):'Nesten der!')+'</h3><p class="muted" style="margin-top:6px">'+(pass?'Du har vist at du kan det viktigste i modul 1.':'Du trenger '+Math.ceil(QN*PASS)+' riktige. Se gjennom forklaringene under og prøv igjen – spørsmålene stokkes på nytt.')+'</p>'+
+      '<div class="actions" style="justify-content:center"><button class="btn '+(pass?'btn-s':'btn-p')+'" id="rt">'+ic('refresh')+' Ta testen på nytt</button></div>'+
+      '<div class="review">'+log.map(function(l){return '<div class="'+(l.ok?'':'no')+'"><b>'+(l.ok?'✓':'✗')+'</b> '+l.q+'<br><span class="muted">'+l.why+'</span></div>';}).join('')+'</div></div></div>';
+    setTimeout(function(){var c=$('.ring .val',el);if(c)c.style.strokeDasharray=(pct*263.9)+' 263.9';},100);
+    $('#rt',el).addEventListener('click',start);
+    if(pass){award('quizpass',30);confetti();ctx.complete();}
+  }
+  intro();
+}});
+
+/* ---------- Fullført ---------- */
+L.push({id:'ferdig',sec:'1.5 Oppsummering og sluttest',title:'Modul 1 fullført',icon:'flag',
+html:function(){
+  return '<div class="cert rv"><div class="medal">'+ic('shield')+'</div>'+
+  '<div class="eyebrow" style="position:relative;z-index:1">SIKRE-trinn S fullført</div>'+
+  '<h1 class="t" style="margin-bottom:6px">Du ser nå hva som skal beskyttes</h1>'+
+  '<p class="lede" style="margin:0 auto;position:relative;z-index:1">Du har kartlagt dine digitale verdier, funnet kronjuvelene dine og lært de tre målene for all beskyttelse. Det er fundamentet for resten av kurset.</p>'+
+  '<div class="kpis"><div class="kpi"><b data-count="'+S.pts+'">0</b><small>poeng</small></div><div class="kpi"><b data-count="'+itemCount()+'">0</b><small>verdier i kartet</small></div><div class="kpi"><b>'+S.stars.length+'</b><small>kronjuveler</small></div><div class="kpi"><b>'+(S.quizBest!=null?S.quizBest+'/'+QN:'–')+'</b><small>sluttest</small></div></div>'+
+  '<div class="actions" style="justify-content:center;position:relative;z-index:1"><button class="btn btn-p" id="dl">'+ic('download')+' Last ned Min SIKRE-plan</button><button class="btn btn-s" id="pr">'+ic('print')+' Skriv ut</button></div></div>'+
+  '<div class="next rv" style="--d:2"><div class="L">I</div><div><b>Neste: Modul 2 – Identifiser trusler og risiko</b><p>Du tar med deg verdikartet ditt og legger truslene oppå det: phishing, smishing, deepfakes, QR-svindel og de nye truslene i 2026.</p></div></div>';
+},
+mount:function(r,ctx){
+  if(!S.finished){S.finished=new Date().toISOString();save();}
+  countUp(r);$('#dl',r).addEventListener('click',download);$('#pr',r).addEventListener('click',printPlan);
+  ctx.complete();setTimeout(confetti,400);
+}});
+
+/* =========================================================
+   Motor: navigasjon, fremdrift, poeng
+   ========================================================= */
+var stage=$('#m1-stage'),nav=$('#m1-nav'),btnPrev=$('#m1-prev'),btnNext=$('#m1-next'),hint=$('#m1-hint'),root=$('#m1');
+function firstOpen(){for(var i=0;i<L.length;i++){if(!S.done[L[i].id])return i;}return L.length-1;}
+function canGo(i){return i<=firstOpen()||!!S.done[L[i].id];}
+function pct(){var n=0;L.forEach(function(l){if(S.done[l.id])n++;});return Math.round(n/L.length*100);}
+
+function award(key,n){if(S.got[key])return;S.got[key]=1;S.pts+=n;save();renderPts(true);}
+function renderPts(bump){var p=$('#m1-pts');p.innerHTML=ic('star')+' '+S.pts+' <span>poeng</span>';if(bump){p.classList.remove('bump');void p.offsetWidth;p.classList.add('bump');}}
+
+function renderNav(){
+  var sec=null,out='';
+  L.forEach(function(l,i){
+    if(l.sec!==sec){sec=l.sec;out+='<h4>'+h(sec)+'</h4>';}
+    var d=!!S.done[l.id],cur=i===S.cur,ok=canGo(i);
+    out+='<button data-i="'+i+'" class="'+(d?'done ':'')+(cur?'cur':'')+'" '+(ok?'':'disabled')+(cur?' aria-current="step"':'')+'><span class="st">'+(d?ic('check'):ok?(i+1):ic('lock'))+'</span><span>'+h(l.title)+'</span></button>';
+  });
+  nav.innerHTML=out;
+  $$('button',nav).forEach(function(b){b.addEventListener('click',function(){go(+b.dataset.i);root.classList.remove('open');});});
+  var p=pct();$('#m1-bar').style.width=p+'%';$('#m1-pct').textContent=p+' %';
+}
+
+function renderFoot(){
+  var l=L[S.cur],d=!!S.done[l.id];
+  btnPrev.disabled=S.cur===0;
+  btnPrev.innerHTML=ic('left')+'<span class="lbl-t"> Forrige</span>';
+  if(S.cur===L.length-1){btnNext.style.visibility='hidden';}else btnNext.style.visibility='visible';
+  var gated=l.gate&&!d;
+  btnNext.disabled=gated;
+  btnNext.innerHTML=(S.cur===L.length-2?'Fullfør':'Neste')+' '+ic('right');
+  hint.className='hint'+(d&&l.gate?' ok':'');
+  hint.innerHTML=gated?ic('lock')+' Fullfør oppgaven for å gå videre':(d&&l.gate?ic('check')+' Steg fullført':'Steg '+(S.cur+1)+' av '+L.length);
+}
+
+function makeCtx(l){
+  return {
+    done:!!S.done[l.id],
+    complete:function(){
+      if(S.done[l.id])return;S.done[l.id]=true;this.done=true;award('lesson:'+l.id,10);save();renderNav();renderFoot();
+      if(l.gate){toast('Steg fullført! +10 poeng','check');btnNext.classList.remove('ready');void btnNext.offsetWidth;btnNext.classList.add('ready');}
+    },
+    uncomplete:function(){
+      if(!S.done[l.id])return;
+      /* Kun for steg som kan «angres» (valg av stjerner / tabell). Senere steg forblir tilgjengelige. */
+      delete S.done[l.id];this.done=false;save();renderNav();renderFoot();
+    }
+  };
+}
+
+function go(i){
+  if(i<0||i>=L.length||!canGo(i))return;
+  S.cur=i;save();
+  var l=L[i];
+  stage.classList.remove('enter');void stage.offsetWidth;stage.classList.add('enter');
+  stage.innerHTML=l.html();
+  var ctx=makeCtx(l);
+  if(l.mount)l.mount(stage,ctx);
+  countUpVisible();
+  renderNav();renderFoot();
+  var top=$('.m1-main').getBoundingClientRect().top+window.pageYOffset-80;
+  if(window.pageYOffset>top)window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+  var hd=$('h1',stage);if(hd){hd.setAttribute('tabindex','-1');try{hd.focus({preventScroll:true});}catch(e){}}
+}
+function countUpVisible(){$$('[data-count]',stage).forEach(function(n){var hidden=false,p=n;while(p&&p!==stage){if(p.style&&p.style.display==='none'){hidden=true;break;}p=p.parentNode;}if(!hidden)countUp({querySelectorAll:function(){return [n];}});});}
+
+btnNext.addEventListener('click',function(){
+  var l=L[S.cur];
+  if(!l.gate&&!S.done[l.id])makeCtx(l).complete();
+  if(S.done[l.id])go(S.cur+1);
+});
+btnPrev.addEventListener('click',function(){go(S.cur-1);});
+
+/* Mobilmeny */
+var menu=$('#m1-menu');menu.innerHTML=ic('menu');
+menu.addEventListener('click',function(){var o=root.classList.toggle('open');menu.setAttribute('aria-expanded',o);});
+$('#m1-scrim').addEventListener('click',function(){root.classList.remove('open');menu.setAttribute('aria-expanded','false');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')root.classList.remove('open');});
+
+/* Tilbakestill */
+var rs=$('#m1-reset');rs.innerHTML=ic('refresh')+' Start modulen på nytt';
+rs.addEventListener('click',function(){if(confirm('Vil du slette all fremdrift, alle svar og verdikartet ditt for modul 1? Dette kan ikke angres.')){S=fresh();save();renderPts();go(0);toast('Modulen er tilbakestilt','refresh');}});
+
+/* Toast */
+var toastT;
+function toast(msg,icon){var t=$('#m1-toast');t.innerHTML=ic(icon||'check')+' '+h(msg);t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on');},2400);}
+
+/* Konfetti */
+function confetti(){
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var c=$('#m1-confetti'),x=c.getContext('2d');if(!x)return;
+  var W=c.width=window.innerWidth,H=c.height=window.innerHeight,cols=['#F5A623','#2F9A7D','#2F74B5','#C9503C','#6E54B8','#FFC45C'],P=[];
+  for(var i=0;i<160;i++)P.push({x:W/2+(Math.random()-.5)*W*.3,y:H*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,s:Math.random()*7+4,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[i%cols.length]});
+  var t0=null;
+  function f(ts){if(!t0)t0=ts;var el=ts-t0;x.clearRect(0,0,W,H);
+    P.forEach(function(p){p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.globalAlpha=Math.max(0,1-el/3200);x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(el<3200)requestAnimationFrame(f);else x.clearRect(0,0,W,H);}
+  requestAnimationFrame(f);
+}
+
+/* Start */
+$('.m1-logo').innerHTML=ic('shield');
+renderPts();
+if(!canGo(S.cur))S.cur=firstOpen();
+go(S.cur);
+})();
+</script>
+</body>
+</html>
